@@ -70,7 +70,7 @@ Local real projects
 
 Public tracks define domain questions, candidate methods, and public-safe validation conclusions. This repository does not copy articles, customer material, product code, account state, infrastructure configuration, or raw logs. Local source mappings and unredacted temporary analysis stay in the ignored `.local/` directory. Original projects continue to own the source material.
 
-The first media and software tasks support three initial [cross-track core candidates](core/README.en.md): a replaceable current execution surface, one authoritative owner for each fact, and completion proven through a formal entry point and an inspectable result. These remain open to refutation. They are not a universal directory structure, data model, or product specification.
+The first media and software tasks formed three initial [cross-track core candidates](core/README.en.md). The later knowledge-reuse task narrowed the current execution surface to unfinished, direction-sensitive work and added evidence from a third independent track for one authoritative owner per fact and completion through a formal entry point plus an inspectable result. These candidates remain open to refutation and further narrowing. They are not a universal directory structure, data model, or product specification.
 
 A constraint may enter `core/` only after real tasks in at least two independent tracks support it. One reproducible counterexample caused by the candidate is enough to narrow or remove it.
 

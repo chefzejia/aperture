@@ -12,6 +12,7 @@ This track covers long-term knowledge reuse. It does not claim every content obj
 
 - `references/知识库元管理规范.en.md`: the current candidate method, `v0.2-candidate`.
 - `SKILL.en.md`: the English mirror of the vertical skill for building, organizing, adapting, and reviewing knowledge bases. The executable source remains `SKILL.md`.
+- `validations/enterprise-knowledge-reuse.en.md`: the first independent validation of enterprise knowledge entering a later real task.
 - `references/知识库架构讨论纪要-2026-08-28.md`: method evolution and counterexample record, available in Chinese only.
 - `references/archive/知识库元管理规范-v0.1.md`: archived first version, available in Chinese only.
 
@@ -25,7 +26,7 @@ These files were migrated from the former `knowledge-base-infra` project. They b
 - Valid knowledge, obsolete knowledge, sources, and indexes need explicit relationships instead of interface hints.
 - Real counterexamples must be able to change a rule. Domain strategies cannot present themselves as cross-domain invariants.
 
-These judgments currently come from knowledge management and bidding reuse. They have not yet passed validation in another independent track.
+The first [cross-task enterprise knowledge reuse validation](validations/enterprise-knowledge-reuse.en.md) supports real reuse as the proof of knowledge value and one authoritative owner per fact. It also narrows the cross-track current-execution-surface candidate to unfinished, direction-sensitive work. Semantic components, media components, and the knowledge map remain track-specific structures.
 
 ## Local Validation Boundary
 

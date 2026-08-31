@@ -4,42 +4,45 @@
 
 ## One-Sentence Result
 
-Knowledge management, media production, and software development now exist as independent method tracks. Media and software have each completed one real-task validation, and together support three core candidates that remain open to refutation.
+Knowledge management has completed the third independent-track validation. It supports one source of truth and inspectable results while narrowing the current execution surface to unfinished, direction-sensitive work. Successful knowledge storage and successful business reuse are different outcomes.
 
 ## Current Question
 
-> Will the three core candidates, a current execution surface, one source of truth, and a real result, survive a third independent track, or will a knowledge reuse task narrow them?
+> When the same kind of knowledge leaves the current knowledge provider and agent host, do formal sources of truth, object relationships, and the two outcome levels survive, or do this round's conclusions depend on a specific carrier?
 
-The project does not assume that content management sits above knowledge bases, and it does not combine the three tracks' directories or vocabulary into one specification. The next validation will use a real knowledge reuse task to attack the core candidates.
+The project is not building a universal knowledge platform and will not copy existing material just to stage a test. The next migration test begins only when a new real reuse task exists.
 
 ## Accepted Baseline
 
-- A model completing one task does not mean that long-running work has become a system.
 - The public repository manages abstract methods, the validation protocol, and redacted conclusions. Personal content, customer material, code, infrastructure, and live runtime state remain in local projects.
 - Knowledge management, media production, and software development are peer validation tracks, not a settled ontology.
-- Evidence from one track can change only that track. A constraint needs support from at least two independent tracks before it can become a cross-track candidate.
-- "Applicable to every industry" remains open to counterexamples. A finite set of cases cannot prove it.
-- Media and software currently share only three supported constraints: a replaceable current execution surface, one authoritative owner for each fact, and completion proved by a formal entry point plus an inspectable result.
-- Domain rules remain in their tracks. The human publishing gate, channel derivation rules, development change gate, and three-surface debugging method have not entered the core.
+- The [cross-task enterprise knowledge reuse validation](../../tracks/knowledge-base/validations/enterprise-knowledge-reuse.en.md) comes from a completed real task. This round did not rerun customer work.
+- Completed stable knowledge can cross sessions through formal sources of truth, explicit knowledge relationships, and new task input. It does not need a permanent handoff.
+- A current execution surface is required only for unfinished work whose direction may still change and that must continue across sessions or agents.
+- Current project requirements, stable knowledge, provenance, and indexes may have explicit relationships while each fact still has one authoritative owner.
+- Writable, readable components prove technical storage completion. An independent new task obtaining and using them in an editable deliverable proves successful business reuse.
+- Migration did not pass validation in this round. The current knowledge map, component carrier, and host behavior cannot be declared a universal implementation.
 
-## Current Tracks
+## Rule Disposition
 
-1. **Knowledge management**: The former `knowledge-base-infra` method has been migrated in full and remains `v0.2-candidate`. It does not become a core specification automatically.
-2. **Media production**: The agent-assisted media production method has been migrated and tested against one completed series task, covering canonical copy, channel derivatives, publishing authorization, and feedback. Real content remains in the personal media repository.
-3. **Software development**: Development governance and debugging methods have been migrated and tested against one completed single-purpose service task, covering live sources of truth, formal entry points, regression boundaries, and feedback written back into operations. Development and product repositories remain independent.
-
-Bidding and field delivery engineering currently provide local cases for knowledge management and professional delivery. They do not receive an empty track before they have an independent method.
+1. **Current execution surface**: narrowed to unfinished, direction-sensitive work, removing any implied requirement for every long-lived asset.
+2. **One source of truth**: kept, with the clarification that relationships, indexes, and provenance do not imply shared ownership of one fact.
+3. **Real result**: kept, with every result tied to declared intent. Technical completion cannot stand in for business success.
+4. **Reuse proves knowledge value**: kept in the knowledge management track as that domain's specialized form of the inspectable-result candidate.
 
 ## Next Action
 
-Select one real reuse task from the knowledge management track and create its first independent validation record by following `docs/validation-protocol.en.md`. Attack three questions: whether a current execution surface is necessary, whether one source of truth conflicts with stable readable object relationships, and whether technical write completion and successful business reuse require separate outcomes.
+Wait for a real knowledge-reuse task that already needs to happen, then perform comparable reuse through another knowledge provider, a stable local-file carrier, or a different agent host. Following `docs/validation-protocol.en.md`, run only the migration, source-of-truth, and result tests to check whether:
 
-At the end, decide for each core candidate whether to keep, narrow, or remove it. Do not declare success to complete a three-track set, and do not copy customer or business knowledge.
+- readable semantic content, visual evidence, and current task requirements keep their distinct roles;
+- the agent can still obtain actual content without depending on the current platform's object types;
+- technical storage and business reuse remain independently acceptable terminal states.
+
+If no real task exists, stop. Do not create demo data, conversion copies, or a platform adapter to manufacture validation.
 
 ## Open Decisions
 
-- Whether the common part of the three tracks is a lifecycle, a responsibility protocol, work continuity, or several separate problems.
-- Whether the final artifact needs a skill, a machine-decidable protocol, or a visual workbench.
-- Whether the three current core candidates should become one work continuity protocol or remain independent.
-
-Real cases will decide these questions. They are not fixed before validation.
+- Whether one knowledge map remains the right entry point at larger scale;
+- whether knowledge updates, conflicts, retirement, and removal need new relationship or responsibility rules;
+- whether the three core candidates should eventually merge into a work continuity protocol or remain independent;
+- whether the final artifact needs a skill, a machine-decidable protocol, or a visual workbench.
