@@ -1,5 +1,7 @@
 # Agentic Work Infra
 
+中文 | [English](README.en.md)
+
 ## 项目定位
 
 本项目研究智能工业革命中的一项基础设施问题：

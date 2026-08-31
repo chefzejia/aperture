@@ -4,6 +4,8 @@ description: 知识库基础设施规范（元管理规范 v0.2-candidate + 证�
 agent_created: true
 ---
 
+中文 | [English](SKILL.en.md)
+
 # 知识库基础设施（Knowledge Base Infra）
 
 为一切知识库工作提供统一规范。适用于任何载体（裸文件夹、在线文档平台、笔记应用、网盘——它们的本质相同：内容对象 + 组织关系 + 壳），不与任何具体产品绑定，也不依赖任何特定文件路径。

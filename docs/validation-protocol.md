@@ -1,5 +1,7 @@
 # 跨领域验证协议
 
+中文 | [English](validation-protocol.en.md)
+
 ## 目的
 
 本协议规定怎样用真实项目验证 Agent 原生长期工作方法，同时让公共仓库保持抽象、公开和可复核。
