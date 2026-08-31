@@ -100,3 +100,7 @@ Skill、协议实现和可视化工作台属于后续派生物，不作为当前
 - [知识管理线路](tracks/knowledge-base/README.md)：知识管理候选方法及其可执行 Skill。
 - [媒体生产线路](tracks/media-production/README.md)：媒体生产线路的边界、候选主干和验证问题。
 - [软件开发线路](tracks/software-development/README.md)：软件开发线路的边界、候选主干和验证问题。
+
+## 许可证
+
+本项目使用 [Apache License 2.0](LICENSE)。

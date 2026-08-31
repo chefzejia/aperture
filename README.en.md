@@ -100,3 +100,7 @@ Skills, protocol implementations, and visual workbenches may follow. They are no
 - [Knowledge management track](tracks/knowledge-base/README.en.md): candidate knowledge management methods and their executable skill.
 - [Media production track](tracks/media-production/README.en.md): boundaries, candidate structure, and validation questions for media production.
 - [Software development track](tracks/software-development/README.en.md): boundaries, candidate structure, and validation questions for software development.
+
+## License
+
+This project is licensed under the [Apache License 2.0](LICENSE).
