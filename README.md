@@ -8,24 +8,39 @@
 
 ## 项目内容
 
-### Skill（单一任务自动化）
+### Skill
 
 - [知识库Skill](tracks/knowledge-base/SKILL.md) - 教AI整理和检索企业知识
+- [Skill设计最佳实践](docs/skill-design.md) - 如何设计和迭代Skill
 - 投标Skill（规划中）
 
-### 项目开发方法
+### 治理方法
 
-- [项目开发治理](docs/project-development-governance.md) - 跨项目开发的治理规范
-- [Agent自主调试与真实E2E](docs/debugging-standard.md) - 调试和验收标准
+- [Agent治理规范](docs/governance/agent-governance.md) - AGENTS.md怎么写、Correct Simplicity原则
+- [Agent调试与E2E](docs/governance/debugging-standard.md) - 自主调试、三证据面、根因定位
 
 ### 培训材料
 
-- [知识库培训](docs/知识库培训.html) - 面向业务人员
-- [Skill培训](docs/Skill培训.html) - 面向AI协调员
+- [知识库培训](docs/training/知识库培训.html) - 面向业务人员
+- [Skill培训](docs/training/Skill培训.html) - 面向AI协调员
 
 ### 解决方案
 
-- [知识库到投标业务打通方案](docs/打通方案-知识库到投标.md)
+- [知识库到投标业务打通](docs/solutions/打通方案-知识库到投标.md) - 两层结构+投标Skill
+
+## 项目结构
+
+```
+agentic-work-infra/
+├── docs/
+│   ├── skill-design.md          # Skill设计最佳实践
+│   ├── governance/              # 治理方法
+│   ├── training/                # 培训材料
+│   └── solutions/               # 解决方案
+└── tracks/
+    └── knowledge-base/
+        └── SKILL.md
+```
 
 ## 许可证
 
