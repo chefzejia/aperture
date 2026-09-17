@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>企业知识库：人机共享的大脑</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --ink-2:#4a4a4a; --ink-3:#767676;
+    --line:#e3e1dc; --bg:#ffffff; --bg-2:#faf9f7; --bg-3:#f4f2ee;
+    --accent:#8a5a2b; --accent-bg:#faf1e6;
+    --teal:#0f6e56; --teal-bg:#e8f5ef;
+    --red:#a32d2d; --red-bg:#fbeceb;
+    --blue:#185fa5; --blue-bg:#eaf2fb;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg-2); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:0 28px 100px; background:var(--bg); min-height:100vh;
+    box-shadow:0 0 0 1px var(--line)}
+  header{padding:64px 0 40px; border-bottom:2px solid var(--ink)}
+  header .kicker{font-size:13px; letter-spacing:.18em; color:var(--accent); font-weight:600; margin-bottom:14px}
+  header h1{font-size:38px; line-height:1.25; margin:0 0 16px; font-weight:600; letter-spacing:-.01em}
+  header .sub{font-size:17px; color:var(--ink-2); margin:0}
+  header .meta{margin-top:26px; font-size:13px; color:var(--ink-3); display:flex; gap:22px; flex-wrap:wrap}
+  section{padding:52px 0 8px; border-bottom:1px solid var(--line)}
+  section:last-of-type{border-bottom:none}
+  h2{font-size:26px; margin:0 0 6px; font-weight:600; letter-spacing:-.01em; display:flex; align-items:baseline; gap:14px}
+  h2 .num{font-size:14px; color:var(--accent); font-weight:600; font-variant-numeric:tabular-nums;
+    border:1px solid var(--accent); border-radius:4px; padding:1px 8px; line-height:1.5; flex:none}
+  h2 + .lead{font-size:16px; color:var(--ink-2); margin:0 0 26px}
+  h3{font-size:18px; margin:34px 0 12px; font-weight:600}
+  h4{font-size:15px; margin:22px 0 8px; font-weight:600; color:var(--ink-2)}
+  p{margin:0 0 14px}
+  ul,ol{margin:0 0 16px; padding-left:24px}
+  li{margin:0 0 7px}
+  strong{font-weight:600}
+  code{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    font-size:.9em; background:var(--bg-3); padding:1px 6px; border-radius:4px; color:var(--ink)}
+  .quote{border-left:3px solid var(--accent); padding:2px 0 2px 20px; margin:24px 0;
+    font-size:18px; line-height:1.65; color:var(--ink)}
+  .card{background:var(--bg-2); border:1px solid var(--line); border-radius:10px; padding:22px 26px; margin:22px 0}
+  .card.teal{background:var(--teal-bg); border-color:#bfe3d6}
+  .card.red{background:var(--red-bg); border-color:#f0cfcd}
+  .card.blue{background:var(--blue-bg); border-color:#cfe2f5}
+  .card.accent{background:var(--accent-bg); border-color:#eeddc8}
+  .card h4{margin-top:0}
+  .card p:last-child,.card ul:last-child{margin-bottom:0}
+  table{width:100%; border-collapse:collapse; margin:22px 0; font-size:14.5px}
+  th{text-align:left; padding:11px 14px; background:var(--ink); color:#fff; font-weight:600;
+    font-size:13px; letter-spacing:.02em}
+  td{padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.6}
+  tr:last-child td{border-bottom:1px solid var(--ink)}
+  tbody tr:nth-child(even){background:var(--bg-2)}
+  .steps{counter-reset:s; list-style:none; padding:0; margin:22px 0}
+  .steps > li{counter-increment:s; position:relative; padding:0 0 20px 46px; margin:0}
+  .steps > li::before{content:counter(s); position:absolute; left:0; top:1px; width:28px; height:28px;
+    border-radius:50%; background:var(--ink); color:#fff; font-size:13px; font-weight:600;
+    display:flex; align-items:center; justify-content:center}
+  .steps > li::after{content:""; position:absolute; left:13.5px; top:31px; bottom:2px; width:1px; background:var(--line)}
+  .steps > li:last-child::after{display:none}
+  .steps > li:last-child{padding-bottom:0}
+  .steps b{display:block; margin-bottom:3px}
+  .steps span{color:var(--ink-2); font-size:14.5px}
+  .tree{background:var(--bg-2); border:1px solid var(--line); border-radius:10px; padding:20px 24px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13.5px;
+    line-height:1.85; margin:20px 0; white-space:pre; overflow-x:auto}
+  .tree .cm{color:var(--ink-3)}
+  .tree .hl{color:var(--accent); font-weight:600}
+  .key{display:flex; gap:14px; align-items:flex-start; background:var(--ink); color:#fff;
+    border-radius:10px; padding:20px 24px; margin:26px 0}
+  .key .bar{width:3px; align-self:stretch; background:var(--accent); border-radius:2px; flex:none}
+  .key p{margin:0; font-size:16px; line-height:1.65}
+  .final{background:var(--bg-3); border-radius:12px; padding:32px 34px; margin:34px 0 0}
+  .final ol{margin:0; padding-left:22px; font-size:15.5px; line-height:1.9}
+  footer{padding:40px 0 0; font-size:13px; color:var(--ink-3); border-top:1px solid var(--line); margin-top:52px}
+  @media (max-width:640px){
+    .wrap{padding:0 18px 70px}
+    header h1{font-size:29px}
+    table{font-size:13.5px}
+    th,td{padding:9px 10px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">企业内部培训</div>
+  <h1>企业知识库：人机共享的大脑</h1>
+  <p class="sub">存下的知识，人和AI都能搜到、打开、看懂。这是企业在AI时代能积累的真家伙。</p>
+  <div class="meta">
+    <span>适用：任何需要重复使用知识的业务</span>
+    <span>读者：业务人员与AI使用者</span>
+  </div>
+</header>
+
+<!-- 00 -->
+<section>
+  <h2><span class="num">00</span>为什么现在要做这件事</h2>
+  <p class="lead">AI能力已经越过临界点，但它不懂你的业务。</p>
+
+  <p>过去半年，AI能力越过了临界点。ChatGPT、豆包、Workbuddy都已经能帮你干活了。</p>
+
+  <p>但有个问题：<strong>AI不懂你的业务。</strong></p>
+
+  <p>你问它"上次那个餐饮投标的报价模板在哪"，它答不出来——因为它不知道你的资料在哪、叫什么名字、是否还有效。</p>
+
+  <div class="card accent">
+    <h4>我们要做两件事</h4>
+    <ol>
+      <li><strong>建企业知识库</strong>——把资料整理成人和AI都能用的格式</li>
+      <li><strong>教AI怎么干活</strong>——这就是Skill（下一场培训讲）</li>
+    </ol>
+    <p style="margin-top:16px">今天讲第一件事：企业知识库怎么建、怎么用。</p>
+  </div>
+</section>
+
+<!-- 01 -->
+<section>
+  <h2><span class="num">01</span>知识库到底是什么</h2>
+  <p class="lead">它不是文件堆。判断标准只有一个。</p>
+
+  <div class="quote">
+    知识库只为一件事存在：<strong>以后有人或AI问一个问题，能搜到、打开、看懂。</strong>
+  </div>
+
+  <p>反过来就是判据：<strong>存下来的东西，如果搜不到、打不开、看不懂，就等于没有。</strong></p>
+
+  <table>
+    <thead><tr><th style="width:34%">场景</th><th>它是什么</th></tr></thead>
+    <tbody>
+      <tr><td>200个Word放在共享盘</td><td>文件堆。能存，但没人知道里面有什么、哪个还有效</td></tr>
+      <tr><td>一个人的电脑里</td><td>私人记忆。人一走，知识跟着走</td></tr>
+      <tr><td>旧的聊天记录里</td><td>对话遗迹。当时解决了，下次还要重新问一遍</td></tr>
+      <tr><td><strong>知识库</strong></td><td><strong>以后任何人或AI，问起这件事，都能找到、看懂、放心用</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="card teal">
+    <h4>人和AI是同一个读者</h4>
+    <p>资料乱，人还能靠经验兜住；<strong>资料乱加上AI，错误会被放大，而且速度更快。</strong></p>
+    <p>AI没有"感觉这份资料好像有点旧"的直觉——你给它什么，它就按什么干。所以知识库必须同时服务人和AI，不是做两套。</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section>
+  <h2><span class="num">02</span>为什么需要知识库</h2>
+  <p class="lead">没有知识库时，知识不会消失，但会以四种方式反复造成损失。</p>
+
+  <table>
+    <thead><tr><th style="width:24%">损失</th><th style="width:36%">具体怎么发生的</th><th>后果</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>找不到</strong></td>
+        <td>不知道有这份资料，或者知道有但不知道在哪</td>
+        <td>重做一遍。同一个方案做第三次</td>
+      </tr>
+      <tr>
+        <td><strong>不敢信</strong></td>
+        <td>找到了，但不知道是什么时候的、谁写的、还有效吗</td>
+        <td>不敢用，等于没找到</td>
+      </tr>
+      <tr>
+        <td><strong>两份答案</strong></td>
+        <td>同一件事在两份文件里说得不一样，不知道哪个对</td>
+        <td>无法决策，或者选错</td>
+      </tr>
+      <tr>
+        <td><strong>用了过期的</strong></td>
+        <td>旧版本没清理，和有效版本一起被搜出来</td>
+        <td>拿着过期结论干活，<strong>比不知道更糟</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>这四条损失，就是知识库要解决的问题。注意最后一条——<strong>它是四项里最危险的。找不到，你会去问人；用了过期内容，你不会怀疑。</strong></p>
+</section>
+
+<!-- 03 -->
+<section>
+  <h2><span class="num">03</span>怎么做：三个动作、五个目录</h2>
+  <p class="lead">不需要记规范。记住三个动作就够了，其余都是推论。</p>
+
+  <h3>三个动作</h3>
+  <ol class="steps">
+    <li><b>丢</b><span>把资料放进 <code>inbox/</code>。不用管格式、不用想分类，先丢进去。</span></li>
+    <li><b>整理</b><span>说一句「整理inbox」。AI会按知识库Skill的标准逐批处理，把它整理成合格的知识。</span></li>
+    <li><b>查</b><span>以后直接问。回答会带上来源，你能自己核对。</span></li>
+  </ol>
+
+  <div class="card blue">
+    <h4>什么是Skill？</h4>
+    <p>Skill是给AI的操作手册。<strong>知识库Skill</strong>规定了AI应该怎么整理你的资料：文件名怎么改、内容怎么检查、来源怎么标记、失效的怎么处理。</p>
+    <p>你不需要知道Skill里写了什么（下一场培训会讲）。你只需要知道：<strong>AI不是随便整理，而是按企业的标准整理。</strong></p>
+  </div>
+
+  <h3>五个目录，是推出来的</h3>
+  <p>知识库要满足五条要求。前四条正是第02节那四种损失的反面。</p>
+
+  <table>
+    <thead><tr><th style="width:38%">要求</th><th>由什么满足</th></tr></thead>
+    <tbody>
+      <tr><td><strong>搜得到</strong></td><td>文件名带上可识别的关键词；<code>notes/</code>按业务分类</td></tr>
+      <tr><td><strong>知道来源和时效</strong></td><td>文件开头标记来源、日期、状态；原始文件存进<code>sources/</code></td></tr>
+      <tr><td><strong>同一个问题只有一份答案</strong></td><td>整理时查重复，同一件事合并成一份</td></tr>
+      <tr><td><strong>失效的移出检索范围</strong></td><td>失效内容移到<code>archive/</code>，不再被搜到</td></tr>
+      <tr><td><strong>打开有内容</strong></td><td>正文是完整的，不是只有标题的空壳</td></tr>
+    </tbody>
+  </table>
+
+  <p>落到实处，就是下面五个东西——<strong>每一个都对应上面的一条，没有一个是多余的：</strong></p>
+
+  <div class="tree">knowledge-base/
+├── <span class="hl">README.md</span>    <span class="cm"># 这个库是什么 + 没搜到的问题记在这</span>
+├── <span class="hl">inbox/</span>       <span class="cm"># 还没整理的资料（"先丢进去"的落脚点）</span>
+├── <span class="hl">notes/</span>       <span class="cm"># 知识本身，下面按业务分（"搜得到、读懂"的地方）</span>
+├── <span class="hl">sources/</span>     <span class="cm"># 原始文件（"知道来源"的物质基础）</span>
+└── <span class="hl">archive/</span>     <span class="cm"># 失效内容（"移出检索范围"的物质基础）</span></div>
+
+  <h3>关键的一步：<code>notes/</code>下面按业务分</h3>
+
+  <p>这是最容易做错的地方。<code>notes/</code>不能铺平——一铺平，几百个文件堆在一起，等于没整理。</p>
+
+  <div class="key">
+    <div class="bar"></div>
+    <p><strong>怎么定分法：想你会怎么取用，就怎么分。</strong>从使用场景倒推，不要从学科分类倒推。</p>
+  </div>
+
+  <p>以投标业务为例（<strong>这只是示范推理过程，不是模板</strong>）：</p>
+
+  <div class="tree">某公司知识库/
+├── <span class="hl">00_企业知识地图.md</span>   <span class="cm"># 入口：列出全部资料，按分类</span>
+├── 企业资质/            <span class="cm"># 凑标书时要"资质"，所以归一类</span>
+├── 技术能力/            <span class="cm"># 要"方案"时取</span>
+├── 业绩案例/            <span class="cm"># 要"业绩"时取</span>
+└── 人员证书/            <span class="cm"># 要"人的证"时取</span></div>
+
+  <p>为什么这样分？因为投标时要凑一份标书，需要"资质+业绩+方案+人员证"，<strong>按取用方式分，一类一类拿得全，不用翻目录猜。</strong></p>
+</section>
+
+<!-- 04 -->
+<section>
+  <h2><span class="num">04</span>整理好的知识长什么样</h2>
+  <p class="lead">你不需要知道怎么写，但需要知道怎么读。</p>
+
+  <p>在Obsidian（或其他笔记工具）里打开整理好的文件，你会看到三个部分：</p>
+
+  <h3>1. 文件名</h3>
+  <p>文件名带上了<strong>关键词</strong>，让你一眼认出它是什么。</p>
+  <p>例如：<code>2026-餐饮投标-报价模板-有效.md</code></p>
+  <p>不再是"新建文档3.docx"或"扫描件.pdf"。<strong>专有名词</strong>（产品名、型号、法规编号、人名）会出现在文件名里，因为你就是拿这些词去搜的。</p>
+
+  <h3>2. 文件开头的基本信息</h3>
+  <p>打开文件，最上面会有一小块基本信息，用三条横线包起来：</p>
+
+  <div class="tree"><span class="cm">---</span>
+来源: 某某招标文件 第3页
+日期: 2026-09-17
+状态: 有效
+<span class="cm">---</span></div>
+
+  <p><strong>这三项让你不打开正文就知道：它是什么时候的、从哪来的、能不能信。</strong></p>
+
+  <p>AI会自动填写这些信息，你不需要手写。但你需要知道怎么读它们——看到"状态:已失效"，就知道这份资料不能用了。</p>
+
+  <h3>3. 正文</h3>
+  <p>正文是完整的内容。表格还是表格，图片还在原位，不会丢信息。</p>
+
+  <div class="key">
+    <div class="bar"></div>
+    <p>你只需要会读，不需要会写。AI会帮你整理成这个样子。你的工作是：丢资料到inbox，然后说"整理inbox"。</p>
+  </div>
+</section>
+
+<!-- 05 -->
+<section>
+  <h2><span class="num">05</span>为什么用纯文本格式</h2>
+  <p class="lead">不是因为它高级，是因为AI读得准、人也读得懂。</p>
+
+  <p>Word、PDF、PPT是为<strong>打印和排版</strong>设计的。它们的结构藏在视觉里，AI读取时要先猜哪部分是结构、哪部分是样式。<strong>猜错，后面全错。</strong></p>
+
+  <table>
+    <thead><tr><th style="width:26%">维度</th><th style="width:37%">Word / PDF / PPT</th><th>纯文本格式</th></tr></thead>
+    <tbody>
+      <tr><td><strong>AI能否准确读取</strong></td><td>要先转换，转换会丢信息</td><td><strong>直接读，不丢结构</strong></td></tr>
+      <tr><td><strong>人能否直接读</strong></td><td>能，但要装对应软件</td><td><strong>能，任何工具都行</strong></td></tr>
+      <tr><td><strong>是否绑定软件</strong></td><td>绑定，软件没了文件可能打不开</td><td><strong>不绑定，几十年后还能读</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="card accent">
+    <h4>但要说清楚一件事</h4>
+    <p><strong>原始资料和最终交付仍然用Word/PDF/Excel</strong>——法律证据、复杂排版、图表、证明页，该用什么格式还用什么格式。</p>
+    <p>纯文本格式只用于<strong>需要长期复用的语义内容</strong>：企业资质、技术能力、业绩描述、标准响应。这些内容需要人和AI都能准确读取、快速检索、独立更新。</p>
+    <p>所以是两层结构：<strong>来源与交付层</strong>（Word/PDF/图片）+ <strong>语义知识层</strong>（纯文本）。</p>
+  </div>
+</section>
+
+<!-- 06 -->
+<section>
+  <h2><span class="num">06</span>从知识库到业务应用</h2>
+  <p class="lead">知识库不是终点，业务才是。</p>
+
+  <p>建好知识库后，AI才能真正帮你干活。以投标业务为例：</p>
+
+  <h3>没有知识库时</h3>
+  <ol>
+    <li>来了一份招标文件</li>
+    <li>人工翻共享盘，找资质、业绩、方案</li>
+    <li>复制粘贴到Word里，改格式</li>
+    <li>检查有没有漏、有没有用错</li>
+    <li>交付标书</li>
+  </ol>
+  <p><strong>每次都要重新找、重新判断哪个资料还有效。</strong></p>
+
+  <h3>有知识库 + 投标Skill后</h3>
+  <ol>
+    <li>来了一份招标文件</li>
+    <li>AI从知识库取得资质、业绩、方案（带来源、状态）</li>
+    <li>AI按招标要求组装标书，转成Word格式</li>
+    <li>AI自动检查漏项、冲突、失效材料</li>
+    <li>人工只处理例外和最终审定</li>
+  </ol>
+  <p><strong>知识只整理一次，每次投标直接复用。</strong></p>
+
+  <div class="card teal">
+    <h4>知识库和Skill的分工</h4>
+    <ul>
+      <li><strong>知识库</strong>：存放企业知识（资质、业绩、方案），保证搜得到、看得懂、知道有效期</li>
+      <li><strong>Skill</strong>：教AI怎么用这些知识（怎么取、怎么组装、怎么检查、怎么输出）</li>
+    </ul>
+    <p style="margin-top:12px">两者缺一不可。没有知识库，AI不知道你有什么；没有Skill，AI不知道怎么用。</p>
+  </div>
+
+  <div class="card red">
+    <h4>当前的卡点</h4>
+    <p>很多企业习惯用两份Word模板，让AI复制粘贴内容。这能快速生成一份标书，但不是规模化生产：</p>
+    <ul>
+      <li>每次都要读取整份大Word文件</li>
+      <li>一条知识更新了，不知道影响了哪些章节</li>
+      <li>多个项目同时进行时，容易串项目、用错版本</li>
+    </ul>
+    <p style="margin-top:12px"><strong>打通知识库到业务的关键</strong>：把稳定内容从Word模板拆出来，整理成知识库的独立组件。这样才能做到"一次整理，多次复用"。</p>
+  </div>
+</section>
+
+<!-- 07 -->
+<section>
+  <h2><span class="num">07</span>常见错误</h2>
+  <p class="lead">每一条都会让知识库慢慢失效。</p>
+
+  <table>
+    <thead><tr><th style="width:34%">错误做法</th><th>为什么错</th></tr></thead>
+    <tbody>
+      <tr><td>按部门/来源/文件格式组织</td><td>这些都不回答"我要用的时候怎么找"</td></tr>
+      <tr><td>失效内容留在有效目录里</td><td>过期内容和有效内容一起被搜出来，<strong>比没有更危险</strong></td></tr>
+      <tr><td>正文里留"如上""参考前文"</td><td>单独取出来就看不懂了</td></tr>
+      <tr><td>改写、总结原文</td><td>为了"更通顺"而改写，会悄悄改变原意</td></tr>
+      <tr><td>只往库里丢，从不检查</td><td>错误和失效会一直累积，直到整个库没人敢用</td></tr>
+      <tr><td>以为AI天生就懂怎么整理</td><td>AI不懂你的业务规则，需要通过Skill告诉它</td></tr>
+    </tbody>
+  </table>
+
+  <h3>每月检查一次</h3>
+  <p>抽5个真实问题搜一遍，同时检查：</p>
+  <ul>
+    <li>有没有名字看不懂的？（搜不到）</li>
+    <li>有没有缺来源、日期、状态的？（不敢信）</li>
+    <li><code>notes/</code>里有没有重复文件？（两份答案）</li>
+    <li>有没有该进<code>archive/</code>还留着的？（过期没退出）</li>
+    <li>入口索引里有没有漏掉的资料？（搜不到）</li>
+  </ul>
+</section>
+
+<!-- 08 -->
+<section>
+  <h2><span class="num">08</span>速查</h2>
+  <p class="lead">培训结束后，记住这一页就够。</p>
+
+  <div class="final">
+    <ol>
+      <li><strong>知识库的定义</strong>：以后有人或AI问一个问题，能搜到、打开、看懂。做不到就等于没有。</li>
+      <li><strong>要解决的四件事</strong>：找不到、不敢信、两份答案、用了过期的。</li>
+      <li><strong>三个动作</strong>：丢进<code>inbox/</code> → 说"整理inbox" → 以后直接问。</li>
+      <li><strong>五个目录</strong>：README、inbox、notes、sources、archive。每一个都对应一条要求，不多不少。</li>
+      <li><strong>notes按业务分</strong>：想你会怎么取用，就怎么分。从使用倒推，不从学科分类倒推。</li>
+      <li><strong>整理好的文件</strong>：文件名带关键词、开头有基本信息（来源/日期/状态）、正文完整。</li>
+      <li><strong>为什么用纯文本</strong>：AI读得准，人也读得懂，不绑定软件。原始资料和交付仍用Word/PDF。</li>
+      <li><strong>知识库和Skill</strong>：知识库存企业知识，Skill教AI怎么用。两者缺一不可。</li>
+      <li><strong>每月一次</strong>：抽5个真实问题搜一遍，检查重复、失效、命名、头部、索引。</li>
+    </ol>
+  </div>
+
+  <div class="card accent" style="margin-top:34px">
+    <h4>下一步</h4>
+    <p>今天讲了知识库。下一场培训讲<strong>Skill</strong>：怎么教AI按你的业务规则干活。</p>
+    <p>知识库和Skill是企业在AI时代能积累的真家伙。Agent工具可以换，但知识库和Skill是你的。</p>
+  </div>
+</section>
+
+<footer>
+  目录分类和字段要按本业务的实际取用方式调整，不要照搬本材料中的示例。
+</footer>
+
+</div>
+</body>
+</html>

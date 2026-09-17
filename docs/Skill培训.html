@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill：给AI的业务操作手册</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --ink-2:#4a4a4a; --ink-3:#767676;
+    --line:#e3e1dc; --bg:#ffffff; --bg-2:#faf9f7; --bg-3:#f4f2ee;
+    --accent:#8a5a2b; --accent-bg:#faf1e6;
+    --teal:#0f6e56; --teal-bg:#e8f5ef;
+    --red:#a32d2d; --red-bg:#fbeceb;
+    --blue:#185fa5; --blue-bg:#eaf2fb;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg-2); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:0 28px 100px; background:var(--bg); min-height:100vh;
+    box-shadow:0 0 0 1px var(--line)}
+  header{padding:64px 0 40px; border-bottom:2px solid var(--ink)}
+  header .kicker{font-size:13px; letter-spacing:.18em; color:var(--accent); font-weight:600; margin-bottom:14px}
+  header h1{font-size:38px; line-height:1.25; margin:0 0 16px; font-weight:600; letter-spacing:-.01em}
+  header .sub{font-size:17px; color:var(--ink-2); margin:0}
+  header .meta{margin-top:26px; font-size:13px; color:var(--ink-3); display:flex; gap:22px; flex-wrap:wrap}
+  section{padding:52px 0 8px; border-bottom:1px solid var(--line)}
+  section:last-of-type{border-bottom:none}
+  h2{font-size:26px; margin:0 0 6px; font-weight:600; letter-spacing:-.01em; display:flex; align-items:baseline; gap:14px}
+  h2 .num{font-size:14px; color:var(--accent); font-weight:600; font-variant-numeric:tabular-nums;
+    border:1px solid var(--accent); border-radius:4px; padding:1px 8px; line-height:1.5; flex:none}
+  h2 + .lead{font-size:16px; color:var(--ink-2); margin:0 0 26px}
+  h3{font-size:18px; margin:34px 0 12px; font-weight:600}
+  h4{font-size:15px; margin:22px 0 8px; font-weight:600; color:var(--ink-2)}
+  p{margin:0 0 14px}
+  ul,ol{margin:0 0 16px; padding-left:24px}
+  li{margin:0 0 7px}
+  strong{font-weight:600}
+  code{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    font-size:.9em; background:var(--bg-3); padding:1px 6px; border-radius:4px; color:var(--ink)}
+  .quote{border-left:3px solid var(--accent); padding:2px 0 2px 20px; margin:24px 0;
+    font-size:18px; line-height:1.65; color:var(--ink)}
+  .card{background:var(--bg-2); border:1px solid var(--line); border-radius:10px; padding:22px 26px; margin:22px 0}
+  .card.teal{background:var(--teal-bg); border-color:#bfe3d6}
+  .card.red{background:var(--red-bg); border-color:#f0cfcd}
+  .card.blue{background:var(--blue-bg); border-color:#cfe2f5}
+  .card.accent{background:var(--accent-bg); border-color:#eeddc8}
+  .card h4{margin-top:0}
+  .card p:last-child,.card ul:last-child{margin-bottom:0}
+  table{width:100%; border-collapse:collapse; margin:22px 0; font-size:14.5px}
+  th{text-align:left; padding:11px 14px; background:var(--ink); color:#fff; font-weight:600;
+    font-size:13px; letter-spacing:.02em}
+  td{padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.6}
+  tr:last-child td{border-bottom:1px solid var(--ink)}
+  tbody tr:nth-child(even){background:var(--bg-2)}
+  .compare{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:22px 0}
+  .compare > div{border-radius:10px; padding:18px 20px; font-size:14.5px}
+  .compare .bad{background:var(--red-bg); border:1px solid #f0cfcd}
+  .compare .good{background:var(--teal-bg); border:1px solid #bfe3d6}
+  .compare .tag{font-size:12px; font-weight:600; letter-spacing:.06em; margin-bottom:8px; display:block}
+  .compare .bad .tag{color:var(--red)}
+  .compare .good .tag{color:var(--teal)}
+  .tree{background:var(--bg-2); border:1px solid var(--line); border-radius:10px; padding:20px 24px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13.5px;
+    line-height:1.85; margin:20px 0; white-space:pre; overflow-x:auto}
+  .tree .cm{color:var(--ink-3)}
+  .tree .hl{color:var(--accent); font-weight:600}
+  .key{display:flex; gap:14px; align-items:flex-start; background:var(--ink); color:#fff;
+    border-radius:10px; padding:20px 24px; margin:26px 0}
+  .key .bar{width:3px; align-self:stretch; background:var(--accent); border-radius:2px; flex:none}
+  .key p{margin:0; font-size:16px; line-height:1.65}
+  .final{background:var(--bg-3); border-radius:12px; padding:32px 34px; margin:34px 0 0}
+  .final ol{margin:0; padding-left:22px; font-size:15.5px; line-height:1.9}
+  footer{padding:40px 0 0; font-size:13px; color:var(--ink-3); border-top:1px solid var(--line); margin-top:52px}
+  @media (max-width:640px){
+    .wrap{padding:0 18px 70px}
+    header h1{font-size:29px}
+    .compare{grid-template-columns:1fr}
+    table{font-size:13.5px}
+    th,td{padding:9px 10px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">企业内部培训</div>
+  <h1>Skill：给AI的业务操作手册</h1>
+  <p class="sub">Agent工具可以换，但Skill是你的。它是企业AI能力的真正沉淀。</p>
+  <div class="meta">
+    <span>适用：需要定制AI工作方式的业务场景</span>
+    <span>读者：AI协调员、业务骨干</span>
+  </div>
+</header>
+
+<!-- 01 -->
+<section>
+  <h2><span class="num">01</span>Skill是什么</h2>
+  <p class="lead">不是给人的操作手册，是给AI的。</p>
+
+  <div class="quote">
+    Skill是给AI的业务操作手册。它规定了AI在特定场景下应该<strong>遵循什么规则、按什么步骤工作、如何检查结果、遇到异常怎么处理。</strong>
+  </div>
+
+  <p>举例：<strong>知识库Skill</strong>教AI怎么整理企业资料——</p>
+
+  <ul>
+    <li>文件名应该怎么改（带上关键词、专有名词）</li>
+    <li>内容怎么检查（表格保持表格、图片要保留）</li>
+    <li>来源怎么标记（写明来源、日期、状态）</li>
+    <li>失效的怎么处理（移到archive，不再被搜到）</li>
+    <li>遇到冲突怎么办（两份资料说的不一样，停下来问人）</li>
+  </ul>
+
+  <div class="card accent">
+    <h4>为什么不是"提示词"</h4>
+    <p>很多人把Skill当成"一段很长的提示词"，这是错的。</p>
+    <p><strong>Skill是结构化的工作目录</strong>，包含：</p>
+    <ul>
+      <li><strong>元数据</strong>：什么时候触发这个Skill</li>
+      <li><strong>核心流程</strong>：应该按什么步骤干活</li>
+      <li><strong>参考文档</strong>：需要时查阅的领域知识</li>
+      <li><strong>确定性脚本</strong>：必须精确执行的操作</li>
+    </ul>
+    <p style="margin-top:12px">提示词是一次性的，Skill是可复用、可迭代的资产。</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section>
+  <h2><span class="num">02</span>为什么需要Skill</h2>
+  <p class="lead">通用AI不懂你的业务，每次都从头解释太累。</p>
+
+  <h3>没有Skill时</h3>
+  <p>每次让AI干活，你都要解释一遍业务规则：</p>
+  <ul>
+    <li>"整理这些文件，注意文件名要带上关键词"</li>
+    <li>"表格不要改成段落，会丢信息"</li>
+    <li>"最上面要标记来源、日期、状态"</li>
+    <li>"失效的移到archive目录"</li>
+    <li>"如果两份资料说的不一样，先问我"</li>
+  </ul>
+  <p><strong>每次都要重新说一遍，AI还不一定按你的标准做。</strong></p>
+
+  <h3>有Skill后</h3>
+  <p>你只需要说："整理inbox"</p>
+  <p>AI自动加载<strong>知识库Skill</strong>，按既定规则干活：</p>
+  <ul>
+    <li>文件名怎么改 ✓</li>
+    <li>内容怎么检查 ✓</li>
+    <li>来源怎么标记 ✓</li>
+    <li>失效的怎么处理 ✓</li>
+    <li>遇到冲突怎么办 ✓</li>
+  </ul>
+  <p><strong>规则固化下来，每次都按同样的标准执行。</strong></p>
+
+  <div class="key">
+    <div class="bar"></div>
+    <p>Skill = 把业务规则固化下来，从"每次都教"变成"教一次，用无数次"。</p>
+  </div>
+</section>
+
+<!-- 03 -->
+<section>
+  <h2><span class="num">03</span>一个Skill长什么样</h2>
+  <p class="lead">Skill是一个工作目录，不是一个文件。</p>
+
+  <h3>标准结构</h3>
+
+  <div class="tree">knowledge-base/          <span class="cm"># Skill名称</span>
+├── <span class="hl">SKILL.md</span>           <span class="cm"># 入口文件：元数据 + 核心流程</span>
+├── references/         <span class="cm"># 参考文档（按需加载）</span>
+│   ├── 命名规范.md
+│   └── 检查清单.md
+├── scripts/            <span class="cm"># 确定性脚本（保证执行结果稳定）</span>
+│   └── 检查文件.py
+└── assets/             <span class="cm"># 输出模板或静态资源</span>
+    └── 报告模板.md</div>
+
+  <h3>SKILL.md（入口文件）</h3>
+  <p>这是AI看到的第一个文件。它分两部分：</p>
+
+  <h4>1. 元数据（顶部）</h4>
+  <div class="tree"><span class="cm">---</span>
+name: knowledge-base
+description: >
+  帮用户整理知识库，让以后问问题时搜得到、打开能看懂。
+  当用户要建知识库、整理一批资料、把旧文档变成可检索的知识时使用。
+  不适用于写文章、做PPT、写代码等内容创作任务。
+<span class="cm">---</span></div>
+
+  <p><strong>description是关键</strong>：它决定AI什么时候触发这个Skill。必须写清楚：</p>
+  <ul>
+    <li><strong>做什么</strong>（整理知识库）</li>
+    <li><strong>什么时候用</strong>（用户要建知识库、整理资料时）</li>
+    <li><strong>什么时候不用</strong>（不适用于写文章、做PPT）</li>
+  </ul>
+
+  <h4>2. 正文（核心流程）</h4>
+  <p>正文只写<strong>高层级的流程和规则</strong>，不写细节。细节放在references里按需加载。</p>
+
+  <div class="card blue">
+    <h4>为什么要分开？</h4>
+    <p>因为AI的上下文窗口有限。如果把所有细节都塞进SKILL.md，AI每次都要读完整篇（几千个token），很快就会撑爆窗口。</p>
+    <p><strong>渐进式披露</strong>：先只看元数据（几十个token）判断要不要用这个Skill；确定要用后，加载核心流程；执行中需要时，再加载具体的参考文档。</p>
+  </div>
+</section>
+
+<!-- 04 -->
+<section>
+  <h2><span class="num">04</span>Skill怎么迭代</h2>
+  <p class="lead">Skill不是一次性写完的规范，而是从真实任务中提炼、用反例持续修正的操作手册。</p>
+
+  <h3>从0.5.x到0.8.x，迭代了什么</h3>
+  <p>以知识库Skill为例，真实迭代过程：</p>
+
+  <table>
+    <thead><tr><th style="width:20%">版本</th><th style="width:38%">遇到的问题</th><th>改进</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>0.5.0</td>
+        <td>AI整理后的文件名太长，看不清重点</td>
+        <td>增加规则："文件名用最小可识别语义，不多写一个字"</td>
+      </tr>
+      <tr>
+        <td>0.6.2</td>
+        <td>表格被改成了段落，行列关系丢了</td>
+        <td>增加规则："表格保持表格，不要改成一段话"</td>
+      </tr>
+      <tr>
+        <td>0.7.1</td>
+        <td>AI标记了来源，但没写日期和状态</td>
+        <td>明确要求："来源、日期、状态三样缺一不可"</td>
+      </tr>
+      <tr>
+        <td>0.8.0</td>
+        <td>两份资料内容矛盾，AI自己选了一个，结果选错了</td>
+        <td>增加停止规则："遇到冲突停下来问人，不要自己猜"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>每次迭代都是因为真实任务暴露了问题，然后修正规则。</strong></p>
+
+  <div class="card red">
+    <h4>错误的迭代方式</h4>
+    <ul>
+      <li>没有真实任务，靠想象写规则</li>
+      <li>一次成功就当成最终版本</li>
+      <li>出了问题改提示词，不改Skill</li>
+      <li>不记录反例，下次又犯同样的错误</li>
+    </ul>
+  </div>
+
+  <h3>正确的迭代流程</h3>
+  <ol>
+    <li><strong>真实任务</strong>：选一个真实的工作场景（如整理10份投标资料）</li>
+    <li><strong>执行</strong>：让AI按当前Skill执行</li>
+    <li><strong>检查</strong>：对照检查清单，看哪些地方不符合标准</li>
+    <li><strong>分析</strong>：是Skill规则不清楚？还是AI理解错了？还是规则本身有问题？</li>
+    <li><strong>修正</strong>：更新Skill，记录这次改了什么、为什么改</li>
+    <li><strong>验证</strong>：用类似的任务再跑一遍，确认问题解决了</li>
+  </ol>
+
+  <div class="key">
+    <div class="bar"></div>
+    <p>Skill是活的，不是死的。<strong>每次真实任务都是一次测试，每个反例都是一次改进机会。</strong></p>
+  </div>
+</section>
+
+<!-- 05 -->
+<section>
+  <h2><span class="num">05</span>哪些工作适合做成Skill</h2>
+  <p class="lead">不是所有工作都适合做成Skill。判断标准有三条。</p>
+
+  <table>
+    <thead><tr><th style="width:28%">判断标准</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>重复性</strong></td>
+        <td>这项工作会反复发生吗？如果只做一次，不值得做成Skill</td>
+      </tr>
+      <tr>
+        <td><strong>规则性</strong></td>
+        <td>这项工作有明确的规则吗？如果每次都不一样，无法固化</td>
+      </tr>
+      <tr>
+        <td><strong>可检查</strong></td>
+        <td>结果能检查对错吗？如果没法检查，就没法迭代改进</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>适合做成Skill的工作</h3>
+  <div class="compare">
+    <div class="good">
+      <span class="tag">适合</span>
+      <strong>知识库整理</strong><br>
+      重复性：每周都要整理新资料<br>
+      规则性：文件名规则、来源标记规则明确<br>
+      可检查：搜得到、打开能看懂、有来源<br><br>
+      <strong>投标响应编制</strong><br>
+      重复性：每月多个投标任务<br>
+      规则性：章节结构、内容提取、格式转换有标准<br>
+      可检查：覆盖所有要求、没有串项目、格式合规
+    </div>
+    <div class="bad">
+      <span class="tag">不适合</span>
+      <strong>创意文案写作</strong><br>
+      重复性：有<br>
+      规则性：无，每次创意都不同<br>
+      可检查：难，好坏是主观的<br><br>
+      <strong>复杂决策</strong><br>
+      重复性：低<br>
+      规则性：无，要综合大量不确定因素<br>
+      可检查：难，只能事后看结果
+    </div>
+  </div>
+
+  <div class="card accent">
+    <h4>一句话判断</h4>
+    <p>如果你能对着一个新人说清楚"这项工作应该怎么做、做成什么样才算合格"，那就适合做成Skill。</p>
+    <p>如果你自己也说不清楚，或者每次做法都不一样，那就不适合。</p>
+  </div>
+</section>
+
+<!-- 06 -->
+<section>
+  <h2><span class="num">06</span>企业可以有哪些Skill</h2>
+  <p class="lead">Skill不是越多越好，而是要真正有用。</p>
+
+  <h3>当前已有的Skill</h3>
+  <ul>
+    <li><strong>知识库Skill</strong>：教AI整理企业资料，让人和AI都能搜到、看懂</li>
+  </ul>
+
+  <h3>规划中的Skill</h3>
+  <ul>
+    <li><strong>投标Skill</strong>：教AI从知识库提取内容、组装标书、检查合规性</li>
+    <li><strong>媒体生产Skill</strong>：教AI从正文衍生不同渠道的内容、保持一致性</li>
+    <li><strong>软件交付Skill</strong>：教AI按规范完成开发、测试、部署流程</li>
+  </ul>
+
+  <h3>你的业务需要什么Skill？</h3>
+  <p>问自己三个问题：</p>
+  <ol>
+    <li>哪项工作重复性最高、最消耗人力？</li>
+    <li>这项工作有没有明确的标准？</li>
+    <li>如果AI能按标准做这项工作，能节省多少时间？</li>
+  </ol>
+
+  <div class="card teal">
+    <h4>从最痛的点开始</h4>
+    <p>不要一次做十个Skill。<strong>先从最痛的一个点开始</strong>：</p>
+    <ul>
+      <li>选一项重复性高、规则明确、人工做很累的工作</li>
+      <li>写出初版Skill（规则不需要完美）</li>
+      <li>用真实任务测试，记录哪些地方不对</li>
+      <li>迭代改进，直到AI能稳定产出合格结果</li>
+      <li>再开始做第二个Skill</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 07 -->
+<section>
+  <h2><span class="num">07</span>Skill的价值</h2>
+  <p class="lead">Skill是企业AI能力的真正沉淀。</p>
+
+  <h3>为什么说Skill比Agent工具更重要？</h3>
+
+  <table>
+    <thead><tr><th style="width:32%">对象</th><th>能不能换</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Agent工具</strong><br>（Workbuddy、Claude、ChatGPT）</td>
+        <td>能换</td>
+        <td>底层模型能力已经趋同，工具可以替换。半年后可能又有新工具</td>
+      </tr>
+      <tr>
+        <td><strong>知识库</strong></td>
+        <td>不能换</td>
+        <td>企业资质、业绩、技术能力是企业独有的，必须长期积累</td>
+      </tr>
+      <tr>
+        <td><strong>Skill</strong></td>
+        <td>不能换</td>
+        <td>你的业务规则、工作流程、质量标准是企业独有的，必须持续迭代</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="quote">
+    Agent工具会变，但<strong>知识库和Skill是企业在AI时代能积累的真家伙</strong>。
+  </div>
+
+  <h3>Skill库 = 企业的AI操作系统</h3>
+
+  <p>随着Skill的积累，企业会形成自己的<strong>Skill库</strong>：</p>
+
+  <div class="tree">企业Skill库/
+├── knowledge-base/      <span class="cm"># 知识整理Skill</span>
+├── bidding/             <span class="cm"># 投标响应Skill</span>
+├── media-production/    <span class="cm"># 媒体生产Skill</span>
+├── customer-service/    <span class="cm"># 客服响应Skill</span>
+└── ...                  <span class="cm"># 更多业务Skill</span></div>
+
+  <p><strong>这就是企业的AI操作系统</strong>：</p>
+  <ul>
+    <li>新员工入职，先学Skill库——这是公司的工作标准</li>
+    <li>AI干活，自动加载对应Skill——按同样的标准执行</li>
+    <li>业务改进，更新Skill——所有人和AI同步更新</li>
+  </ul>
+
+  <div class="key">
+    <div class="bar"></div>
+    <p>从"每个人有自己的做法"到"公司有统一的标准"，<strong>Skill让业务标准可以沉淀、复用、迭代。</strong></p>
+  </div>
+</section>
+
+<!-- 08 -->
+<section>
+  <h2><span class="num">08</span>好Skill vs 差Skill</h2>
+  <p class="lead">差Skill会让AI行为不可预测，好Skill让AI稳定产出合格结果。</p>
+
+  <h3>差Skill的典型特征</h3>
+
+  <div class="card red">
+    <h4>反模式1：把SKILL.md写成长篇提示词</h4>
+    <p>有人写了1200行塞满"请按以下规范输出""禁止使用以下表达"，结果AI加载后表现比裸调用还差。</p>
+    <p><strong>为什么</strong>：SKILL.md越长，上下文窗口越容易撑爆，触发信号越容易被淹没。</p>
+  </div>
+
+  <div class="card red">
+    <h4>反模式2：description写成功能介绍而非触发条件</h4>
+    <p><strong>错误写法</strong>："这个Skill提供了完整的投标能力，支持多种招标文件格式"</p>
+    <p><strong>正确写法</strong>："当用户要响应招标、生成标书、或提到'投标'时使用"</p>
+    <p><strong>为什么</strong>：AI决定触发的逻辑是后者，不是前者。</p>
+  </div>
+
+  <div class="card red">
+    <h4>反模式3：多个Skill边界重叠</h4>
+    <p>如果两个Skill的description都能覆盖同一类任务，AI会随机选择，导致行为不可预测。</p>
+  </div>
+
+  <div class="card red">
+    <h4>反模式4：把确定性操作写在正文让AI"看着办"</h4>
+    <p>例如：格式检查、文件解析、数据转换这些必须精确执行的操作，应该用scripts/里的脚本完成，不应该让AI每次"临场发挥"。</p>
+  </div>
+
+  <h3>对比总结</h3>
+
+  <table>
+    <thead><tr><th style="width:28%">维度</th><th>好Skill</th><th>差Skill</th></tr></thead>
+    <tbody>
+      <tr><td>SKILL.md长度</td><td>< 500行，只放流程和路由</td><td>1000+行，塞满细节</td></tr>
+      <tr><td>description</td><td>触发条件+边界</td><td>功能介绍</td></tr>
+      <tr><td>确定性操作</td><td>交给scripts/</td><td>写在正文让AI"看着办"</td></tr>
+      <tr><td>领域知识</td><td>外置到references/</td><td>内联在SKILL.md</td></tr>
+      <tr><td>边界</td><td>明确"不适用于..."</td><td>声称什么都能做</td></tr>
+      <tr><td>迭代</td><td>记录反例，持续改进</td><td>一次成功就当最终版</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 09 -->
+<section>
+  <h2><span class="num">09</span>速查</h2>
+  <p class="lead">培训结束后，记住这一页就够。</p>
+
+  <div class="final">
+    <ol>
+      <li><strong>Skill的定义</strong>：给AI的业务操作手册，规定AI在特定场景下应该遵循什么规则、按什么步骤工作。</li>
+      <li><strong>为什么需要Skill</strong>：通用AI不懂你的业务，Skill把业务规则固化下来，从"每次都教"变成"教一次，用无数次"。</li>
+      <li><strong>Skill的结构</strong>：SKILL.md（入口）+ references/（参考文档）+ scripts/（确定性脚本）+ assets/（输出模板）。</li>
+      <li><strong>元数据是关键</strong>：description决定AI什么时候触发这个Skill，必须写清楚做什么、什么时候用、什么时候不用。</li>
+      <li><strong>渐进式披露</strong>：先只看元数据判断要不要用；确定用后加载核心流程；执行中按需加载参考文档。</li>
+      <li><strong>Skill怎么迭代</strong>：从真实任务中提炼，用反例持续修正。每次迭代记录改了什么、为什么改。</li>
+      <li><strong>适合做成Skill的工作</strong>：重复性高、规则明确、结果可检查。创意性、决策性工作不适合。</li>
+      <li><strong>从最痛的点开始</strong>：不要一次做十个Skill，先从最痛的一个点开始，迭代成熟后再做下一个。</li>
+      <li><strong>Skill是企业AI能力的沉淀</strong>：Agent工具可以换，但知识库和Skill是企业在AI时代能积累的真家伙。</li>
+      <li><strong>好Skill vs 差Skill</strong>：SKILL.md要精炼、description写触发条件、确定性操作用脚本、持续记录反例改进。</li>
+    </ol>
+  </div>
+
+  <div class="card accent" style="margin-top:34px">
+    <h4>下一步</h4>
+    <p>今天讲了Skill是什么、为什么重要、怎么做。</p>
+    <p><strong>现在你可以开始：</strong></p>
+    <ol>
+      <li>识别一项重复性高、规则明确的工作</li>
+      <li>写出这项工作的标准（怎么做、做成什么样才算合格）</li>
+      <li>用真实任务测试，记录哪些地方不符合标准</li>
+      <li>迭代改进，形成你的第一个Skill</li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  Skill是活的，不是死的。持续从真实任务中改进，才能真正发挥价值。
+</footer>
+
+</div>
+</body>
+</html>
