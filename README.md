@@ -10,9 +10,8 @@
 
 ### Skill
 
-- [知识库Skill](tracks/knowledge-base/SKILL.md) - 教AI整理和检索企业知识
+- [知识库Skill](tracks/knowledge-base/SKILL.md) - 教AI建库、用库、整理库
 - [Skill设计最佳实践](docs/skill-design.md) - 如何设计和迭代Skill
-- 投标Skill（规划中）
 
 ### 治理方法
 
