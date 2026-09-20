@@ -91,7 +91,7 @@
 <header>
   <div class="kicker">企业内部培训</div>
   <h1>企业知识库：人和Agent共同维护的本地Wiki</h1>
-  <p class="sub">原始文件保存证据，经过确认的Markdown笔记保存可复用结论。Obsidian用来浏览和维护，让人和Agent使用同一套内容。</p>
+  <p class="sub">原始文件保存证据，Markdown笔记保存人和Agent共同理解的内容。正文写语义，Frontmatter写属性，Wiki链接写关系，Obsidian用来浏览和维护。</p>
   <div class="meta">
     <span>适用：企业资料重复使用的业务场景</span>
     <span>读者：企业业务人员与AI使用者</span>
@@ -293,6 +293,12 @@ valid_to: 2027-12-31
     <div class="bar"></div>
     <p><strong>Frontmatter是逐步增加的结构。</strong>只有当某个字段开始影响检索、判断或维护时，才把它显式写出来。</p>
   </div>
+
+  <div class="card teal">
+    <h4>一篇正式笔记的四个部分</h4>
+    <p><strong>正文</strong>写这件事本身；<strong>Frontmatter</strong>写这篇笔记的属性；<strong>Wiki链接</strong>写它和其他知识的关系；<strong>图片和附件引用</strong>写证据在哪里。</p>
+    <p>这四部分都应该在人和Agent都能看到的Markdown里。搜索索引可以帮助更快找到它们，但不能替代它们。</p>
+  </div>
 </section>
 
 <!-- 05 -->
@@ -316,6 +322,7 @@ valid_to: 2027-12-31
     <p><strong>原始资料和最终交付仍然用Word/PDF/Excel</strong>。法律证据、复杂排版、图表、证明页，该用什么格式还用什么格式。</p>
     <p>Markdown用于<strong>需要长期复用的企业知识</strong>：企业资质、技术能力、业绩描述、标准响应。人和Agent都读取和维护这些文件。</p>
     <p>原始证据仍保留Word、PDF、Excel和图片。项目变量和交付草稿放在各自的项目工作目录。</p>
+    <p>关系写成Wiki链接，图片和附件写成可回到原件的引用。这样人和Agent看到的是同一份知识，而不是一份给人看的文件加一套藏起来的机器索引。</p>
   </div>
 
   <div class="card blue">
@@ -417,6 +424,7 @@ valid_to: 2027-12-31
       <li><strong>为什么用本地文件</strong>：原始文件保存证据，已确认的Markdown保存可复用结论，Obsidian负责观察和维护。</li>
       <li><strong>检索怎么升级</strong>：先目录、标题、链接、属性和全文搜索；确实找不到时再加向量检索或RAG。</li>
       <li><strong>知识库和Skill</strong>：知识库保存企业知道什么，Skill说明Agent怎样使用这些知识完成工作。</li>
+      <li><strong>一篇笔记怎么写</strong>：正文写内容，Frontmatter写属性，Wiki链接写关系，图片和附件引用写证据位置。</li>
       <li><strong>持续验收</strong>：用真实问题检查能不能找到正确内容、回到来源、排除过期材料，并在没有答案时诚实说明。</li>
     </ol>
   </div>
