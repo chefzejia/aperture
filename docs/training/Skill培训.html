@@ -293,12 +293,14 @@
   <div class="tree"><span class="cm">---</span>
 name: knowledge-base
 description: >
-  建设和维护让人和 Agent 共同使用的 Markdown 知识库，处理材料接收、整理、检索、核对和更新。
+  建设和维护让人和 Agent 共同观测、操作、修正和演化的知识对象，当前以 Markdown 知识库承载。
   当用户要收集资料、整理笔记、查找可复用内容或检查知识状态时使用。
   不适用于只生成一次的文章、代码或其他没有持续材料管理需求的任务。
 <span class="cm">---</span></div>
 
-  <p>（这里的 Agent 就是 AI 的意思，在讲 AI 工作的时候，一般用这个词叫它。<code>Markdown</code> 指的是前面说的那种纯文本写法，<code>knowledge-base</code> 就是「知识库」，是这本手册的名字。）</p>
+  <p>（这里的 Agent 就是 AI 的意思，在讲 AI 工作的时候，一般用这个词叫它。<code>knowledge-base</code> 就是「知识库」，是这本手册的名字。）</p>
+
+  <p>顺便留意这行说明的写法：它先讲<strong>要做成什么</strong>（让人和 AI 共同观测、操作、修正、演化的知识对象），再说<strong>当前用什么实现</strong>（以 Markdown 知识库承载）。顺序不能反。写成「维护一个 Markdown 知识库」，就把工具当成了目的。</p>
 
   <p>这三行就是手册的封面。它要回答一个问题：<strong>什么时候该翻这本手册？</strong></p>
 
@@ -422,11 +424,11 @@ description: >
 <!-- 08 -->
 <section>
   <h2><span class="num">08</span>手册和知识库的分工</h2>
-  <p class="lead">两者各管一半，谁也替代不了谁。</p>
+  <p class="lead">两者围绕同一件事分工，谁也替代不了谁。</p>
 
   <p>回到最开始那个问题：一件事的经验，怎么才能一直用下去。</p>
 
-  <p>知识库和 Skill，各管其中的一半：</p>
+  <p>共同知识对象和 Skill，各自回答不同的问题：</p>
 
   <table>
     <thead><tr><th style="width:26%"></th><th>回答的问题</th><th style="width:32%">管什么</th></tr></thead>
@@ -446,7 +448,7 @@ description: >
 
   <p>拿「整理客户资料」这件事说：<strong>知识库</strong>负责把资料收好、标清状态；<strong>Skill</strong>负责规定 AI 按什么顺序整理、哪些必须问人。</p>
 
-  <p>所以它们会互相引用，但不会重复：<strong>知识库不规定怎么做，Skill 也不保存材料。</strong></p>
+  <p>所以它们会互相引用，但不会重复：<strong>共同知识对象保存事情本身，Skill 规定如何围绕它工作。</strong></p>
 </section>
 
 <!-- 09 -->
