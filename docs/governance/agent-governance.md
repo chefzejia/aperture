@@ -39,14 +39,7 @@ Agent 进入一个具体项目时，不应该被要求来回跳转读取这份�
 - 一次性任务 handoff
 - 项目实现流水账
 
-这些内容应该分别放到：
-
-- `docs/HANDOFF.md`：当前状态、下一步、工程交接
-- `docs/product/*.md`：产品原则和产品决策
-- `docs/architecture/*.md`：架构细节、ADR、迁移方案
-- `docs/research/*.md`：调研、benchmark、验收矩阵
-- `apps/*/README.md`：具体启动、构建、测试命令
-- `docs/handoffs/*.md`：一次性任务交接
+这些内容应该放到与项目实际结构相符的专门文档中。目录名不是规范本身：当前仓库用 `docs/core/` 保存共同模型，用 `docs/scenarios/` 保存具体场景，用 `docs/governance/` 保存治理方法。工程交接、运行命令和实验记录只有在确实存在时才建立对应文档，不为了凑结构提前创建目录。
 
 ## 2. AGENTS.md 推荐结构
 
@@ -59,10 +52,9 @@ Agent 进入一个具体项目时，不应该被要求来回跳转读取这份�
 
 ## Read Order
 
-1. docs/HANDOFF.md
-2. README.md
-3. docs/product/...
-4. docs/architecture/...
+1. README.md
+2. 项目共同模型
+3. 当前任务需要的 Skill 或场景文档
 
 只列真正需要先读的 5-8 个入口文件。
 
@@ -77,7 +69,7 @@ Agent 进入一个具体项目时，不应该被要求来回跳转读取这份�
 ## Current Direction
 
 当前阶段一句话。
-细节指向 docs/HANDOFF.md。
+细节指向项目实际存在的核心或场景文档。
 
 ## Do Not
 
@@ -183,32 +175,26 @@ AGENTS.md
   项目宪法，短而稳定
 
 README.md
-  人类入口，说明项目和常用操作
+  人类入口，说明项目是什么和从哪里开始
 
-docs/HANDOFF.md
-  当前状态、下一步、交接
+docs/core/
+  共同模型和长期设计
 
-docs/product/
-  产品原则、PRD、商业模式、交互
+docs/scenarios/
+  企业、个人、投标等场景材料
 
-docs/architecture/
-  架构设计、ADR、迁移方案
-
-docs/research/
-  调研、benchmark、验收矩阵
-
-apps/*/README.md
-  子应用运行、构建、测试命令
+docs/governance/
+  治理方法和验证方法
 ```
 
 判断规则：
 
-- 稳定原则放 `AGENTS.md`
-- 当前状态放 `HANDOFF.md`
-- 长期设计放 `architecture`
-- 产品判断放 `product`
-- 证据和实验放 `research`
-- 命令放最近的 `README.md`
+- 稳定边界放 `AGENTS.md`
+- 项目入口放 `README.md`
+- 跨场景原则放 `docs/core/`
+- 场景细节放 `docs/scenarios/`
+- 治理和验证方法放 `docs/governance/`
+- 只有真实需要时才增加 handoff、脚本或应用目录
 
 ## 7. 项目 AGENTS.md 不要回挂全局规范
 

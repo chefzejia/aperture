@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>企业知识库：人机共享的大脑</title>
+<title>企业知识库：人和Agent共同维护的本地Wiki</title>
 <style>
   :root{
     --ink:#1a1a1a; --ink-2:#4a4a4a; --ink-3:#767676;
@@ -90,30 +90,30 @@
 
 <header>
   <div class="kicker">企业内部培训</div>
-  <h1>企业知识库：人机共享的大脑</h1>
-  <p class="sub">存下的知识，人和AI都能搜到、打开、看懂。这是企业在AI时代能积累的真家伙。</p>
+  <h1>企业知识库：人和Agent共同维护的本地Wiki</h1>
+  <p class="sub">原始文件保存证据，经过确认的Markdown笔记保存可复用结论。Obsidian用来浏览和维护，让人和Agent使用同一套内容。</p>
   <div class="meta">
-    <span>适用：任何需要重复使用知识的业务</span>
-    <span>读者：业务人员与AI使用者</span>
+    <span>适用：企业资料重复使用的业务场景</span>
+    <span>读者：企业业务人员与AI使用者</span>
   </div>
 </header>
 
 <!-- 00 -->
 <section>
   <h2><span class="num">00</span>为什么现在要做这件事</h2>
-  <p class="lead">AI能力已经越过临界点，但它不懂你的业务。</p>
+  <p class="lead">AI可以处理很多通用任务，但未必知道你的私有资料、当前版本和权限边界。</p>
 
-  <p>过去半年，AI能力越过了临界点。ChatGPT、豆包、Workbuddy都已经能帮你干活了。</p>
+  <p>现在的主流 AI 工具已经能处理很多通用工作。企业真正需要补上的，是自己的资料、规则和使用边界。</p>
 
-  <p>但有个问题：<strong>AI不懂你的业务。</strong></p>
+  <p>缺少这些信息时，AI很难稳定判断：<strong>哪份资料是当前有效版本，哪些内容允许当前用户使用。</strong></p>
 
-  <p>你问它"上次那个餐饮投标的报价模板在哪"，它答不出来——因为它不知道你的资料在哪、叫什么名字、是否还有效。</p>
+  <p>你问它"上次那个餐饮投标的报价模板在哪"，它可能答不出来，也可能找到旧文件。问题在于资料的位置、命名、状态和权限没有被明确管理。</p>
 
   <div class="card accent">
     <h4>我们要做两件事</h4>
     <ol>
-      <li><strong>建企业知识库</strong>——把资料整理成人和AI都能用的格式</li>
-      <li><strong>教AI怎么干活</strong>——这就是Skill（下一场培训讲）</li>
+      <li><strong>接住企业资料</strong>，让人和AI都能用同一套内容</li>
+      <li><strong>教AI怎么干活</strong>，这就是Skill（下一场培训讲）</li>
     </ol>
     <p style="margin-top:16px">今天讲第一件事：企业知识库怎么建、怎么用。</p>
   </div>
@@ -122,13 +122,13 @@
 <!-- 01 -->
 <section>
   <h2><span class="num">01</span>知识库到底是什么</h2>
-  <p class="lead">它不是文件堆。判断标准只有一个。</p>
+  <p class="lead">判断它是否好用，要看五件具体的事。</p>
 
   <div class="quote">
-    知识库只为一件事存在：<strong>以后有人或AI问一个问题，能搜到、打开、看懂。</strong>
+    企业知识库，是一套人和Agent都能<strong>看见、看懂、找到、核对并持续维护</strong>的企业知识文件。
   </div>
 
-  <p>反过来就是判据：<strong>存下来的东西，如果搜不到、打不开、看不懂，就等于没有。</strong></p>
+  <p>原始文件保存证据，经过确认的Markdown笔记保存可复用结论。两者共同构成事实基础。Obsidian负责浏览、链接和人工维护，Agent读取和维护同一套内容。</p>
 
   <table>
     <thead><tr><th style="width:34%">场景</th><th>它是什么</th></tr></thead>
@@ -136,14 +136,14 @@
       <tr><td>200个Word放在共享盘</td><td>文件堆。能存，但没人知道里面有什么、哪个还有效</td></tr>
       <tr><td>一个人的电脑里</td><td>私人记忆。人一走，知识跟着走</td></tr>
       <tr><td>旧的聊天记录里</td><td>对话遗迹。当时解决了，下次还要重新问一遍</td></tr>
-      <tr><td><strong>知识库</strong></td><td><strong>以后任何人或AI，问起这件事，都能找到、看懂、放心用</strong></td></tr>
+      <tr><td><strong>知识库</strong></td><td><strong>人和Agent都能看见、看懂、找到、核对和维护</strong></td></tr>
     </tbody>
   </table>
 
   <div class="card teal">
-    <h4>人和AI是同一个读者</h4>
+    <h4>人和Agent使用同一套内容</h4>
     <p>资料乱，人还能靠经验兜住；<strong>资料乱加上AI，错误会被放大，而且速度更快。</strong></p>
-    <p>AI没有"感觉这份资料好像有点旧"的直觉——你给它什么，它就按什么干。所以知识库必须同时服务人和AI，不是做两套。</p>
+    <p>AI不能可靠地凭感觉判断资料是否过期。只有笔记写清版本、有效期、状态和适用范围，查找时也使用这些信息，结果才有可核对的依据。</p>
   </div>
 </section>
 
@@ -178,53 +178,61 @@
     </tbody>
   </table>
 
-  <p>这四条损失，就是知识库要解决的问题。注意最后一条——<strong>它是四项里最危险的。找不到，你会去问人；用了过期内容，你不会怀疑。</strong></p>
+  <p>这四条损失，就是知识库要解决的问题。用了过期内容尤其危险，因为找不到时你会去问人，错用了旧结论却可能不会察觉。</p>
 </section>
 
 <!-- 03 -->
 <section>
-  <h2><span class="num">03</span>怎么做：三个动作、五个目录</h2>
-  <p class="lead">不需要记规范。记住三个动作就够了，其余都是推论。</p>
+  <h2><span class="num">03</span>怎么做：四个动作、一套起步目录</h2>
+  <p class="lead">先把收、整、查、养四个动作跑通。</p>
 
-  <h3>三个动作</h3>
+  <div class="card accent">
+    <h4>原始资料很乱，也可以开始</h4>
+    <p>企业内部交来一份200页综合Word、扫描PDF、Excel和图片时，不需要先把它们整理好。</p>
+    <p><strong>原始Word</strong> → 放进<code>inbox/</code> → 盘点目录和内容 → 标出候选片段 → 生成候选笔记 → 记录页码、章节或表格编号 → 人确认 → 进入<code>notes/</code></p>
+    <p>原件一直保留。AI可以生成候选结果，但不能把候选结果伪装成正式知识。</p>
+  </div>
+
+  <h3>四个动作</h3>
   <ol class="steps">
-    <li><b>丢</b><span>把资料放进 <code>inbox/</code>。不用管格式、不用想分类，先丢进去。</span></li>
-    <li><b>整理</b><span>说一句「整理inbox」。AI会按知识库Skill的标准逐批处理，把它整理成合格的知识。</span></li>
-    <li><b>查</b><span>以后直接问。回答会带上来源，你能自己核对。</span></li>
+    <li><b>收</b><span>把新材料原样放进<code>inbox/</code>。它是系统支持的正式状态，不是失败区。</span></li>
+    <li><b>整</b><span>先做内容盘点和候选笔记，再核对事实、来源位置和适用范围。</span></li>
+    <li><b>查</b><span>先用目录、标题、全文、属性和链接查找，只把已确认、未过期且适用范围满足的内容作为正式答案。</span></li>
+    <li><b>养</b><span>检查过期、冲突、待确认、无人负责、长期未整理和没有答案的问题。</span></li>
   </ol>
 
   <div class="card blue">
     <h4>什么是Skill？</h4>
-    <p>Skill是给AI的操作手册。<strong>知识库Skill</strong>规定了AI应该怎么整理你的资料：文件名怎么改、内容怎么检查、来源怎么标记、失效的怎么处理。</p>
-    <p>你不需要知道Skill里写了什么（下一场培训会讲）。你只需要知道：<strong>AI不是随便整理，而是按企业的标准整理。</strong></p>
+    <p>Skill是给AI的操作手册。<strong>知识库Skill</strong>规定了AI怎样接收原件、生成候选笔记、记录来源、查询正式知识，以及遇到冲突或过期内容时怎样停止。</p>
+    <p>你不需要先了解Skill的全部细节（下一场培训会讲）。只要记住：<strong>AI可以提出候选结果，正式知识仍要满足企业的确认规则。</strong></p>
   </div>
 
-  <h3>五个目录，是推出来的</h3>
-  <p>知识库要满足五条要求。前四条正是第02节那四种损失的反面。</p>
+  <h3>一套适合起步的目录</h3>
+  <p>知识库要满足几条具体要求。先让材料能进入、能追踪、能确认，再谈更复杂的自动化。</p>
 
   <table>
     <thead><tr><th style="width:38%">要求</th><th>由什么满足</th></tr></thead>
     <tbody>
       <tr><td><strong>搜得到</strong></td><td>文件名带上可识别的关键词；<code>notes/</code>按业务分类</td></tr>
-      <tr><td><strong>知道来源和时效</strong></td><td>文件开头标记来源、日期、状态；原始文件存进<code>sources/</code></td></tr>
-      <tr><td><strong>同一个问题只有一份答案</strong></td><td>整理时查重复，同一件事合并成一份</td></tr>
-      <tr><td><strong>失效的移出检索范围</strong></td><td>失效内容移到<code>archive/</code>，不再被搜到</td></tr>
-      <tr><td><strong>打开有内容</strong></td><td>正文是完整的，不是只有标题的空壳</td></tr>
+      <tr><td><strong>知道来源和时效</strong></td><td>笔记标记来源、原文位置和状态；原始文件可以一直留在<code>inbox/</code></td></tr>
+      <tr><td><strong>候选内容不混入正式答案</strong></td><td>只有<code>verified</code>且有效期、适用范围都满足的笔记可以作为跨项目复用依据</td></tr>
+      <tr><td><strong>失效内容显式排除</strong></td><td>标记<code>superseded</code>或<code>archived</code>，有效期已过或时效不明的内容也不得进入正式答案</td></tr>
+      <tr><td><strong>打开能看懂</strong></td><td>正文完整，不写"如上""参考前文"，单独拿出来也能读懂</td></tr>
     </tbody>
   </table>
 
-  <p>落到实处，就是下面五个东西——<strong>每一个都对应上面的一条，没有一个是多余的：</strong></p>
+  <p>落到实处，核心只需要下面三个目录。项目工作区与<code>company-vault/</code>放在同一业务根目录下并列，不放进知识库。只有确实存在无法从目录和文件推出的长期说明时，才额外增加根目录说明文件。</p>
 
-  <div class="tree">knowledge-base/
-├── <span class="hl">README.md</span>    <span class="cm"># 这个库是什么 + 没搜到的问题记在这</span>
-├── <span class="hl">inbox/</span>       <span class="cm"># 还没整理的资料（"先丢进去"的落脚点）</span>
-├── <span class="hl">notes/</span>       <span class="cm"># 知识本身，下面按业务分（"搜得到、读懂"的地方）</span>
-├── <span class="hl">sources/</span>     <span class="cm"># 原始文件（"知道来源"的物质基础）</span>
-└── <span class="hl">archive/</span>     <span class="cm"># 失效内容（"移出检索范围"的物质基础）</span></div>
+  <div class="tree">business-root/
+├── company-vault/
+│   ├── <span class="hl">inbox/</span>       <span class="cm"># 原始资料和候选结果，允许混乱</span>
+│   ├── <span class="hl">notes/</span>       <span class="cm"># 已确认、可以复用的知识</span>
+│   └── <span class="hl">archive/</span>     <span class="cm"># 已确认失效或被替代的知识内容</span>
+└── work/                <span class="cm"># 当前项目、客户要求、草稿和交付</span></div>
 
   <h3>关键的一步：<code>notes/</code>下面按业务分</h3>
 
-  <p>这是最容易做错的地方。<code>notes/</code>不能铺平——一铺平，几百个文件堆在一起，等于没整理。</p>
+  <p>这是最容易做错的地方。<code>notes/</code>不能只按文件格式堆放。怎么取用，就怎么分；规模还小时也可以先少建几层。</p>
 
   <div class="key">
     <div class="bar"></div>
@@ -233,8 +241,7 @@
 
   <p>以投标业务为例（<strong>这只是示范推理过程，不是模板</strong>）：</p>
 
-  <div class="tree">某公司知识库/
-├── <span class="hl">00_企业知识地图.md</span>   <span class="cm"># 入口：列出全部资料，按分类</span>
+  <div class="tree">company-vault/notes/
 ├── 企业资质/            <span class="cm"># 凑标书时要"资质"，所以归一类</span>
 ├── 技术能力/            <span class="cm"># 要"方案"时取</span>
 ├── 业绩案例/            <span class="cm"># 要"业绩"时取</span>
@@ -245,59 +252,76 @@
 
 <!-- 04 -->
 <section>
-  <h2><span class="num">04</span>整理好的知识长什么样</h2>
-  <p class="lead">你不需要知道怎么写，但需要知道怎么读。</p>
+  <h2><span class="num">04</span>从原始文件到正式知识</h2>
+  <p class="lead">不同阶段的文件，要求不同。不要一开始就要求所有资料填满同一张表。</p>
 
-  <p>在Obsidian（或其他笔记工具）里打开整理好的文件，你会看到三个部分：</p>
+  <h3>1. 原始文件</h3>
+  <p>原始文件可以没有Frontmatter。文件名、进入时间、原始路径和文件类型由系统记录即可。</p>
+  <div class="tree">企业材料-最终版2.docx
+<span class="cm"># 原文件保持原样，不直接作为正式答案</span></div>
 
-  <h3>1. 文件名</h3>
-  <p>文件名带上了<strong>关键词</strong>，让你一眼认出它是什么。</p>
-  <p>例如：<code>2026-餐饮投标-报价模板-有效.md</code></p>
-  <p>不再是"新建文档3.docx"或"扫描件.pdf"。<strong>专有名词</strong>（产品名、型号、法规编号、人名）会出现在文件名里，因为你就是拿这些词去搜的。</p>
-
-  <h3>2. 文件开头的基本信息</h3>
-  <p>打开文件，最上面会有一小块基本信息，用三条横线包起来：</p>
-
+  <h3>2. 候选笔记</h3>
+  <p>候选笔记记录AI从哪一页、哪一章或哪张表看到了什么。<code>source</code>统一写知识库根目录相对路径，<code>source_location</code>写页码、章节、表格、工作表行号或消息时间等可复核位置。它可以被修改，也可以被丢弃。</p>
   <div class="tree"><span class="cm">---</span>
-来源: 某某招标文件 第3页
-日期: 2026-09-17
-状态: 有效
-<span class="cm">---</span></div>
+state: candidate
+source: inbox/企业材料-最终版2.docx
+source_location: page=43; table=项目业绩表
+<span class="cm">---</span>
 
-  <p><strong>这三项让你不打开正文就知道：它是什么时候的、从哪来的、能不能信。</strong></p>
+## 待核对结论
 
-  <p>AI会自动填写这些信息，你不需要手写。但你需要知道怎么读它们——看到"状态:已失效"，就知道这份资料不能用了。</p>
+材料中出现某项目业绩记录，客户名称和验收日期需要核对。</div>
 
-  <h3>3. 正文</h3>
-  <p>正文是完整的内容。表格还是表格，图片还在原位，不会丢信息。</p>
+  <h3>3. 已确认笔记</h3>
+  <p>事实、来源和适用范围核对后，才进入<code>notes/</code>，并标记为<code>verified</code>。</p>
+  <div class="tree"><span class="cm">---</span>
+state: verified
+type: 业绩案例
+source: inbox/企业材料-最终版2.docx
+source_location: page=43; table=项目业绩表
+owner: 市场部
+valid_to: 2027-12-31
+<span class="cm">---</span>
+
+## 结论
+
+某某公司于2025年完成某项目，已通过验收。</div>
+
+  <p>如果无法判断证书是否仍有效，就写<code>needs-review</code>，不要猜成“有效”。有效期已过的笔记不能因为仍写着<code>verified</code>就继续作为正式依据。允许存在<code>unknown</code>、<code>candidate</code>、<code>needs-review</code>、<code>verified</code>、<code>superseded</code>和<code>archived</code>。</p>
 
   <div class="key">
     <div class="bar"></div>
-    <p>你只需要会读，不需要会写。AI会帮你整理成这个样子。你的工作是：丢资料到inbox，然后说"整理inbox"。</p>
+    <p><strong>Frontmatter是逐步增加的结构。</strong>只有当某个字段开始影响检索、判断或维护时，才把它显式写出来。</p>
   </div>
 </section>
 
 <!-- 05 -->
 <section>
-  <h2><span class="num">05</span>为什么用纯文本格式</h2>
-  <p class="lead">不是因为它高级，是因为AI读得准、人也读得懂。</p>
+  <h2><span class="num">05</span>为什么用本地Markdown</h2>
+  <p class="lead">文件是企业自己能打开、检查、迁移和长期维护的。</p>
 
   <p>Word、PDF、PPT是为<strong>打印和排版</strong>设计的。它们的结构藏在视觉里，AI读取时要先猜哪部分是结构、哪部分是样式。<strong>猜错，后面全错。</strong></p>
 
   <table>
-    <thead><tr><th style="width:26%">维度</th><th style="width:37%">Word / PDF / PPT</th><th>纯文本格式</th></tr></thead>
+    <thead><tr><th style="width:26%">维度</th><th style="width:37%">Word / PDF / PPT</th><th>本地Markdown</th></tr></thead>
     <tbody>
-      <tr><td><strong>AI能否准确读取</strong></td><td>要先转换，转换会丢信息</td><td><strong>直接读，不丢结构</strong></td></tr>
-      <tr><td><strong>人能否直接读</strong></td><td>能，但要装对应软件</td><td><strong>能，任何工具都行</strong></td></tr>
-      <tr><td><strong>是否绑定软件</strong></td><td>绑定，软件没了文件可能打不开</td><td><strong>不绑定，几十年后还能读</strong></td></tr>
+      <tr><td><strong>AI能否准确读取</strong></td><td>要先抽取，扫描件、复杂表格、图片和版式可能丢信息</td><td><strong>结构更直接，但仍要检查</strong></td></tr>
+      <tr><td><strong>人能否直接读</strong></td><td>能，但通常要装对应软件</td><td><strong>能，可用Obsidian或普通编辑器打开</strong></td></tr>
+      <tr><td><strong>能否观察修改</strong></td><td>适合人工修订，但差异不总是直观</td><td><strong>可以用Git查看每一处变化</strong></td></tr>
     </tbody>
   </table>
 
   <div class="card accent">
     <h4>但要说清楚一件事</h4>
-    <p><strong>原始资料和最终交付仍然用Word/PDF/Excel</strong>——法律证据、复杂排版、图表、证明页，该用什么格式还用什么格式。</p>
-    <p>纯文本格式只用于<strong>需要长期复用的语义内容</strong>：企业资质、技术能力、业绩描述、标准响应。这些内容需要人和AI都能准确读取、快速检索、独立更新。</p>
-    <p>所以是两层结构：<strong>来源与交付层</strong>（Word/PDF/图片）+ <strong>语义知识层</strong>（纯文本）。</p>
+    <p><strong>原始资料和最终交付仍然用Word/PDF/Excel</strong>。法律证据、复杂排版、图表、证明页，该用什么格式还用什么格式。</p>
+    <p>Markdown用于<strong>需要长期复用的企业知识</strong>：企业资质、技术能力、业绩描述、标准响应。人和Agent都读取和维护这些文件。</p>
+    <p>原始证据仍保留Word、PDF、Excel和图片。项目变量和交付草稿放在各自的项目工作目录。</p>
+  </div>
+
+  <div class="card blue">
+    <h4>向量检索和RAG放在哪里</h4>
+    <p>先用目录、标题、属性、链接和全文搜索。只有真实查询反复找不到内容时，才增加向量检索。</p>
+    <p>向量索引是可以重新生成的搜索辅助物。RAG是一次“查找资料并回答”的过程，可以使用全文、关键词、混合或向量检索。原始文件和已确认的Markdown笔记仍然是事实基础。</p>
   </div>
 </section>
 
@@ -320,13 +344,13 @@
 
   <h3>有知识库 + 投标Skill后</h3>
   <ol>
-    <li>来了一份招标文件</li>
-    <li>AI从知识库取得资质、业绩、方案（带来源、状态）</li>
-    <li>AI按招标要求组装标书，转成Word格式</li>
-    <li>AI自动检查漏项、冲突、失效材料</li>
-    <li>人工只处理例外和最终审定</li>
+    <li>招标文件进入当前项目工作区</li>
+    <li>Agent只从知识库取得已确认、未过期的资质、业绩和方案</li>
+    <li>Agent按招标要求组装草稿，再转成Word格式</li>
+    <li>Skill和脚本检查漏项、冲突、失效材料与跨项目污染</li>
+    <li>人工审核高风险、缺失、冲突和最终交付内容</li>
   </ol>
-  <p><strong>知识只整理一次，每次投标直接复用。</strong></p>
+  <p><strong>规范事实可以复用，项目变量和最终审定仍然要逐项目处理。</strong></p>
 
   <div class="card teal">
     <h4>知识库和Skill的分工</h4>
@@ -334,18 +358,18 @@
       <li><strong>知识库</strong>：存放企业知识（资质、业绩、方案），保证搜得到、看得懂、知道有效期</li>
       <li><strong>Skill</strong>：教AI怎么用这些知识（怎么取、怎么组装、怎么检查、怎么输出）</li>
     </ul>
-    <p style="margin-top:12px">两者缺一不可。没有知识库，AI不知道你有什么；没有Skill，AI不知道怎么用。</p>
+    <p style="margin-top:12px">知识库回答“企业知道什么”，Skill回答“Agent应该怎样使用这些知识完成工作”。</p>
   </div>
 
   <div class="card red">
     <h4>当前的卡点</h4>
-    <p>很多企业习惯用两份Word模板，让AI复制粘贴内容。这能快速生成一份标书，但不是规模化生产：</p>
+    <p>很多企业习惯用两份Word模板，让AI复制粘贴内容。这能快速生成一份标书，但很难长期稳定复用：</p>
     <ul>
       <li>每次都要读取整份大Word文件</li>
       <li>一条知识更新了，不知道影响了哪些章节</li>
       <li>多个项目同时进行时，容易串项目、用错版本</li>
     </ul>
-    <p style="margin-top:12px"><strong>打通知识库到业务的关键</strong>：把稳定内容从Word模板拆出来，整理成知识库的独立组件。这样才能做到"一次整理，多次复用"。</p>
+    <p style="margin-top:12px"><strong>打通知识库到业务的关键</strong>：先把混乱资料安全接住，再把确认后的稳定内容整理成可复用的知识笔记。这样才能做到"一次确认，多次复用"。</p>
   </div>
 </section>
 
@@ -357,20 +381,20 @@
   <table>
     <thead><tr><th style="width:34%">错误做法</th><th>为什么错</th></tr></thead>
     <tbody>
-      <tr><td>按部门/来源/文件格式组织</td><td>这些都不回答"我要用的时候怎么找"</td></tr>
-      <tr><td>失效内容留在有效目录里</td><td>过期内容和有效内容一起被搜出来，<strong>比没有更危险</strong></td></tr>
+      <tr><td>只按部门/来源/文件格式组织</td><td>人工导航可以按业务场景，主体、权限、状态和时间写进笔记属性</td></tr>
+      <tr><td>只移动文件，不设置检索过滤</td><td>archive仍可能被索引，过期内容和有效内容一起被搜出来</td></tr>
       <tr><td>正文里留"如上""参考前文"</td><td>单独取出来就看不懂了</td></tr>
       <tr><td>改写、总结原文</td><td>为了"更通顺"而改写，会悄悄改变原意</td></tr>
       <tr><td>只往库里丢，从不检查</td><td>错误和失效会一直累积，直到整个库没人敢用</td></tr>
-      <tr><td>以为AI天生就懂怎么整理</td><td>AI不懂你的业务规则，需要通过Skill告诉它</td></tr>
+      <tr><td>以为AI天生就懂怎么整理</td><td>AI不会凭空知道企业自己的规则，需要通过Skill明确告诉它</td></tr>
     </tbody>
   </table>
 
-  <h3>每月检查一次</h3>
-  <p>抽5个真实问题搜一遍，同时检查：</p>
+  <h3>建立小型真实问题集</h3>
+  <p>先从5个真实问题开始，逐步增加已知答案、无答案、冲突、过期和权限边界问题：</p>
   <ul>
     <li>有没有名字看不懂的？（搜不到）</li>
-    <li>有没有缺来源、日期、状态的？（不敢信）</li>
+    <li>有没有缺来源、原文位置、状态或必要有效期的？（不敢信）</li>
     <li><code>notes/</code>里有没有重复文件？（两份答案）</li>
     <li>有没有该进<code>archive/</code>还留着的？（过期没退出）</li>
     <li>入口索引里有没有漏掉的资料？（搜不到）</li>
@@ -384,22 +408,23 @@
 
   <div class="final">
     <ol>
-      <li><strong>知识库的定义</strong>：以后有人或AI问一个问题，能搜到、打开、看懂。做不到就等于没有。</li>
+      <li><strong>知识库的定义</strong>：人和Agent都能看见、看懂、找到、核对并持续维护的企业知识文件。</li>
       <li><strong>要解决的四件事</strong>：找不到、不敢信、两份答案、用了过期的。</li>
-      <li><strong>三个动作</strong>：丢进<code>inbox/</code> → 说"整理inbox" → 以后直接问。</li>
-      <li><strong>五个目录</strong>：README、inbox、notes、sources、archive。每一个都对应一条要求，不多不少。</li>
+      <li><strong>四个动作</strong>：收、整、查、养。</li>
+      <li><strong>起步目录</strong>：知识库核心是inbox、notes、archive，项目工作区与知识库并列。</li>
       <li><strong>notes按业务分</strong>：想你会怎么取用，就怎么分。从使用倒推，不从学科分类倒推。</li>
-      <li><strong>整理好的文件</strong>：文件名带关键词、开头有基本信息（来源/日期/状态）、正文完整。</li>
-      <li><strong>为什么用纯文本</strong>：AI读得准，人也读得懂，不绑定软件。原始资料和交付仍用Word/PDF。</li>
-      <li><strong>知识库和Skill</strong>：知识库存企业知识，Skill教AI怎么用。两者缺一不可。</li>
-      <li><strong>每月一次</strong>：抽5个真实问题搜一遍，检查重复、失效、命名、头部、索引。</li>
+      <li><strong>文件状态</strong>：原始资料可以没有Frontmatter，候选笔记先写状态和来源，确认后再补真正影响使用的负责人、有效期和适用范围。</li>
+      <li><strong>为什么用本地文件</strong>：原始文件保存证据，已确认的Markdown保存可复用结论，Obsidian负责观察和维护。</li>
+      <li><strong>检索怎么升级</strong>：先目录、标题、链接、属性和全文搜索；确实找不到时再加向量检索或RAG。</li>
+      <li><strong>知识库和Skill</strong>：知识库保存企业知道什么，Skill说明Agent怎样使用这些知识完成工作。</li>
+      <li><strong>持续验收</strong>：用真实问题检查能不能找到正确内容、回到来源、排除过期材料，并在没有答案时诚实说明。</li>
     </ol>
   </div>
 
   <div class="card accent" style="margin-top:34px">
     <h4>下一步</h4>
     <p>今天讲了知识库。下一场培训讲<strong>Skill</strong>：怎么教AI按你的业务规则干活。</p>
-    <p>知识库和Skill是企业在AI时代能积累的真家伙。Agent工具可以换，但知识库和Skill是你的。</p>
+    <p>知识库和Skill是企业可以长期积累的两类重要资产。它们能否迁移和复用，取决于格式、权限、工具接口和评测是否被一起管理。</p>
   </div>
 </section>
 

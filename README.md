@@ -1,46 +1,49 @@
 # Agentic Work Infra
 
-企业人机协同工作的基础设施。
+研究人和 Agent 如何在真实任务中共享材料、工作规则和当前上下文，完成可检查、可继续使用、失败后可以接管的结果。
 
-## 核心命题
+本项目维护两类共性能力：
 
-**Agent App的能力已经趋同，真正的差异在于给AI的业务操作手册（Skill）和可复用的企业知识。**
+- **知识库**：材料如何进入、整理、复用、检索和更新；
+- **Skill**：一类工作应该怎样做、怎样检查和何时停下。
 
-## 项目内容
+企业知识库、个人知识库、投标和其他业务都是场景。场景可以选择不同目录、字段、权限、载体和 Agent，但不能改变共同边界。
 
-### Skill
+## 先读
 
-- [知识库Skill](tracks/knowledge-base/SKILL.md) - 教AI建库、用库、整理库
-- [Skill设计最佳实践](docs/skill-design.md) - 如何设计和迭代Skill
+- [Agentic Work 的共同模型](docs/core/agentic-work-model.md)
+- [知识库的共同底层框架](docs/core/knowledge-base-framework.md)
+- [知识库 Skill](tracks/knowledge-base/SKILL.md)
+- [Skill 设计最佳实践](docs/core/skill-design.md)
 
-### 治理方法
+## 场景材料
 
-- [Agent治理规范](docs/governance/agent-governance.md) - AGENTS.md怎么写、Correct Simplicity原则
-- [Agent调试与E2E](docs/governance/debugging-standard.md) - 自主调试、三证据面、根因定位
+- [知识库场景对照](docs/scenarios/知识库场景对照.md)
+- [企业知识库场景](docs/scenarios/企业知识库.md)
+- [投标工作流场景](docs/scenarios/投标工作流.md)
+- [知识库培训](docs/training/知识库培训.html)
+- [Skill 培训](docs/training/Skill培训.html)
 
-### 培训材料
+场景材料用于验证共同模型，不反过来定义项目的全局结构。
 
-- [知识库培训](docs/training/知识库培训.html) - 面向业务人员
-- [Skill培训](docs/training/Skill培训.html) - 面向AI协调员
+## 方法
 
-### 解决方案
+- [项目 Agent 入口](AGENTS.md)
+- [Agent 治理规范](docs/governance/agent-governance.md)
+- [Agent 调试与真实 E2E](docs/governance/debugging-standard.md)
 
-- [知识库到投标业务打通](docs/solutions/打通方案-知识库到投标.md) - 两层结构+投标Skill
+## 目录
 
-## 项目结构
-
-```
+```text
 agentic-work-infra/
+├── AGENTS.md
 ├── docs/
-│   ├── skill-design.md          # Skill设计最佳实践
-│   ├── governance/              # 治理方法
-│   ├── training/                # 培训材料
-│   └── solutions/               # 解决方案
+│   ├── core/                 # 共性模型和共性方法
+│   ├── governance/           # 项目治理与验证方法
+│   ├── scenarios/            # 企业、个人、投标等场景材料
+│   └── training/             # 面向人的培训材料
 └── tracks/
-    └── knowledge-base/
-        └── SKILL.md
+    └── knowledge-base/       # 可执行的知识库 Skill
 ```
-
-## 许可证
 
 [Apache License 2.0](LICENSE)

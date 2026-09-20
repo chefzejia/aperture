@@ -89,7 +89,7 @@
 <header>
   <div class="kicker">企业内部培训</div>
   <h1>Skill：给AI的业务操作手册</h1>
-  <p class="sub">Agent工具可以换，但Skill是你的。它是企业AI能力的真正沉淀。</p>
+  <p class="sub">Agent工具会变化，Skill可以成为企业长期积累的业务资产。</p>
   <div class="meta">
     <span>适用：需要定制AI工作方式的业务场景</span>
     <span>读者：AI协调员、业务骨干</span>
@@ -99,100 +99,114 @@
 <!-- 01 -->
 <section>
   <h2><span class="num">01</span>Skill是什么</h2>
-  <p class="lead">不是给人的操作手册，是给AI的。</p>
+  <p class="lead">它是给AI使用的、可复用的业务指令与资源包。</p>
 
   <div class="quote">
-    Skill是给AI的业务操作手册。它规定了AI在特定场景下应该<strong>遵循什么规则、按什么步骤工作、如何检查结果、遇到异常怎么处理。</strong>
+    Skill是给AI的业务操作手册。它规定了AI在特定场景下应该<strong>遵循什么规则、按什么步骤工作、如何检查结果、遇到异常怎么处理。</strong>它仍然以指令为核心，只是被封装成了可发现、可复用、可迭代的工作包。
   </div>
 
-  <p>举例：<strong>知识库Skill</strong>教AI怎么整理企业资料——</p>
+  <p>举例：<strong>知识库Skill</strong>教AI怎样处理企业资料，</p>
 
   <ul>
-    <li>文件名应该怎么改（带上关键词、专有名词）</li>
-    <li>内容怎么检查（表格保持表格、图片要保留）</li>
-    <li>来源怎么标记（写明来源、日期、状态）</li>
-    <li>失效的怎么处理（移到archive，不再被搜到）</li>
-    <li>遇到冲突怎么办（两份资料说的不一样，停下来问人）</li>
+    <li>原始文件怎样接收（保持原样，不覆盖旧文件）</li>
+    <li>怎样生成候选笔记（候选结果不能伪装成正式知识）</li>
+    <li>怎样记录来源（统一根目录路径，写明页码、表格或消息时间）</li>
+    <li>什么内容可以正式使用（已确认、未过期、时效明确）</li>
+    <li>遇到冲突怎么办（保留现场，标记待确认，不自己猜）</li>
   </ul>
 
   <div class="card accent">
     <h4>为什么不是"提示词"</h4>
-    <p>很多人把Skill当成"一段很长的提示词"，这是错的。</p>
-    <p><strong>Skill是结构化的工作目录</strong>，包含：</p>
+    <p>Skill可以包含提示词式的指令，但它不只是一段临时文本。</p>
+    <p><strong>Skill是结构化的目录</strong>。它的主体是一份AI操作手册：</p>
     <ul>
-      <li><strong>元数据</strong>：什么时候触发这个Skill</li>
+      <li><strong>元数据</strong>：这个Skill适用于什么任务</li>
       <li><strong>核心流程</strong>：应该按什么步骤干活</li>
-      <li><strong>参考文档</strong>：需要时查阅的领域知识</li>
-      <li><strong>确定性脚本</strong>：必须精确执行的操作</li>
     </ul>
-    <p style="margin-top:12px">提示词是一次性的，Skill是可复用、可迭代的资产。</p>
+    <p style="margin-top:12px">需要时，还可以挂上参考文档、确定性脚本等素材（第03节讲）。一次性提示可以复用，Skill的优势在于它有目录、边界、版本和验证入口。</p>
   </div>
 </section>
 
 <!-- 02 -->
 <section>
   <h2><span class="num">02</span>为什么需要Skill</h2>
-  <p class="lead">通用AI不懂你的业务，每次都从头解释太累。</p>
+  <p class="lead">通用AI未必知道你的业务规则，每次从头解释会增加遗漏和漂移。</p>
 
   <h3>没有Skill时</h3>
-  <p>每次让AI干活，你都要解释一遍业务规则：</p>
+  <p>每次让AI干活，你都要重新解释业务规则：</p>
   <ul>
-    <li>"整理这些文件，注意文件名要带上关键词"</li>
-    <li>"表格不要改成段落，会丢信息"</li>
-    <li>"最上面要标记来源、日期、状态"</li>
-    <li>"失效的移到archive目录"</li>
-    <li>"如果两份资料说的不一样，先问我"</li>
+    <li>"原始文件不要覆盖，也不要直接改写"</li>
+    <li>"先生成候选笔记，不要直接写成正式知识"</li>
+    <li>"来源要能定位到具体页码、表格或消息时间"</li>
+    <li>"已经过期的verified内容也不能继续使用"</li>
+    <li>"如果两份资料说的不一样，先标记待确认"</li>
   </ul>
-  <p><strong>每次都要重新说一遍，AI还不一定按你的标准做。</strong></p>
+  <p><strong>每次重新说明都会增加遗漏和漂移。</strong></p>
 
   <h3>有Skill后</h3>
-  <p>你只需要说："整理inbox"</p>
-  <p>AI自动加载<strong>知识库Skill</strong>，按既定规则干活：</p>
+  <p>你可以说："整理inbox，先给我候选结果。"</p>
+  <p>支持该规范的客户端可以发现并加载<strong>知识库Skill</strong>，再按既定规则执行：</p>
   <ul>
-    <li>文件名怎么改 ✓</li>
-    <li>内容怎么检查 ✓</li>
-    <li>来源怎么标记 ✓</li>
-    <li>失效的怎么处理 ✓</li>
-    <li>遇到冲突怎么办 ✓</li>
+    <li>原始文件是否安全保留 ✓</li>
+    <li>候选和正式知识是否分开 ✓</li>
+    <li>来源路径和原文位置是否清楚 ✓</li>
+    <li>状态和有效期是否允许正式使用 ✓</li>
+    <li>遇到冲突时是否停止并保留现场 ✓</li>
   </ul>
-  <p><strong>规则固化下来，每次都按同样的标准执行。</strong></p>
+  <p><strong>Skill提供一致的参考标准；实际稳定性仍要靠工具、脚本、评测和人工责任边界保证。</strong></p>
 
   <div class="key">
     <div class="bar"></div>
-    <p>Skill = 把业务规则固化下来，从"每次都教"变成"教一次，用无数次"。</p>
+    <p>Skill把重复说明沉淀成可以版本化、检查和持续修正的业务规则。</p>
   </div>
 </section>
 
 <!-- 03 -->
 <section>
   <h2><span class="num">03</span>一个Skill长什么样</h2>
-  <p class="lead">Skill是一个工作目录，不是一个文件。</p>
+  <p class="lead">Skill是一个目录。必需的只有 SKILL.md，其余按需才建。</p>
 
-  <h3>标准结构</h3>
+  <h3>组成</h3>
 
-  <div class="tree">knowledge-base/          <span class="cm"># Skill名称</span>
-├── <span class="hl">SKILL.md</span>           <span class="cm"># 入口文件：元数据 + 核心流程</span>
-├── references/         <span class="cm"># 参考文档（按需加载）</span>
+  <div class="tree">skill-name/              <span class="cm"># Skill名称</span>
+├── <span class="hl">SKILL.md</span>           <span class="cm"># 必需：入口，元数据 + 核心流程</span>
+├── references/         <span class="cm"># 按需：执行中要查的细节</span>
 │   ├── 命名规范.md
 │   └── 检查清单.md
-├── scripts/            <span class="cm"># 确定性脚本（保证执行结果稳定）</span>
+├── scripts/            <span class="cm"># 按需：必须精确重复的操作</span>
 │   └── 检查文件.py
-└── assets/             <span class="cm"># 输出模板或静态资源</span>
+└── assets/             <span class="cm"># 按需：要放进产出里的素材</span>
     └── 报告模板.md</div>
 
+  <table>
+    <thead><tr><th style="width:22%">部分</th><th style="width:38%">职责</th><th>什么时候才建</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SKILL.md</strong></td><td>技能包入口，放元数据和核心流程</td><td><strong>必需</strong></td></tr>
+      <tr><td><strong>references/</strong></td><td>执行中按需查阅的细节，让SKILL.md保持精简</td><td>细节多到塞不下SKILL.md</td></tr>
+      <tr><td><strong>scripts/</strong></td><td>确定性操作，保证每次结果一致</td><td>有必须精确重复的步骤</td></tr>
+      <tr><td><strong>assets/</strong></td><td>直接进入产出的素材（模板、图标、字体）</td><td>产出要带固定素材</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card blue">
+    <h4>别把"按需"读成"都要建"</h4>
+    <p>三个目录是可选项，用不上就不建。<strong>一个合格的Skill可以只有SKILL.md</strong>，它没有references、没有scripts、也没有assets，照样成立。</p>
+    <p>反过来说，为了"凑齐结构"建三个空目录，只会让目录变乱。</p>
+  </div>
+
   <h3>SKILL.md（入口文件）</h3>
-  <p>这是AI看到的第一个文件。它分两部分：</p>
+  <p>这是兼容客户端识别技能包的入口文件。它分两部分：</p>
 
   <h4>1. 元数据（顶部）</h4>
   <div class="tree"><span class="cm">---</span>
 name: knowledge-base
 description: >
-  帮用户整理知识库，让以后问问题时搜得到、打开能看懂。
-  当用户要建知识库、整理一批资料、把旧文档变成可检索的知识时使用。
-  不适用于写文章、做PPT、写代码等内容创作任务。
+  建设和维护以本地原始文件和Markdown笔记为事实基础的企业知识库。
+  当用户要收集资料、整理知识、查询企业知识或检查知识库状态时使用。
+  不适用于写文章、做标书、写代码等具体业务任务。
 <span class="cm">---</span></div>
 
-  <p><strong>description是关键</strong>：它决定AI什么时候触发这个Skill。必须写清楚：</p>
+  <p><strong>description是关键线索</strong>：兼容客户端通常用它判断任务是否相关。必须写清楚：</p>
   <ul>
     <li><strong>做什么</strong>（整理知识库）</li>
     <li><strong>什么时候用</strong>（用户要建知识库、整理资料时）</li>
@@ -204,8 +218,8 @@ description: >
 
   <div class="card blue">
     <h4>为什么要分开？</h4>
-    <p>因为AI的上下文窗口有限。如果把所有细节都塞进SKILL.md，AI每次都要读完整篇（几千个token），很快就会撑爆窗口。</p>
-    <p><strong>渐进式披露</strong>：先只看元数据（几十个token）判断要不要用这个Skill；确定要用后，加载核心流程；执行中需要时，再加载具体的参考文档。</p>
+    <p>因为上下文窗口有限。如果把所有细节都塞进SKILL.md，执行时会增加阅读成本，也更容易淹没关键约束。</p>
+    <p><strong>渐进式披露</strong>：先读取元数据判断相关性，再加载核心流程，执行中按需读取参考文档。具体读取顺序和自动化程度由客户端实现决定。</p>
   </div>
 </section>
 
@@ -214,31 +228,31 @@ description: >
   <h2><span class="num">04</span>Skill怎么迭代</h2>
   <p class="lead">Skill不是一次性写完的规范，而是从真实任务中提炼、用反例持续修正的操作手册。</p>
 
-  <h3>从0.5.x到0.8.x，迭代了什么</h3>
-  <p>以知识库Skill为例，真实迭代过程：</p>
+  <h3>从0.1到0.4，迭代了什么</h3>
+  <p>以知识库Skill为例，一组来自真实问题的迭代记录如下。<strong>版本号只用来标记先后，没有绝对规范</strong>。</p>
 
   <table>
     <thead><tr><th style="width:20%">版本</th><th style="width:38%">遇到的问题</th><th>改进</th></tr></thead>
     <tbody>
       <tr>
-        <td>0.5.0</td>
-        <td>AI整理后的文件名太长，看不清重点</td>
-        <td>增加规则："文件名用最小可识别语义，不多写一个字"</td>
+        <td>0.1</td>
+        <td>自动整理会移动或覆盖原始文件，失败后无法重来</td>
+        <td>原件只接收、不覆盖，候选结果与原件分开保存</td>
       </tr>
       <tr>
-        <td>0.6.2</td>
-        <td>表格被改成了段落，行列关系丢了</td>
-        <td>增加规则："表格保持表格，不要改成一段话"</td>
+        <td>0.2</td>
+        <td>AI生成的候选内容看起来像正式知识</td>
+        <td>增加candidate、needs-review和verified等显式状态</td>
       </tr>
       <tr>
-        <td>0.7.1</td>
-        <td>AI标记了来源，但没写日期和状态</td>
-        <td>明确要求："来源、日期、状态三样缺一不可"</td>
+        <td>0.3</td>
+        <td>source相对哪个目录解释不清，原文位置也无法复核</td>
+        <td>统一按知识库根目录记录source，并增加source_location</td>
       </tr>
       <tr>
-        <td>0.8.0</td>
-        <td>两份资料内容矛盾，AI自己选了一个，结果选错了</td>
-        <td>增加停止规则："遇到冲突停下来问人，不要自己猜"</td>
+        <td>0.4</td>
+        <td>已经过期的笔记仍写着verified，被查询当成正式答案</td>
+        <td>查询同时检查state和valid_to，时效不明时转为needs-review</td>
       </tr>
     </tbody>
   </table>
@@ -332,17 +346,7 @@ description: >
   <h2><span class="num">06</span>企业可以有哪些Skill</h2>
   <p class="lead">Skill不是越多越好，而是要真正有用。</p>
 
-  <h3>当前已有的Skill</h3>
-  <ul>
-    <li><strong>知识库Skill</strong>：教AI整理企业资料，让人和AI都能搜到、看懂</li>
-  </ul>
-
-  <h3>规划中的Skill</h3>
-  <ul>
-    <li><strong>投标Skill</strong>：教AI从知识库提取内容、组装标书、检查合规性</li>
-    <li><strong>媒体生产Skill</strong>：教AI从正文衍生不同渠道的内容、保持一致性</li>
-    <li><strong>软件交付Skill</strong>：教AI按规范完成开发、测试、部署流程</li>
-  </ul>
+  <p>没有一个通用的"企业标准Skill清单"，每个企业的业务不同，该做哪些Skill只能从自己的活里长出来。<strong>这里不给清单，给的是找的方法。</strong></p>
 
   <h3>你的业务需要什么Skill？</h3>
   <p>问自己三个问题：</p>
@@ -352,6 +356,9 @@ description: >
     <li>如果AI能按标准做这项工作，能节省多少时间？</li>
   </ol>
 
+  <h3>怎么判断一个方向值不值得做</h3>
+  <p>拿一个候选工作过第05节的三条标准：<strong>重复性、规则性、可检查</strong>。三条都过时通常值得优先投入。需要判断的工作也可以由Skill提供资料、流程和检查项，最终决策仍应有明确责任人。</p>
+
   <div class="card teal">
     <h4>从最痛的点开始</h4>
     <p>不要一次做十个Skill。<strong>先从最痛的一个点开始</strong>：</p>
@@ -359,7 +366,7 @@ description: >
       <li>选一项重复性高、规则明确、人工做很累的工作</li>
       <li>写出初版Skill（规则不需要完美）</li>
       <li>用真实任务测试，记录哪些地方不对</li>
-      <li>迭代改进，直到AI能稳定产出合格结果</li>
+      <li>迭代改进，直到选定场景中的结果能够持续通过检查</li>
       <li>再开始做第二个Skill</li>
     </ul>
   </div>
@@ -368,82 +375,93 @@ description: >
 <!-- 07 -->
 <section>
   <h2><span class="num">07</span>Skill的价值</h2>
-  <p class="lead">Skill是企业AI能力的真正沉淀。</p>
+  <p class="lead">Skill可以把反复使用的业务规则和检查方法沉淀下来。</p>
 
-  <h3>为什么说Skill比Agent工具更重要？</h3>
+  <h3>为什么说Skill是长期资产？</h3>
 
   <table>
     <thead><tr><th style="width:32%">对象</th><th>能不能换</th><th>说明</th></tr></thead>
     <tbody>
       <tr>
         <td><strong>Agent工具</strong><br>（Workbuddy、Claude、ChatGPT）</td>
-        <td>能换</td>
-        <td>底层模型能力已经趋同，工具可以替换。半年后可能又有新工具</td>
+        <td>有条件地换</td>
+        <td>模型、价格、隐私、延迟、连接器和生态都会影响选择。能否迁移取决于接口、权限和评测是否可复用</td>
       </tr>
       <tr>
         <td><strong>知识库</strong></td>
-        <td>不能换</td>
-        <td>企业资质、业绩、技术能力是企业独有的，必须长期积累</td>
+        <td>应长期积累</td>
+        <td>企业资质、业绩、技术能力是企业独有的，但仍需要权限、版本和来源治理</td>
       </tr>
       <tr>
         <td><strong>Skill</strong></td>
-        <td>不能换</td>
-        <td>你的业务规则、工作流程、质量标准是企业独有的，必须持续迭代</td>
+        <td>应长期积累</td>
+        <td>业务规则、工作流程和质量标准可以沉淀，但迁移成本取决于工具依赖和客户端支持</td>
       </tr>
     </tbody>
   </table>
 
   <div class="quote">
-    Agent工具会变，但<strong>知识库和Skill是企业在AI时代能积累的真家伙</strong>。
+    Agent工具会变，但<strong>知识库和Skill可以成为企业长期积累的两类重要资产</strong>。
   </div>
 
-  <h3>Skill库 = 企业的AI操作系统</h3>
+  <h3>Skill库 = 企业 AI 工作标准的一部分</h3>
 
   <p>随着Skill的积累，企业会形成自己的<strong>Skill库</strong>：</p>
 
   <div class="tree">企业Skill库/
-├── knowledge-base/      <span class="cm"># 知识整理Skill</span>
-├── bidding/             <span class="cm"># 投标响应Skill</span>
-├── media-production/    <span class="cm"># 媒体生产Skill</span>
-├── customer-service/    <span class="cm"># 客服响应Skill</span>
-└── ...                  <span class="cm"># 更多业务Skill</span></div>
+├── &lt;业务A&gt;/            <span class="cm"># 这块业务的规则</span>
+├── &lt;业务B&gt;/            <span class="cm"># 另一块业务</span>
+├── &lt;业务C&gt;/
+└── ...</div>
 
-  <p><strong>这就是企业的AI操作系统</strong>：</p>
+  <p><strong>可以把它看成企业 AI 工作标准的一部分</strong>：</p>
   <ul>
-    <li>新员工入职，先学Skill库——这是公司的工作标准</li>
-    <li>AI干活，自动加载对应Skill——按同样的标准执行</li>
-    <li>业务改进，更新Skill——所有人和AI同步更新</li>
+    <li>新员工入职，先学Skill库，这是公司的工作标准</li>
+    <li>支持该规范的客户端按任务发现对应Skill，按同样的标准执行</li>
+    <li>业务改进，更新Skill，所有人和AI同步更新</li>
   </ul>
 
   <div class="key">
     <div class="bar"></div>
     <p>从"每个人有自己的做法"到"公司有统一的标准"，<strong>Skill让业务标准可以沉淀、复用、迭代。</strong></p>
   </div>
+
+  <div class="card blue">
+    <h4>Skill也需要失败安全</h4>
+    <p>Skill可能读取敏感资料、执行脚本、调用网络或写入业务文件。发布前要检查资源来源、权限范围、外部依赖和敏感数据处理方式。放进<code>scripts/</code>的代码也要测试和审查。</p>
+    <ul>
+      <li>原始资料不得被覆盖或删除</li>
+      <li>候选结果和中间结果应当保留</li>
+      <li>重复执行不能不断制造重复文件</li>
+      <li>只修改明确授权的目录</li>
+      <li>候选内容不能直接作为正式结果</li>
+    </ul>
+  </div>
 </section>
 
 <!-- 08 -->
 <section>
   <h2><span class="num">08</span>好Skill vs 差Skill</h2>
-  <p class="lead">差Skill会让AI行为不可预测，好Skill让AI稳定产出合格结果。</p>
+  <p class="lead">差Skill会增加遗漏和漂移，好Skill让执行标准更一致、结果更容易检查。</p>
 
   <h3>差Skill的典型特征</h3>
 
   <div class="card red">
     <h4>反模式1：把SKILL.md写成长篇提示词</h4>
-    <p>有人写了1200行塞满"请按以下规范输出""禁止使用以下表达"，结果AI加载后表现比裸调用还差。</p>
-    <p><strong>为什么</strong>：SKILL.md越长，上下文窗口越容易撑爆，触发信号越容易被淹没。</p>
+    <p>有人把大量细节都塞进入口文件，结果AI加载后表现比裸调用还差。</p>
+    <p><strong>为什么</strong>：SKILL.md越长，阅读成本越高，关键约束越容易被淹没。长度只是信号，真正要看的是流程是否清楚、资源是否按需加载。</p>
   </div>
 
   <div class="card red">
     <h4>反模式2：description写成功能介绍而非触发条件</h4>
     <p><strong>错误写法</strong>："这个Skill提供了完整的投标能力，支持多种招标文件格式"</p>
     <p><strong>正确写法</strong>："当用户要响应招标、生成标书、或提到'投标'时使用"</p>
-    <p><strong>为什么</strong>：AI决定触发的逻辑是后者，不是前者。</p>
+    <p><strong>为什么</strong>：兼容客户端需要从描述中判断任务相关性，功能介绍本身不够具体。</p>
   </div>
 
   <div class="card red">
     <h4>反模式3：多个Skill边界重叠</h4>
-    <p>如果两个Skill的description都能覆盖同一类任务，AI会随机选择，导致行为不可预测。</p>
+    <p>如果两个Skill的description都覆盖同一类任务，客户端可能难以选择，导致行为不稳定。需要明确边界、优先级和人工选择方式。</p>
   </div>
 
   <div class="card red">
@@ -456,7 +474,7 @@ description: >
   <table>
     <thead><tr><th style="width:28%">维度</th><th>好Skill</th><th>差Skill</th></tr></thead>
     <tbody>
-      <tr><td>SKILL.md长度</td><td>< 500行，只放流程和路由</td><td>1000+行，塞满细节</td></tr>
+      <tr><td>SKILL.md长度</td><td>核心流程精简，细节按需分层</td><td>把大量细节全部塞进入口文件</td></tr>
       <tr><td>description</td><td>触发条件+边界</td><td>功能介绍</td></tr>
       <tr><td>确定性操作</td><td>交给scripts/</td><td>写在正文让AI"看着办"</td></tr>
       <tr><td>领域知识</td><td>外置到references/</td><td>内联在SKILL.md</td></tr>
@@ -473,15 +491,15 @@ description: >
 
   <div class="final">
     <ol>
-      <li><strong>Skill的定义</strong>：给AI的业务操作手册，规定AI在特定场景下应该遵循什么规则、按什么步骤工作。</li>
-      <li><strong>为什么需要Skill</strong>：通用AI不懂你的业务，Skill把业务规则固化下来，从"每次都教"变成"教一次，用无数次"。</li>
-      <li><strong>Skill的结构</strong>：SKILL.md（入口）+ references/（参考文档）+ scripts/（确定性脚本）+ assets/（输出模板）。</li>
-      <li><strong>元数据是关键</strong>：description决定AI什么时候触发这个Skill，必须写清楚做什么、什么时候用、什么时候不用。</li>
-      <li><strong>渐进式披露</strong>：先只看元数据判断要不要用；确定用后加载核心流程；执行中按需加载参考文档。</li>
+      <li><strong>Skill的定义</strong>：给AI的可复用业务指令与资源包，规定在特定场景下遵循什么规则、按什么步骤工作。</li>
+      <li><strong>为什么需要Skill</strong>：把业务规则固化下来，减少每次解释时的遗漏和漂移。</li>
+      <li><strong>Skill的结构</strong>：必需的只有SKILL.md（入口）；references/、scripts/、assets/按需才建，用不上就不建。</li>
+      <li><strong>元数据是关键线索</strong>：description帮助兼容客户端判断任务相关性，必须写清楚做什么、什么时候用、什么时候不用。</li>
+      <li><strong>渐进式披露</strong>：先读取元数据，再按需加载核心流程和参考文档，具体行为由客户端实现决定。</li>
       <li><strong>Skill怎么迭代</strong>：从真实任务中提炼，用反例持续修正。每次迭代记录改了什么、为什么改。</li>
-      <li><strong>适合做成Skill的工作</strong>：重复性高、规则明确、结果可检查。创意性、决策性工作不适合。</li>
+      <li><strong>适合做成Skill的工作</strong>：重复性高、规则明确、结果可检查。创意和决策工作也可以用Skill提供约束和资料，但最终判断要有责任人。</li>
       <li><strong>从最痛的点开始</strong>：不要一次做十个Skill，先从最痛的一个点开始，迭代成熟后再做下一个。</li>
-      <li><strong>Skill是企业AI能力的沉淀</strong>：Agent工具可以换，但知识库和Skill是企业在AI时代能积累的真家伙。</li>
+      <li><strong>Skill是企业AI能力的沉淀</strong>：知识库和Skill可以长期积累，但可迁移性取决于格式、工具、权限和评测。</li>
       <li><strong>好Skill vs 差Skill</strong>：SKILL.md要精炼、description写触发条件、确定性操作用脚本、持续记录反例改进。</li>
     </ol>
   </div>
