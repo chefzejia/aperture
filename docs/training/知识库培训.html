@@ -221,42 +221,42 @@
   <h2><span class="num">03</span>一篇共同知识笔记由什么组成</h2>
   <p class="lead">知识的基本单位不是一份藏在系统里的索引，也不是一张独立的外部台账，而是一篇可以独立理解和继续维护的笔记。</p>
 
-  <p>一篇笔记要说清这件事本身，也要交代清楚它的属性、关系和证据位置。下面是一个 Markdown 文件打开之后的样子。它是示例，不是必须照抄的模板：</p>
+  <p>一篇笔记要说清这件事本身，也要交代清楚它的属性、关系和证据位置。下面是一个 Markdown 文件打开之后的样子。它是示例，不是必须照抄的模板；箭头右边的说明是我们加的，文件本身没有这几行。</p>
 
   <div class="tree"><span class="cm">---</span>
-type: 业绩案例
-state: needs-review
-subject: 某某公司
-source: ../inbox/企业材料-最终版2.docx
-source_location: page=43; table=项目业绩表
-valid_to: 2027-12-31
+type: 业绩案例  <span class="cm">← 这是什么</span>
+state: needs-review  <span class="cm">← 现在什么状态</span>
+subject: 某某公司  <span class="cm">← 关于谁</span>
+source: ../inbox/企业材料-最终版2.docx  <span class="cm">← 从哪份原件来</span>
+source_location: page=43; table=项目业绩表  <span class="cm">← 在原件里的第几页、哪张表</span>
+valid_to: 2027-12-31  <span class="cm">← 有效期到哪天</span>
 <span class="cm">---</span>
 
-# 某某项目业绩
+# 某某项目业绩  <span class="cm">← 正文：这条知识本身</span>
 
 ## 结论
 材料显示，某某公司于 2025 年完成某项目。验收材料仍需核对。
 
 ## 相关知识
-- [[某某公司]]
+- [[某某公司]]  <span class="cm">← 关系：双括号指向相关的笔记</span>
 - [[项目验收]]
 
 ## 证据
-- [原始材料](../inbox/企业材料-最终版2.docx)，第 43 页，项目业绩表</div>
+- [原始材料](../inbox/企业材料-最终版2.docx)，第 43 页  <span class="cm">← 附件引用：指回原件</span></div>
 
-  <p>按作用分，一篇笔记有四部分：</p>
+  <p>箭头后面的说明是我们加的，文件本身没有这几行。开头那几行用英文名写，是因为 Agent 靠固定名字读数；人不用记这些名字，看箭头后面的中文就行。</p>
+
+  <p>照着文件从上到下的顺序，一篇笔记有四部分：</p>
 
   <table>
     <thead><tr><th style="width:22%">部分</th><th>作用</th></tr></thead>
     <tbody>
-      <tr><td><strong>正文</strong></td><td>人和 Agent 共同理解的结论和解释，离开聊天上下文后仍能读懂</td></tr>
       <tr><td><strong>属性</strong></td><td>开头两条横线之间的那几行（也叫 Frontmatter），记录这条知识自己的状态、主体、来源和有效期</td></tr>
-      <tr><td><strong>关系</strong></td><td>正文里的双括号，如 <code>[[某某公司]]</code>，指向与它相关的其他笔记。括号里的名字就是那篇笔记的文件名，点开就能跳过去</td></tr>
+      <tr><td><strong>正文</strong></td><td>人和 Agent 共同理解的结论和解释，离开聊天上下文后仍能读懂</td></tr>
+      <tr><td><strong>关系</strong></td><td>正文里的双括号，如 <code>[[某某公司]]</code>，指向与它相关的其他笔记。括号里写的是那篇笔记的文件名，点开就能跳过去</td></tr>
       <tr><td><strong>附件引用</strong></td><td>指回合同、证书、照片、表格或扫描件的实际位置</td></tr>
     </tbody>
   </table>
-
-  <p>属性里的 <code>type</code>、<code>state</code>、<code>subject</code>、<code>source</code>、<code>source_location</code>、<code>valid_to</code> 是固定写法，依次对应类型、状态、主体、来源、来源位置和有效期。这几个英文名是给 Agent 读的，人看得懂名字后面的中文就够了。</p>
 
   <div class="key">
     <div class="bar"></div>
