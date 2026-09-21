@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>知识库的底层方法：让人和 Agent 共同理解同一件事</title>
+<title>知识库：让人和 Agent 共同理解同一件事</title>
 <style>
   :root{
     --ink:#1a1a1a; --ink-2:#4a4a4a; --ink-3:#767676;
@@ -100,10 +100,10 @@
 
 <header>
   <div class="kicker">知识库方法论</div>
-  <h1>知识库的底层方法：让人和 Agent 共同理解同一件事</h1>
+  <h1>知识库：让人和 Agent 共同理解同一件事</h1>
   <p class="sub">从混乱的 Office 资料，到人和 Agent 都能观察、核对和维护的 Markdown 知识。</p>
   <div class="meta">
-    <span>适用：个人与企业知识库的共同底层</span>
+    <span>适用：个人与企业都适用的做法</span>
     <span>企业案例：传统 Office 资料的整理与复用</span>
   </div>
 </header>
@@ -111,7 +111,7 @@
 <div class="thesis">
   <p class="tl">这份材料的主张</p>
   <p class="tb">知识库不是给 Agent 找得更快的资料库，而是人和 Agent 共同面对的一份可观察知识。</p>
-  <p class="ts">当前选择用 Markdown 承载这份共同语义。目录、属性、链接、向量检索和 RAG 都围绕它服务，不能替代它。</p>
+  <p class="ts">当前选择用 Markdown 承载这份共同理解。目录、属性、链接、向量检索和 RAG 都围绕它服务，不能替代它。</p>
 </div>
 
 <div class="part"><b>第一部分</b><span>问题与命题</span><i></i></div>
@@ -161,7 +161,7 @@
     <p><strong>人和 Agent 应该通过同一份可观察、可核对、可维护的知识表达，共同理解同一件事。</strong></p>
   </div>
 
-  <p>这不要求人和 Agent 使用同一个界面，也不要求 Agent 只能通过文件系统工作。人可以用 Obsidian 或其他编辑器，Agent 可以通过 Skill、MCP 或 API。关键是两者最后都要回到同一个知识对象，而不是人维护一套内容、Agent 依赖另一套隐藏索引。</p>
+  <p>这不要求人和 Agent 使用同一个界面，也不要求 Agent 只能通过文件系统工作。人可以用 Obsidian（一种看 Markdown 笔记的软件）或其他编辑器，Agent 可以通过 Skill（工作手册）、MCP（连接外部工具的通道）或 API（程序调用接口）。关键是两者最后都要回到同一个知识对象，而不是人维护一套内容、Agent 依赖另一套隐藏索引。</p>
 
   <table>
     <thead><tr><th style="width:22%">要求</th><th>验收问题</th></tr></thead>
@@ -193,11 +193,11 @@
 <!-- 02 -->
 <section>
   <h2><span class="num">02</span>为什么传统 Office 资料需要另一份表达</h2>
-  <p class="lead">不是因为 Word 不能被机器读取，而是因为它不适合独自承担长期共享语义。</p>
+  <p class="lead">不是因为 Word 不能被机器读取，而是因为它不适合独自承担长期共享的含义。</p>
 
   <p>Word、Excel 和 PDF 可以被程序解析，也可以被 Agent 读取。真正的问题是，它们往往同时包含正文、版式、表格、批注、嵌入对象、签章和交付要求。人能依靠视觉和经验理解其中的层次，机器虽然可以抽取文字，却未必能稳定判断哪些是结论、哪些是模板文字、哪些只是排版或历史备注。</p>
 
-  <p>如果每次使用都从一份几十页甚至几百页的 Office 文件里重新猜一遍，企业的知识就会停留在“原始材料里可能有答案”的状态。我们需要把真正会被反复使用的结论，另外写成一份更容易共同阅读、修改、引用和核对的语义表达。</p>
+  <p>如果每次使用都从一份几十页甚至几百页的 Office 文件里重新猜一遍，企业的知识就会停留在“原始材料里可能有答案”的状态。我们需要把真正会被反复使用的结论，另外写成一份更容易共同阅读、修改、引用和核对的表达。</p>
 
   <div class="tree">原始 Office、PDF、Excel、图片和聊天记录
         <span class="cm"># 证据、交付物和输入，可以保持原样</span>
@@ -207,28 +207,28 @@
 
   <div class="card accent">
     <h4>为什么当前选择 Markdown</h4>
-    <p>Markdown 不是因为它能自动消除错误，而是因为它把文字结构直接暴露出来：标题就是标题，列表就是列表，链接就是链接，修改可以被人直接看到，也可以被 Git 记录。它适合成为当前的人机共同语义载体。</p>
+    <p>Markdown 不是因为它能自动消除错误，而是因为它把文字结构直接暴露出来：标题就是标题，列表就是列表，链接就是链接，修改可以被人直接看到，也可以被 Git（一种记录文件每次改动的工具）记录。它适合成为当前的人机共同载体。</p>
     <p>这不意味着企业要放弃 Office。合同、证书、报价、盖章文件和最终交付仍然使用原来的格式。长期复用的结论写入 Markdown，原始 Office 文件通过来源和位置继续作为证据。</p>
   </div>
 
-  <p>Obsidian 只是查看和维护这些 Markdown 文件的一种界面。换成其他编辑器，文件仍然应该能被人和 Agent 继续读取。工具可以替换，共同知识不能重新分裂成两套。</p>
+  <p>Obsidian（看 Markdown 笔记的软件）只是查看和维护这些 Markdown 文件的一种界面。换成其他编辑器，文件仍然应该能被人和 Agent 继续读取。工具可以替换，共同知识不能重新分裂成两套。</p>
 </section>
 
 <!-- 03 -->
 <section>
   <h2><span class="num">03</span>一篇共同知识笔记由什么组成</h2>
-  <p class="lead">知识的基本单位不是一个隐藏的向量，也不是一张外部台账，而是一篇可以独立理解和继续维护的笔记。</p>
+  <p class="lead">知识的基本单位不是一份藏在系统里的索引，也不是一张独立的外部台账，而是一篇可以独立理解和继续维护的笔记。</p>
 
-  <p>一篇笔记要把这件事本身说清楚，同时把判断它所需要的属性、关系和证据位置暴露出来：</p>
+  <p>一篇笔记要把这件事本身说清楚，同时把判断它所需要的属性、关系和证据位置暴露出来。打开一个 Markdown 文件，看到的就是下面这样：</p>
 
-  <div class="tree"><span class="cm">---</span>
-type: 业绩案例
-state: needs-review
-subject: 某某公司
-source: ../inbox/企业材料-最终版2.docx
-source_location: page=43; table=项目业绩表
-valid_to: 2027-12-31
-<span class="cm">---</span>
+  <div class="tree"><span class="cm">---</span>                          <span class="cm">← 文件开头的一段属性，习惯上叫 Frontmatter</span>
+type: 业绩案例                 <span class="cm">← 这是什么</span>
+state: needs-review            <span class="cm">← 待核对</span>
+subject: 某某公司             <span class="cm">← 关于谁</span>
+source: ../inbox/企业材料-最终版2.docx   <span class="cm">← 从哪份原文件来</span>
+source_location: page=43; table=项目业绩表 <span class="cm">← 在原文件的第几页、哪张表</span>
+valid_to: 2027-12-31           <span class="cm">← 有效期到哪天</span>
+<span class="cm">---</span>                          <span class="cm">← 属性到这里结束，下面是正文</span>
 
 # 某某项目业绩
 
@@ -242,22 +242,37 @@ valid_to: 2027-12-31
 ## 证据
 - [原始材料](../inbox/企业材料-最终版2.docx)，第 43 页，项目业绩表</div>
 
+  <p>上面的名字是固定的，含义也不难：<code>type</code> 是类型，<code>state</code> 是状态，<code>subject</code> 是主体，<code>source</code> 是来源，<code>source_location</code> 是来源里的具体位置，<code>valid_to</code> 是有效期到哪天。机器靠这些固定名字读数，人靠名字后面的中文理解意思。</p>
+
+  <p>按作用分，一篇笔记有四部分：</p>
+
   <table>
     <thead><tr><th style="width:22%">部分</th><th>作用</th></tr></thead>
     <tbody>
       <tr><td><strong>正文</strong></td><td>写人和 Agent 共同理解的结论和解释，笔记离开聊天上下文后仍能读懂</td></tr>
-      <tr><td><strong>Frontmatter</strong></td><td>写这篇笔记自己的属性，如状态、主体、来源、有效期、负责人和标签</td></tr>
-      <tr><td><strong>Wiki 链接</strong></td><td>写它与其他知识的关系，如来源、组成、适用、替代、冲突和相关</td></tr>
+      <tr><td><strong>属性</strong>（Frontmatter）</td><td>写在文件开头的一段固定名字的值，如状态、主体、来源、有效期、负责人和标签</td></tr>
+      <tr><td><strong>关系</strong>（Wiki 链接）</td><td>写在正文里的双方括号，如 <code>[[某某公司]]</code>，表示这条知识与哪几条相关</td></tr>
       <tr><td><strong>附件引用</strong></td><td>指回合同、证书、照片、表格或扫描件的实际位置和对应内容</td></tr>
     </tbody>
   </table>
 
+  <p>属性和证据都在指回原始文件，区别在于用途：属性里的 <code>source</code> 和 <code>source_location</code> 是给检索和核对用的，指明这条知识从哪一页来；正文末尾的「证据」是给人看的，方便顺着点开原件。两条都写不算重复，一致就行。</p>
+
   <p>属性不要求一开始填满。只有真正影响检索、判断、权限或维护的信息才值得写入；没有证据的值保持未知或省略。证据也不需要全部复制进笔记，笔记只需要让人和 Agent 能回到它。</p>
+
+  <div class="card accent">
+    <h4>文件名的位置：在属性之前</h4>
+    <p>属性写在文件里面，人得先打开才看得到。而找到一份文件，最先碰到的其实是它的<strong>名字</strong>。名字起得对，一眼就知道大概是哪一年的、关于谁的、是一份什么东西，不用打开就能排除一大半。</p>
+    <p>所以一个能用的名字，也按固定顺序回答三件事：先说时间（年份或日期），再说主体（客户、项目、产品、型号），最后说这是什么事（资质证书、投标报价、技术方案、验收记录）。</p>
+    <p>三个不必每个都出现。公司自己的资质证书，主体就是本公司，不用写进名字。缺哪个不影响，要紧的是写进去的那几个顺序保持一致，电脑排起来才整齐。套进去就是：<code>2026-电力施工资质证书-市政总承包二级.md</code>、<code>2025-某某变电站项目-投标报价.md</code>。</p>
+    <p>判断标准只有一句：<strong>你以后会拿什么词去搜它，就把这些词放进名字里。</strong>而 <code>新建文档3.docx</code>、<code>扫描件.pdf</code> 这种名字，能打开，但你永远想不起来里面是什么，也搜不到。</p>
+    <p>有一条最容易被违反：<strong>状态不靠名字，靠属性。</strong>名字里写“可用”“已作废”，改一次状态就得改一次名，早晚会漏。状态和有效期都放在属性里，名字只负责让人认出来这是什么。</p>
+  </div>
 
   <div class="card blue">
     <h4>状态属于笔记，不属于目录</h4>
-    <p><code>unknown</code>、<code>candidate</code>、<code>needs-review</code>、<code>verified</code>、<code>superseded</code> 和 <code>archived</code> 可以作为场景状态示例，但它们不是一套必须统一的数据库枚举。</p>
-    <p>真正必须遵守的是：未确认不能当作已确认，冲突不能被悄悄抹平，过期或已替代的内容不能继续作为当前依据。</p>
+    <p>状态会随着时间变：刚捞出来的可能还是未知（<code>unknown</code>），理过一次的是候选（<code>candidate</code>），等人核对的是待核对（<code>needs-review</code>），确认过的是已确认（<code>verified</code>），被新版本取代的是已替代（<code>superseded</code>），退出当前使用的是已归档（<code>archived</code>）。</p>
+    <p>这几个词是示例，不是全公司必须统一的一套固定清单。真正必须遵守的是：未确认不能当作已确认，冲突不能被悄悄抹平，过期或已替代的内容不能继续作为当前依据。</p>
   </div>
 </section>
 
@@ -280,12 +295,12 @@ valid_to: 2027-12-31
     <li><b>形成正式知识</b><span>确认后的内容回到共同知识笔记，未知和冲突仍然显式保留。</span></li>
   </ol>
 
-  <p>候选、草稿和失败现场可以为了回溯和恢复而保留。这是业务过程上的中间结果，不是架构上另建一套长期事实层。架构只有一条主线：<strong>原始资料经过整理和核对，形成共同知识对象。</strong></p>
+  <p>候选、草稿和中间结果可以为了回溯和恢复而保留。这是业务过程上的中间状态，不是在旁边另建一本长期账。主线只有一条：<strong>原始资料经过整理和核对，形成共同知识对象。</strong></p>
 
   <div class="card accent">
     <h4>关于 inbox、notes、archive</h4>
-    <p>企业可以把 <code>inbox/</code>、<code>notes/</code>、<code>archive/</code> 作为一种起步约定：原始输入放入收件箱，正式知识集中浏览，退场内容保留在归档区。</p>
-    <p>这不是知识库的成立条件。候选笔记也可以保存在收件区，正式笔记的状态仍然必须写在自己的 Frontmatter 中。目录帮助人浏览，属性才表达这篇笔记当前是什么。</p>
+    <p>企业可以把 <code>inbox/</code>、<code>notes/</code>、<code>archive/</code> 作为一种起步约定。这三个英文名对应收件箱、笔记、归档：原始输入放入收件箱，正式知识集中浏览，退场内容保留在归档区。</p>
+    <p>这不是知识库的成立条件。候选笔记也可以保存在收件区，正式笔记的状态仍然必须写在自己的属性里。目录帮助人浏览，属性才表达这篇笔记当前是什么。</p>
   </div>
 </section>
 
@@ -293,6 +308,8 @@ valid_to: 2027-12-31
 <section>
   <h2><span class="num">05</span>长期知识、工作规则和当前任务要分开</h2>
   <p class="lead">同一份工作里会出现三种不同性质的内容，混写会让知识库越来越不可靠。</p>
+
+  <p>第 01 节讲共同知识时，已经把这三种内容并排列出过一次。这里把它们的边界写清楚：</p>
 
   <table>
     <thead><tr><th style="width:23%">内容</th><th style="width:35%">例子</th><th>边界</th></tr></thead>
@@ -305,7 +322,7 @@ valid_to: 2027-12-31
 
   <p>企业知识可以被项目引用。项目变量不能因为被 Agent 用过一次，就自动成为企业知识。个人知识库也遵守同一条边界，只是确认人和权限更简单。</p>
 
-  <p>目录可以按浏览习惯、责任、权限、来源或取用方式设计；没有一种目录能同时表达所有维度。跨目录的关系用 Wiki 链接，筛选条件用 Frontmatter，原始来源用附件引用。不要让目录承担它无法稳定承担的全部语义。</p>
+  <p>目录可以按浏览习惯、责任、权限、来源或取用方式设计；没有一种目录能同时表达所有维度。跨目录的关系用关系链接（<code>[[某某公司]]</code> 这种写法），筛选条件用属性，原始来源用附件引用。不要让目录承担它无法稳定承担的全部含义。</p>
 </section>
 
 <div class="part"><b>第四部分</b><span>知识如何被找到</span><i></i></div>
@@ -313,21 +330,23 @@ valid_to: 2027-12-31
 <!-- 06 -->
 <section>
   <h2><span class="num">06</span>先让知识可观察，再逐步增加检索</h2>
-  <p class="lead">检索是使用共同知识的方式，不是另建一个知识本体。</p>
+  <p class="lead">检索是使用共同知识的方式，不是在旁边再建一套知识。</p>
 
   <p>没有知识地图时，Agent 也应该能从知识库根目录开始工作：</p>
 
   <ol class="steps">
-    <li><b>看根目录</b><span>枚举 Markdown 文件，先从文件名、标题和已有目录建立候选范围。</span></li>
+    <li><b>看根目录</b><span>先看根目录里有哪些 Markdown 文件，从文件名、标题和已有目录圈出一个候选范围。</span></li>
     <li><b>搜全文</b><span>用客户名、证书编号、项目名、技术词和原文句子缩小范围。</span></li>
-    <li><b>筛属性</b><span>按 Frontmatter 中的类型、状态、主体、有效期和标签过滤。</span></li>
-    <li><b>沿链接</b><span>打开完整笔记，沿 Wiki 链接和附件引用继续核对。</span></li>
-    <li><b>再加语义检索</b><span>当关键词和目录确实暴露出召回问题时，再增加混合检索或向量检索。</span></li>
+    <li><b>筛属性</b><span>按属性里的类型、状态、主体、有效期和标签过滤。</span></li>
+    <li><b>沿链接</b><span>打开完整笔记，沿关系链接和附件引用继续核对。</span></li>
+    <li><b>再加语义检索</b><span>当关键词和目录确实找不到该找的东西时，再增加这个手段。语义检索是不靠同一个词、而靠意思接近来找。</span></li>
   </ol>
+
+  <p>走到第五步之前，前四步都已经能被人独立完成，Agent 只是做得更快。这也是判断检索技术该不该上的标准：前四步够用，就先不上。</p>
 
   <div class="card accent">
     <h4>向量检索和 RAG 在这里是什么</h4>
-    <p><strong>向量检索</strong>是语义检索的一种实现：把文字转换成便于比较的表示，帮助找到用词不同但可能相关的内容。它适合扩大召回，不适合单独判断证书编号、日期和有效性。</p>
+    <p><strong>向量检索</strong>是语义检索的一种实现：把文字转换成便于比较的表示，帮助找到用词不同但可能相关的内容。比如你搜“抗震要求”，它能带出写“抗地震设防”的那条。它适合扩大找回的范围，不适合单独判断证书编号、日期和有效性。</p>
     <p><strong>RAG</strong>是一个工作过程：先检索共同知识和来源，把相关内容交给模型，再让模型基于这些内容生成回答。RAG 不保证检索正确，也不自动保证答案真实。</p>
     <p>因此，向量索引和 RAG 都是可删除、可替换、可重建的辅助层。无论它们是否存在，人都应该能直接打开 Markdown 笔记和原始证据。</p>
   </div>
@@ -369,13 +388,15 @@ valid_to: 2027-12-31
 
   <p>可以先挑一批真实材料，例如一份综合 Word、几份证书和一个已经完成的项目。原始材料保持原样，Agent 先盘点内容并标出可能复用的片段。人确认其中一条事实后，再把它写成一篇有正文、属性、关系和证据引用的 Markdown 笔记。</p>
 
-  <div class="tree">company-vault/              <span class="cm"># 一种企业场景约定，不是全局协议</span>
-├── inbox/                  <span class="cm"># 原始材料和候选现场</span>
-├── notes/                  <span class="cm"># 方便浏览的正式知识</span>
-└── archive/                <span class="cm"># 已替代或退出当前使用范围的内容</span>
+  <div class="tree">company-vault/              <span class="cm"># 公司的知识库，实际用公司自己的名字</span>
+├── inbox/                  <span class="cm"># 收件箱：原始材料和候选</span>
+├── notes/                  <span class="cm"># 笔记：方便浏览的正式知识</span>
+└── archive/                <span class="cm"># 归档：已替代或退出当前使用范围的内容</span>
 
 work/
 └── 2026-某项目/             <span class="cm"># 当前客户、金额、工期、草稿和交付物</span></div>
+
+  <p>这里有两层：上面是企业自己的知识库，长期用；下面是当前项目的工作区，做完就收。项目里的客户、金额、工期属于这一次的工作，不因为做过一遍就自动变成公司知识。企业知识可以被项目引用，反过来不行。</p>
 
   <p>这套目录可以帮助团队开始，但不应该成为企业知识库的唯一设计。真正重要的是：笔记自身能说明自己是什么，项目工作区和长期知识有边界，原始 Office 文件能够被核对，自动整理失败不会造成不可恢复的损失。</p>
 </section>
@@ -383,18 +404,19 @@ work/
 <!-- 09 -->
 <section>
   <h2><span class="num">09</span>容易走偏的地方</h2>
-  <p class="lead">这些做法会让场景经验被误写成共性架构。</p>
+  <p class="lead">这些做法会把一个场景里的经验，误当成所有场景都该照做的规矩。</p>
 
   <table>
     <thead><tr><th style="width:37%">容易走偏的做法</th><th>问题在哪里</th></tr></thead>
     <tbody>
       <tr><td>把 Markdown 当成自动正确的格式</td><td>Markdown 只是共同表达载体，来源、状态和人工核对仍然必须存在</td></tr>
-      <tr><td>把目录位置当成状态</td><td>目录可能帮助浏览，但状态必须跟随笔记写在 Frontmatter</td></tr>
+      <tr><td>把目录位置当成状态</td><td>目录可能帮助浏览，但状态必须跟着笔记写在属性里</td></tr>
       <tr><td>先建知识地图、台账或隐藏索引</td><td>外部登记容易和笔记分叉，先让笔记自身可观察</td></tr>
       <tr><td>一开始就上向量数据库或 RAG</td><td>检索层不能修复混乱、冲突和没有来源的知识</td></tr>
       <tr><td>假设 Agent 会自己判断新旧和权威性</td><td>来源、状态、有效期和使用边界必须被明确表达并逐项检查</td></tr>
       <tr><td>把当前项目变量写回长期知识</td><td>客户、金额、工期和临时承诺会污染后续任务</td></tr>
       <tr><td>为了“通顺”改写原始证据</td><td>正式知识可以提炼，但必须保留原始文件和可复核位置</td></tr>
+      <tr><td>文件名不带关键词</td><td>写成 <code>新建文档3.docx</code>、<code>扫描件.pdf</code>，搜的时候搜不到，等于没放进来</td></tr>
     </tbody>
   </table>
 
@@ -404,19 +426,20 @@ work/
 <!-- 10 -->
 <section>
   <h2><span class="num">10</span>速查</h2>
-  <p class="lead">如果只记一页，记住下面这十句话。</p>
+  <p class="lead">如果只记一页，记住下面这些话。</p>
 
   <div class="final">
     <ol>
       <li><strong>知识库的核心</strong>：让人和 Agent 通过同一份可观察知识，共同理解同一件事。</li>
-      <li><strong>传统 Office 的位置</strong>：继续承担编辑、审批、签署、证据和交付；长期复用的语义结论另写成 Markdown。</li>
-      <li><strong>Markdown 的位置</strong>：当前的人机共同语义载体，不是自动正确的魔法，也不是隐藏数据库的替身。</li>
-      <li><strong>一篇笔记的组成</strong>：正文、Frontmatter、Wiki 链接和附件引用。</li>
+      <li><strong>传统 Office 该干什么</strong>：继续承担编辑、审批、签署、证据和交付；长期复用的结论另写成 Markdown。</li>
+      <li><strong>Markdown 的位置</strong>：当前的人和 Agent 共同载体，不是自动正确的魔法，也不是隐藏数据库的替身。</li>
+      <li><strong>一篇笔记的组成</strong>：正文、属性、关系、附件引用。</li>
+      <li><strong>文件名的顺序</strong>：时间、主体、事情，顺序固定，写的是你以后要搜的词；状态和有效期不写名字，写属性。</li>
       <li><strong>属性的原则</strong>：属性跟随笔记，字段按场景增加，未知值不要猜。</li>
       <li><strong>资料整理的入口</strong>：原始资料可以很乱；先保留，再盘点、形成候选、核对，最后形成正式知识。</li>
-      <li><strong>架构的主线</strong>：业务可以保留候选和失败现场，长期事实仍然只回到共同知识对象。</li>
+      <li><strong>主线只有一条</strong>：业务可以保留候选和中间结果，长期事实仍然只回到共同知识对象。</li>
       <li><strong>知识和任务的边界</strong>：企业事实可以被项目引用，项目变量不能自动写回企业知识。</li>
-      <li><strong>检索的顺序</strong>：根目录、标题、全文、Frontmatter、Wiki 链接，再按真实需要增加混合检索、向量检索和 RAG。</li>
+      <li><strong>检索的顺序</strong>：根目录、标题、全文、属性、关系链接，再按真实需要增加语义检索、向量检索和 RAG。</li>
       <li><strong>可靠性的标准</strong>：能看懂、找得到、核得上、知道状态、能维护，失败后人还能接手。</li>
     </ol>
   </div>
