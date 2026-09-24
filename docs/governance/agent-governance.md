@@ -2,6 +2,14 @@
 
 适用范围：使用 Agent 参与日常开发和维护的所有项目，不限于本仓库。
 
+## 如何使用本规范
+
+**新建项目**：读完本文档 → 用 `templates/agents-md.md` 创建项目 `AGENTS.md` → 用 `templates/handoff.md` 创建 `docs/HANDOFF.md`。
+
+**开始任务**：先读项目 `HANDOFF.md` 确认当前状态 → 用 `templates/task-contract.md` 写任务定义，人确认后执行。
+
+**遇到问题**：返回本文档的对应原则，不要打补丁。
+
 ---
 
 ## 核心原则
