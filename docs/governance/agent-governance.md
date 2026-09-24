@@ -4,7 +4,15 @@
 
 ## 如何使用本规范
 
-**新建项目**：读完本文档 → 用 `templates/agents-md.md` 创建项目 `AGENTS.md` → 用 `templates/handoff.md` 创建 `docs/HANDOFF.md`。
+**新建项目骨架**，按顺序执行：
+
+1. 用 `templates/agents-md.md` 创建项目根目录的 `AGENTS.md`，填写项目角色和特有约束
+2. 创建 `README.md`：一句话说这是什么，加常用命令
+3. 用 `templates/handoff.md` 创建 `docs/HANDOFF.md`，填写当前状态
+4. 按需建目录（有内容再建，不建空目录）：`docs/architecture/`、`docs/product/`、`docs/research/`
+5. 运行 `git status` 确认没有多余的未跟踪文件
+
+骨架就位的判断标准：Agent 拿到这个项目，读完 `AGENTS.md` 和 `docs/HANDOFF.md`，不需要其他信息就能开始第一个任务。
 
 **开始任务**：先读项目 `HANDOFF.md` 确认当前状态 → 用 `templates/task-contract.md` 写任务定义，人确认后执行。
 
