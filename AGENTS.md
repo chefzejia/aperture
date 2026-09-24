@@ -29,7 +29,7 @@ git diff --check
 
 ### 理解原则
 - [人机协同模型](docs/core/agentic-work-model.md) — 第一性原则、协同边界、Track 定义
-- [Agent 治理规范](docs/governance/agent-governance.md) — 如何写好 AGENTS.md 和架构选择
+- [Agent 项目协同规范](docs/governance/agent-governance.md) — 日常协同、验证、调试和架构选择
 - [Skill 设计最佳实践](docs/core/skill-design.md) — 如何写好 Skill
 
 ### Tracks
