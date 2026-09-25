@@ -11,7 +11,7 @@
 ## 开始
 
 1. [人机协同模型](docs/core/agentic-work-model.md) — 原则和推导
-2. [知识库 Track](tracks/knowledge-base/SKILL.md) — 在知识整理中验证协同
-3. [企业知识库场景](docs/scenarios/企业知识库.md) — 企业场景的具体实现
+2. [知识库 Skill](tracks/knowledge-base/SKILL.md) — 在知识整理中验证协同
+3. [当前状态](docs/HANDOFF.md) — 项目现在在哪里、下一步做什么
 
 [Apache License 2.0](LICENSE)
