@@ -34,5 +34,3 @@ git diff --check
 
 ### Tracks
 - [知识库](tracks/knowledge-base/SKILL.md) — 人机协同整理和使用知识
-- [企业知识库](docs/scenarios/企业知识库.md) — 企业资料场景
-- [投标工作流](docs/scenarios/投标工作流.md) — 企业投标场景
