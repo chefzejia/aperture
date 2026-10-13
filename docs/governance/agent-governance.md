@@ -4,17 +4,16 @@
 
 ## 如何使用本规范
 
-**新建项目骨架**，按顺序执行：
+**新建项目骨架**：
 
-1. 用 `templates/agents-md.md` 创建项目根目录的 `AGENTS.md`，填写项目角色和特有约束
-2. 创建 `README.md`：一句话说这是什么，加常用命令
-3. 用 `templates/handoff.md` 创建 `docs/HANDOFF.md`，填写当前状态
-4. 按需建目录（有内容再建，不建空目录）：`docs/architecture/`、`docs/product/`、`docs/research/`
-5. 运行 `git status` 确认没有多余的未跟踪文件
+1. 从 `templates/agents.md` 创建 `AGENTS.md`，填写项目定位和特有约束
+2. 从 `templates/readme.md` 创建 `README.md`，填写快速开始
+3. 根据项目规模，选择性添加其他文档（见下方"文档分级策略"）
+4. 运行 `git status` 确认没有多余的未跟踪文件
 
-骨架就位的判断标准：Agent 拿到这个项目，读完 `AGENTS.md` 和 `docs/HANDOFF.md`，不需要其他信息就能开始第一个任务。
+**判断标准**：Agent 读完 `AGENTS.md` 和 `README.md`，能开始第一个任务。
 
-**开始任务**：先读项目 `HANDOFF.md` 确认当前状态 → 用 `templates/task-contract.md` 写任务定义，人确认后执行。
+**开始任务**：先读项目 `HANDOFF.md` 确认当前状态（如果有）→ 用 `templates/task-contract.md` 写任务定义，人确认后执行。
 
 **遇到问题**：返回本文档的对应原则，不要打补丁。
 
@@ -45,21 +44,101 @@
 
 ---
 
-## 文档分层
+## 文档分级策略
 
-```text
-AGENTS.md            项目宪法，短而稳定
-README.md            人类入口，说明项目和常用操作
-docs/HANDOFF.md      当前状态、下一步、交接
-docs/product/        产品原则、PRD、商业模式、交互决策
-docs/architecture/   架构设计、ADR、迁移方案
-docs/research/       调研、benchmark、验收矩阵
-apps/*/README.md     子应用运行、构建、测试命令
-```
+### 必需文档（所有项目）
 
-判断规则：稳定原则放 `AGENTS.md`；当前状态放 `HANDOFF.md`；长期设计放 `architecture`；产品判断放 `product`；证据和实验放 `research`；命令放最近的 `README.md`。
+**AGENTS.md** - Agent 的唯一入口
+- 项目定位（是什么、不是什么）
+- 架构约束（不可违反，5条以内）
+- 修改和验证（必须运行的命令）
+- 文档路由（其他文档在哪里）
+- 长度：50-100 行
+
+**README.md** - 人类入口
+- 一句话介绍
+- 快速开始
+- 常用命令
+- 项目结构（如果复杂）
+
+**判断标准**：Agent 读完这两个文件，能开始第一个任务。
+
+### 推荐文档（按需要）
+
+**docs/HANDOFF.md** - 当前状态和下一步
+- 何时需要：多人协作、长期项目、有交接需求
+- 内容：当前在哪里、下一步做什么、关键文件
+- 更新频率：每周或每次重要变更
+
+**docs/LESSONS.md** - 失败记录和规则演化
+- 何时需要：开始用 Agent 后，有重复失败案例
+- 内容：规则 + 证据 + 出现次数
+- 更新频率：每周 review 或发现重复失败时
+- 晋升：出现 3 次 → 移到 AGENTS.md 或相关规范
+
+### 可选文档（按复杂度）
+
+**DESIGN.md** - 架构概览（中型项目）
+- 何时需要：有多个子系统、有重要架构决策
+- 内容：系统组成、职责边界、关键决策理由
+- 替代方案：docs/architecture/overview.md
+
+**docs/architecture/** - 架构详细（大型项目）
+- 何时需要：有多个架构决策需要分别记录
+- 内容：每个子系统一个文件、ADR 记录（见 `templates/adr.md`）
+- 替代：DESIGN.md（中型项目）
+
+**docs/product/** - 产品决策
+- 何时需要：有产品判断需要记录
+- 内容：PRD、交互决策、商业模式
+
+**docs/research/** - 调研和验收
+- 何时需要：有调研任务、需要验收矩阵
+- 内容：调研报告、benchmark、验收清单
+
+### 规模参考
+
+| 规模 | 代码量 | 必需 | 推荐 | 可选 |
+|------|--------|------|------|------|
+| 小型 | < 5K 行 | AGENTS.md<br>README.md | HANDOFF.md* | - |
+| 中型 | 5K-50K | AGENTS.md<br>README.md | HANDOFF.md<br>LESSONS.md | DESIGN.md<br>或 architecture/ |
+| 大型 | > 50K | AGENTS.md<br>README.md | HANDOFF.md<br>LESSONS.md<br>architecture/ | product/<br>research/ |
+
+*小型项目的 HANDOFF.md：如果是单人且持续工作，可以省略；如果有间隔或需要交接，建议加上。
+
+### 使用 templates
+
+**新建项目**：
+1. 从 `templates/agents.md` 创建 `AGENTS.md`
+2. 从 `templates/readme.md` 创建 `README.md`
+3. 根据规模，选择性添加：
+   - `templates/handoff.md` → `docs/HANDOFF.md`
+   - `templates/lessons.md` → `docs/LESSONS.md`
+   - `templates/design.md` → `DESIGN.md`
+   - `templates/adr.md` → `docs/architecture/ADR-001-xxx.md`
+4. **不建空目录**，有内容再建
+
+**判断是否需要某文档**：
+1. 没有它，Agent 或人会做错决策吗？
+2. 它会持续更新吗？
+3. 它的内容能合并到其他文档吗？
+
+如果 1=是、2=是、3=否 → 需要独立文档
+否则 → 不需要或可以合并
+
+### 文档路由规则
 
 每次修改 `AGENTS.md` 前先问：**这条内容三个月后还应该存在吗？** 否定则不进 `AGENTS.md`。
+
+判断规则：
+- 稳定原则 → `AGENTS.md`
+- 当前状态 → `docs/HANDOFF.md`
+- 失败记录 → `docs/LESSONS.md`
+- 架构概览 → `DESIGN.md` 或 `docs/architecture/overview.md`
+- 架构决策 → `docs/architecture/ADR-NNN-xxx.md`
+- 产品判断 → `docs/product/`
+- 证据实验 → `docs/research/`
+- 运行命令 → 最近的 `README.md`
 
 ### 文档写作原则
 
