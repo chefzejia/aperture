@@ -27,7 +27,7 @@ git diff --check
 
 ## 工具选择梯度（固定策略）
 
-一切任务按"最轻够用一级优先"选择，跳级必须说明理由；computer use 只用于无 API 的表面，不是更重的浏览器工具。完整定义见 [Agent 项目协同规范](docs/governance/agent-governance.md) 的"工具选择梯度"。宿主缺某级时显式报告缺口，不假装完成；断言"不具备某能力"前先实测。
+一切任务按"最轻够用一级优先"选择，跳级必须说明理由；computer use 只用于无 API 的表面，不是更重的浏览器工具。完整定义见 [通用工作标准](docs/governance/templates/standards.md) 的"工具选择梯度"。宿主缺某级时显式报告缺口，不假装完成；断言"不具备某能力"前先实测。
 
 ## 浏览器使用规范（本机实测 2026-10-14）
 
@@ -54,6 +54,7 @@ git diff --check
 
 ### 固化真源
 - [通用工作标准](docs/governance/templates/standards.md) — 工具梯度、验收清单、开发约束的标准真源，新项目复制为 docs/STANDARDS.md
+- [本仓承接](docs/STANDARDS.md) — 指向式（真源仓库形态：不复制，标准正文唯一在真源）
 
 ### Tracks
 - [知识库](tracks/knowledge-base/SKILL.md) — 人机协同整理和使用知识

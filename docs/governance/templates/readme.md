@@ -204,6 +204,8 @@ project/
   ├── HANDOFF.md
   ├── DESIGN.md           # 如果有视觉输出
   └── docs/
+      ├── STANDARDS.md    # 通用工作标准（复制即用）
+      ├── LESSONS.md      # 失败记录驱动标准演化
       ├── architecture/
       │   ├── overview.md
       │   ├── subsystems/

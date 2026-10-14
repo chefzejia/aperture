@@ -42,7 +42,7 @@
 ## 工具选择梯度
 
 <!-- 固定策略，适用于一切任务，不删改。核心：最轻够用的一级优先，跳级必须说明理由。
-     完整定义见 docs/governance/agent-governance.md 的"工具选择梯度"。 -->
+     完整定义见本模板所在治理体系的工具选择梯度章节（agentic-work-infra: docs/governance/templates/standards.md，复制时随 STANDARDS.md 全文进入目标项目）。 -->
 
 1. 结构化接口（服务 API / SDK / MCP）优先于命令行
 2. 命令行优先于脚本化驱动（playwright、AppleScript）

@@ -46,13 +46,11 @@
 
 ---
 
-## 核心原则（文档工程层面）
+## 核心原则
 
-**代码即事实，运行结果是最终判断标准。** 不接受 Agent 声称完成、日志看起来正常、文件存在等表象作为验收依据。任何工作结果必须能被人独立检查。
+文档工程遵循与一切任务相同的核心原则（代码即事实、共同可观测、先找根因、最轻够用工具），全文见 `templates/standards.md` 的"核心工作原则"。此处不重复条文，只加一条本领域特有原则：
 
-**共同可观测，不分裂成两套状态。** Agent 的代码、判断和整理结果必须对人直接可见。不接受 Agent 在不透明的索引、缓存或生成结果中维护一套人无法核对的状态。
-
-**先从目标出发，不打补丁。** 遇到问题先找根本原因，再决定如何修改。连续两次对同一问题打局部补丁，说明根因没找到，需要重新分析。
+**文档是标准的载体，不是标准本身。** 一份文档写对了的标志是：目标项目的 agent 读完后行为改变，而不是文字优美或结构完整。
 
 ---
 
@@ -144,11 +142,13 @@
 
 | 规模 | 代码量 | 必需 | 推荐 | 可选 |
 |------|--------|------|------|------|
-| 小型 | < 5K 行 | AGENTS.md<br>README.md<br>STANDARDS.md | HANDOFF.md* | - |
-| 中型 | 5K-50K | 同上 | HANDOFF.md<br>LESSONS.md | DESIGN.md<br>或 architecture/<br>DEPLOYMENT.md |
+| 小型 | < 5K 行 | AGENTS.md<br>README.md<br>STANDARDS.md | LESSONS.md<br>HANDOFF.md* | - |
+| 中型 | 5K-50K | 同上 | 同上 | DESIGN.md<br>或 architecture/<br>DEPLOYMENT.md |
 | 大型 | > 50K | 同上 | 同上<br>architecture/ | product/<br>research/ |
 
 *小型项目的 HANDOFF.md：如果是单人且持续工作，可以省略；如果有间隔或需要交接，建议加上。
+
+LESSONS.md 在所有规模都推荐（无失败案例时可空着不建）：它是 STANDARDS 演化的唯一入口，一旦开始用 Agent 就应该存在，否则标准永远停留在复制时的状态。
 
 ### 使用 templates
 
