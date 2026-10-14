@@ -299,7 +299,7 @@ concurrency:
    - 创建 `docs/LESSONS.md` 或 `tracks/*/LESSONS.md`
    - 记录 Agent 重复失败的模式
    - 附带证据（commit、issue、时间）
-   - 出现 3 次后晋升到 AGENTS.md 或 governance
+   - 出现 3 次后晋升到 code-standards.md（我们的对应物：STANDARDS.md；AGENTS.md 保持入口角色不收规则）
 
 2. **明确验收标准**：
    - code-standards.md 的 6 条验收标准可以借鉴

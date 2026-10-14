@@ -1,7 +1,7 @@
 <!-- reviewed-through: <commit-hash> (YYYY-MM-DD) -->
 # Lessons from Work
 
-记录重复出现的失败模式。出现 3 次后晋升到 AGENTS.md 或项目规范。
+记录重复出现的失败模式。出现 3 次后晋升到 `docs/STANDARDS.md`（AGENTS.md 保持入口角色，不收规则）。
 
 ## 使用说明
 
@@ -23,8 +23,8 @@
 "做对示例"让规则可模仿而不只是可回避；没有时可省略此行。
 
 **晋升标准**：
-- 出现 ≥3 次 → 移到 AGENTS.md 或相关规范
-- 在此保留引用
+- 出现 ≥3 次 → 移到 `docs/STANDARDS.md` 的对应小节
+- 在此保留引用（规则名 + 指向 STANDARDS 的位置）
 
 ---
 
@@ -41,6 +41,6 @@
 
 ## 已晋升规范
 
-以下规则已晋升到项目规范，此处保留引用：
+以下规则已晋升到 STANDARDS.md，此处保留引用：
 
-- [规则名称] → 见 AGENTS.md#section 或 相关文档#section
+- [规则名称] → 见 docs/STANDARDS.md 对应小节

@@ -33,7 +33,7 @@
 # Lessons from Agent Work
 
 本文档记录 Agent 在实际工作中重复出现的失败模式。
-每条规则附带证据（commit + issue/任务记录），出现 3 次后晋升到 agent-governance.md。
+每条规则附带证据（commit + issue/任务记录），出现 3 次后晋升到 STANDARDS.md（对应 magpie 的 code-standards.md；AGENTS.md 保持入口角色不收规则）。
 
 ## 知识整理
 
@@ -363,7 +363,7 @@ magpie 实际上有三层规则：
 - 确认长期结论（knowledge-base 的 notes/）
 - 裁定冲突（多个来源不一致时）
 - 批准高风险修改（删除、重构）
-- Review 并晋升规则（LESSONS → agent-governance）
+- Review 并晋升规则（LESSONS → STANDARDS）
 
 ### 实际操作
 
@@ -434,7 +434,7 @@ magpie 实际上有三层规则：
 
 4. 评估规则晋升
    - 检查 LESSONS.md 中 Seen ≥3× 的规则
-   - 决定是否晋升到 agent-governance.md
+   - 决定是否晋升到 STANDARDS.md
 
 **工具辅助**：
 ```bash

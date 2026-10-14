@@ -108,7 +108,7 @@ docs/LESSONS.md  # 或 tracks/knowledge-base/LESSONS.md
 **运作**：
 - 定期 review（可以是每周，不必每晚）
 - 记录"Agent 修复了两次以上"的问题
-- 出现 3 次 → 晋升到 AGENTS.md 或 agent-governance.md
+- 出现 3 次 → 晋升到 code-standards.md（AGENTS.md 保持入口角色不收规则——这是渐进披露的关键：入口不随规则积累膨胀）
 
 #### 2. 明确验收标准
 
@@ -324,10 +324,10 @@ LESSONS.md（暂存） --3次--> code-standards.md（固化）
 - 记录规则 + 最新证据（commit + issue）
 
 ### 何时晋升
-- 规则被看到 3 次 → 移到 AGENTS.md 或 agent-governance.md
+- 规则被看到 3 次 → 移到 STANDARDS.md（AGENTS.md 保持入口角色不收规则）
 - 在 LESSONS.md 保留引用：
   ```
-  - [规则名] → 已晋升到 agent-governance.md
+  - [规则名] → 已晋升到 standards（STANDARDS.md）
   ```
 
 ### 何时归档
