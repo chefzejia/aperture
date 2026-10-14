@@ -9,7 +9,7 @@
 ### 1. Gateway（主 provider，已清理）
 - **ID**: `gateway`
 - **Base URL**: `https://api.gateway.example/v1`
-- **API Key**: `sk-e…b436`
+- **API Key**: `sk-e…（已脱敏）`
 - **模型数**: 5 个（已移除国产模型 Kimi、K3）
 - **使用者**: Claude Code, Codex, Pi, Kimi Code
 
@@ -24,7 +24,7 @@
 - **ID**: `gw-gpt`
 - **Base URL**: `https://gateway.com/v1`
 - **API**: OpenAI Responses
-- **API Key**: `sk-d…edcd`
+- **API Key**: `sk-d…（已脱敏）`
 - **模型数**: 1 个
 
 **模型列表**：
@@ -34,7 +34,7 @@
 - **ID**: `gw-claude`
 - **Base URL**: `https://gateway.com`
 - **API**: Anthropic Messages
-- **API Key**: `sk-e…b436`
+- **API Key**: `sk-e…（已脱敏）`
 - **模型数**: 3 个
 
 **模型列表**：
@@ -46,7 +46,7 @@
 - **ID**: `gw-gemini`
 - **Base URL**: `https://gateway.com/v1`
 - **API**: OpenAI Responses
-- **API Key**: `sk-3…6a9c`
+- **API Key**: `sk-3…（已脱敏）`
 - **模型数**: 1 个
 
 **模型列表**：
@@ -56,7 +56,7 @@
 - **ID**: `gateway-grok`
 - **Base URL**: `https://gateway.com/v1`
 - **API**: OpenAI Responses
-- **API Key**: `sk-0…cfd8`
+- **API Key**: `sk-0…（已脱敏）`
 - **模型数**: 1 个
 
 **模型列表**：
@@ -66,7 +66,7 @@
 - **ID**: `gw-cn`
 - **Base URL**: `https://gateway.com/v1`
 - **API**: OpenAI Responses
-- **API Key**: `sk-e…c912`
+- **API Key**: `sk-e…（已脱敏）`
 - **模型数**: 2 个
 
 **模型列表**：
