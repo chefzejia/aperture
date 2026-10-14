@@ -49,8 +49,11 @@ git diff --check
 
 ### 理解原则
 - [人机协同模型](docs/core/agentic-work-model.md) — 第一性原则、协同边界、Track 定义
-- [Agent 项目协同规范](docs/governance/agent-governance.md) — 日常协同、验证、调试和架构选择
+- [Agent 文档工程指南](docs/governance/agent-governance.md) — 如何为项目创建和改造文档（含真源/投影架构说明）
 - [Skill 设计最佳实践](docs/core/skill-design.md) — 如何写好 Skill
+
+### 固化真源
+- [通用工作标准](docs/governance/templates/standards.md) — 工具梯度、验收清单、开发约束的标准真源，新项目复制为 docs/STANDARDS.md
 
 ### Tracks
 - [知识库](tracks/knowledge-base/SKILL.md) — 人机协同整理和使用知识

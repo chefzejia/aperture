@@ -30,6 +30,24 @@
 
 ---
 
+### STANDARDS.md
+**必需** | 每个项目都要有
+
+**内容**：从 `standards.md` 原样复制，不需要修改
+- 核心工作原则
+- 工具选择梯度
+- 工作方式（何时停止）
+- 人机边界
+- 开发约束
+- 验证与验收清单
+- 调试方法
+
+**复制后自治**：项目通过自己的 LESSONS.md 演化这份标准，不回写模板真源。
+
+**参考**：`standards.md`
+
+---
+
 ### HANDOFF.md
 **推荐** | 有交接需求时使用
 
@@ -161,7 +179,9 @@ docs/architecture/
 ```
 project/
   ├── README.md           # 项目说明
-  └── AGENTS.md           # Agent 协同规范
+  ├── AGENTS.md           # Agent 协同规范
+  └── docs/
+      └── STANDARDS.md    # 通用工作标准（复制即用）
 ```
 
 ### 标准配置（中等项目）
@@ -170,7 +190,10 @@ project/
   ├── README.md
   ├── AGENTS.md
   ├── HANDOFF.md          # 当前状态和下一步
-  └── ARCHITECTURE.md     # 架构概览
+  ├── ARCHITECTURE.md     # 架构概览
+  └── docs/
+      ├── STANDARDS.md    # 通用工作标准（复制即用）
+      └── LESSONS.md      # 失败记录驱动标准演化
 ```
 
 ### 完整配置（复杂项目）
@@ -206,6 +229,7 @@ project/
 |------|------|---------|-------|
 | **README** | 项目说明、如何运行 | 低 | 必需 |
 | **AGENTS** | 架构约束、验证命令 | 低 | 必需 |
+| **STANDARDS** | 通用工作标准 | 低（LESSONS 驱动） | 必需 |
 | **HANDOFF** | 当前状态、下一步 | 高 | 推荐 |
 | **ARCHITECTURE** | 架构组成、关键决策 | 中 | 可选 |
 | **ADR** | 单个架构决策记录 | 低 | 可选 |

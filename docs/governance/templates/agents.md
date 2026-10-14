@@ -14,6 +14,7 @@
 
 1. `docs/HANDOFF.md` — 当前状态和下一步
 2. `README.md` — 项目结构和常用命令
+3. `docs/STANDARDS.md` — 通用工作标准（约束此项目中所有任务的执行）
 
 ## 架构约束（不可违反）
 
@@ -69,8 +70,7 @@
 <!-- 按任务类型列出文件位置，让 Agent 知道去哪找什么。
      不需要列所有文件，只列按需查阅时的入口。 -->
 
+- `docs/STANDARDS.md` — 通用工作标准（必配：工具梯度、验收清单、开发约束、调试方法）
 - `docs/architecture/` — 架构设计和决策记录
 - `docs/product/` — 产品原则和交互决策
 - `docs/research/` — 调研、benchmark、验收矩阵
-
-<!-- 深度参考：docs/governance/agent-governance.md — 协同原则、文档分层、调试规范 -->

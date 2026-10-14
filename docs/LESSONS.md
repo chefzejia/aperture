@@ -56,6 +56,7 @@
 
 - 证据1：2026-10-13 `thirdparty/magpie` 以 mode 160000 gitlink 被提交（314a0ee），后续 feb057c 删除 gitlink 时本地目录一并丢失，研究文档失去本地源码
 - Seen 1× (2026-10-13)
+- 做对示例：2026-10-14 经 codeload 下载快照到 `thirdparty/`（gitignore），可重下、不进主仓库
 
 ### 规则过早固化
 
