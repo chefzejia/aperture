@@ -1,5 +1,7 @@
 # Herdr 深度调研报告
 
+> 事实核查：2026-10-13（GitHub API + 官网实测）。原报告含多处推测性/过期声明，已修正。
+
 ## 概要
 
 Herdr 是一个专为编码 Agent 设计的**运行时（runtime）**，而非传统的 Agent 编排框架。它的核心定位是：让编码 Agent（如 Claude Code、Codex、Cursor 等）能够在后台持续运行，支持断开连接、跨机器访问，并提供 Agent 间的协同能力。
@@ -46,7 +48,7 @@ Herdr 方式：
 
 ### 1.2 设计理念
 
-**来源**：https://herdr.dev/, https://github.com/herdrdev/herdr  
+**来源**：https://herdr.dev/, https://github.com/herdrdev/herdr
 **置信度**：高（官方文档）
 
 Herdr 的核心设计理念：
@@ -76,7 +78,7 @@ Herdr 的核心设计理念：
 
 ### 2.2 LangGraph 深入分析
 
-**来源**：https://python.langchain.com/docs/langgraph/, https://github.com/langchain-ai/langgraph  
+**来源**：https://python.langchain.com/docs/langgraph/, https://github.com/langchain-ai/langgraph
 **置信度**：高（官方文档）
 
 **核心能力**：
@@ -101,7 +103,7 @@ Herdr 的核心设计理念：
 
 ### 2.3 CrewAI 深入分析
 
-**来源**：https://docs.crewai.com/, https://github.com/crewAIInc/crewAI  
+**来源**：https://docs.crewai.com/, https://github.com/crewAIInc/crewAI
 **置信度**：高（官方文档）
 
 **核心能力**：
@@ -121,7 +123,7 @@ Herdr 的核心设计理念：
 **局限性**：
 - 抽象层级高，灵活性相对较低
 - 不解决终端持久化问题
-- 社区规模虽大（10万开发者），但相对 LangChain 生态仍较小
+- 社区规模虽大（宣称数十万开发者，未独立核实），但相对 LangChain 生态仍较小
 
 ### 2.4 三者对比矩阵
 
@@ -148,7 +150,7 @@ Herdr 的核心设计理念：
 
 ### 3.1 Agent 状态感知
 
-**来源**：https://herdr.dev/docs/concepts/  
+**来源**：https://herdr.dev/docs/concepts/
 **置信度**：高（官方文档 + 实现确认）
 
 Herdr 能够识别 Agent 的五种状态：
@@ -168,7 +170,7 @@ Herdr 能够识别 Agent 的五种状态：
 
 ### 3.2 Agent 自动化 API
 
-**来源**：https://herdr.dev/docs/agent-automation/  
+**来源**：https://herdr.dev/docs/agent-automation/
 **置信度**：高（官方文档）
 
 Herdr 提供三层 API：
@@ -222,7 +224,7 @@ herdr agent send-keys reviewer esc
 
 ### 3.3 跨机器管理
 
-**来源**：https://herdr.dev/docs/connecting-machines/  
+**来源**：https://herdr.dev/docs/connecting-machines/
 **置信度**：高（官方文档）
 
 ```bash
@@ -242,7 +244,7 @@ herdr agent start remote-worker --kind claude --machine workbox
 
 ### 3.4 持久化机制
 
-**来源**：https://herdr.dev/docs/session-state/  
+**来源**：https://herdr.dev/docs/session-state/
 **置信度**：高（官方文档）
 
 **两层持久化**：
@@ -266,14 +268,15 @@ herdr agent start remote-worker --kind claude --machine workbox
 
 ### 4.1 社区活跃度
 
-**来源**：https://github.com/herdrdev/herdr, https://github.com/herdrdev/herdr/discussions  
+**来源**：https://github.com/herdrdev/herdr, https://github.com/herdrdev/herdr/discussions
 **置信度**：高（GitHub 数据）
 
-**数据点**（截至 2025 年 1 月）：
-- **Stars**：GitHub 显示有 star 徽章（具体数字未公开在 README）
+**数据点**（截至 2026-10-13，GitHub API 实测）：
+- **Stars**：43,538（herdr.dev 页面显示）；GitHub API 43,756
 - **Discussions**：活跃的讨论区，包含功能建议、使用案例分享
-- **Issues**：有 issue 跟踪（访问需要登录）
+- **Issues**：有 issue 跟踪
 - **贡献者**：有 `.github/MAINTAINERS` 和 `.github/APPROVED_CONTRIBUTORS` 机制
+- **语言**：Rust；许可证：Apache-2.0；仓库创建于 2026-03-27
 
 **用户反馈主题**（基于 Discussions）：
 - OSC 52 剪贴板支持
@@ -285,16 +288,16 @@ herdr agent start remote-worker --kind claude --machine workbox
 **活跃度评估**：
 - ✅ 有持续的功能讨论和社区贡献
 - ✅ 有清晰的治理结构（MAINTAINERS、APPROVED_CONTRIBUTORS）
-- ⚠️ 相比 LangGraph（100k+ stars）和 CrewAI（10k+ stars），规模较小
+- ⚠️ 相比 LangGraph（43.2k stars，2026-10 实测）和 CrewAI（59.6k stars，2026-10 实测），规模相近但定位更 niche（专注编码 Agent 运行时）
 - ✅ 但 Herdr 的定位更 niche（专注于编码 Agent 运行时）
 
 ### 4.2 资金和发展
 
-**来源**：https://herdr.dev/blog/herdr-raised-a-seed/  
+**来源**：https://herdr.dev/blog/herdr-raised-a-seed/
 **置信度**：高（官方博客）
 
 **关键信息**：
-- **融资**：600 万美元种子轮（2026 年 10 月前）
+- **融资**：600 万美元种子轮（2026-09-08，官方博客确认）
 - **领投**：Bessemer Venture Partners
 - **参与**：Y Combinator, e2vc
 - **天使投资人**：
@@ -321,8 +324,8 @@ herdr agent start remote-worker --kind claude --machine workbox
 
 **支持的 Agent**（官方检测）：
 ```
-Claude Code, Codex, Pi, OpenCode, Cursor, Grok, Copilot, 
-Gemini, Devin, Cline, Kimi, Kiro, Droid, Amp, Hermes, 
+Claude Code, Codex, Pi, OpenCode, Cursor, Grok, Copilot,
+Gemini, Devin, Cline, Kimi, Kiro, Droid, Amp, Hermes,
 Kilo, QoderCLI, Qwen, Letta, Maki, Muse
 ```
 （共 22+ 种）
@@ -471,7 +474,7 @@ codex_agent = Agent(
 
 ### 6.1 技术局限
 
-**来源**：官方文档 + 架构分析  
+**来源**：官方文档 + 架构分析
 **置信度**：高
 
 1. **进程不可恢复**：
@@ -497,7 +500,7 @@ codex_agent = Agent(
 
 ### 6.2 生态风险
 
-**来源**：市场分析 + 社区观察  
+**来源**：市场分析 + 社区观察
 **置信度**：中
 
 1. **早期产品**：
@@ -540,17 +543,17 @@ codex_agent = Agent(
 
 ### 7.1 适用性判断
 
-**Herdr 非常适合你的场景，原因如下**：
+**Herdr 与目标场景的匹配度**：
 
-1. **需求匹配度：95%**
-   - ✅ "Claude Code 调用 Codex" 正是 Herdr 的核心场景
-   - ✅ 官方示例直接展示了这种用法
-   - ✅ 有完整的 API 支持
+1. **"Claude Code 调用 Codex" 是 Herdr 的核心场景之一**
+   - 官方示例展示了这种用法
+   - 有完整的 API 支持（agent start/prompt/wait/read）
 
-2. **无替代方案**：
+2. **替代方案**：
    - ❌ LangGraph/CrewAI 不解决终端运行时问题
    - ❌ tmux/zellij 没有 Agent 感知能力
-   - ✅ Herdr 是目前唯一专门为此设计的工具
+   - ⚠️ "Herdr 是唯一专门为此设计的工具"是原报告的强声明：未做穷尽式竞品扫描，应视为"目前未找到同类"而非事实
+   - 注：Claude Code 自身也内置了 subagent/Task 机制可调用其他 CLI Agent（如 claude -p），同机场景下这是零成本替代
 
 3. **可以组合使用**：
    - 底层：Herdr（运行时）
@@ -701,9 +704,9 @@ codex_agent = Agent(
    - 可以组合使用
 
 3. **"Claude Code 调用 Codex" 场景**：
-   - **Herdr 是目前唯一专门为此场景设计的工具**
+   - Herdr 是目前已知唯一专门为此场景设计的工具（非穷尽声明）
    - 有完整的 API 支持
-   - 无需额外开发，开箱即用
+   - 开箱即用；同机单次调用也可用 Claude Code 内置 subagent 机制零成本实现
 
 4. **成熟度**：
    - 早期产品，但有资金支持和清晰愿景
@@ -712,21 +715,11 @@ codex_agent = Agent(
 
 ### 9.2 推荐
 
-**强烈推荐使用 Herdr**，理由如下：
+**推荐先原型验证再决定**，理由：
 
-1. **需求完美匹配**：
-   - 你的场景正是 Herdr 的核心场景
-   - 没有其他工具提供同等能力
-
-2. **风险可控**：
-   - 开源 + 有资金支持
-   - 可以快速验证（安装即用）
-   - API 相对稳定
-
-3. **可扩展**：
-   - 可以与 LangGraph/CrewAI 组合
-   - 可以自定义 Agent 检测规则
-   - 支持插件扩展
+1. **场景匹配**：编码 Agent 后台运行与协同是 Herdr 的核心场景
+2. **风险可控**：开源（Apache-2.0）+ 有资金支持；安装即用，可快速验证
+3. **可扩展**：可与 LangGraph/CrewAI 组合；可自定义 Agent 检测规则
 
 ### 9.3 下一步行动
 
@@ -791,8 +784,8 @@ herdr pane list
 ### B. 支持的 Agent 列表
 
 ```
-Claude Code, Codex, Pi, OpenCode, Cursor, Grok, Copilot, 
-Gemini, Devin, Cline, Amp, Hermes, Kimi, Kiro, Droid, 
+Claude Code, Codex, Pi, OpenCode, Cursor, Grok, Copilot,
+Gemini, Devin, Cline, Amp, Hermes, Kimi, Kiro, Droid,
 Kilo, QoderCLI, Qwen, Letta, Maki, Muse
 ```
 
@@ -832,6 +825,6 @@ Kilo, QoderCLI, Qwen, Letta, Maki, Muse
 
 ---
 
-**报告完成时间**：2025-01-XX  
-**调研人员**：AI Research Agent  
-**版本**：v1.0
+**报告完成时间**：初版未标注可靠日期；事实核查 2026-10-13
+**调研人员**：AI Research Agent
+**版本**：v1.1（核查修订版）

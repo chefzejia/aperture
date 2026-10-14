@@ -1,5 +1,8 @@
 # magpie 九个深度问题的回答
 
+> 事实核查：2026-10-13（GitHub API）。文中 LESSONS.md 尺寸等数字已按实测更新。
+
+
 ## 问题 1：LESSONS 是第一个要吸收的机制
 
 **完全同意**。LESSONS 是 magpie 人机协同的核心创新，也是最值得我们立即实施的。
@@ -265,7 +268,7 @@ magpie 实际上有三层规则：
 
 **已暴露的文档**（34 个 .md 文件）：
 - AGENTS.md (5KB)
-- LESSONS.md (25KB)
+- LESSONS.md (约 26KB, 2026-10-13 实测)
 - code-standards.md (14KB)
 - subsystems/ (350KB)
 - contributors.md
@@ -930,7 +933,7 @@ jobs:
 
 **关键洞察**：
 > magpie 的文档体系是**演化出来的**，不是一开始就设计好的。
-> 
+>
 > 我们也应该：
 > 1. 先有核心原则
 > 2. 在实践中验证
@@ -950,7 +953,7 @@ jobs:
 虽然没有单独章节讲"防止过度设计"，但有暗含的原则：
 
 ```markdown
-| A change does only what its goal needs. | 
+| A change does only what its goal needs. |
 | Every change in behavior has a reason. |
 | Unrelated refactors, extra features and policy changes go in a PR of their own. |
 ```
@@ -964,7 +967,7 @@ jobs:
 
 > 653cb8ee bundled ZCode sign-in with WSL session deletion.
 > 5464a362 capped six pages at 1200px when #860 asked for a speed display.
-> 
+>
 > Seen 2× (2026-10-05, 2026-10-06).
 
 **说明**：
@@ -985,7 +988,7 @@ jobs:
 **机制 1：人的 PR review**
 
 ```markdown
-A PR is merged only after a maintainer has pulled it, 
+A PR is merged only after a maintainer has pulled it,
 merged it onto current main and run the checks above on the result.
 ```
 
@@ -1136,9 +1139,9 @@ A change does only what its goal needs.
 
 **关键**：
 > **人的审美和判断力是最后防线**
-> 
+>
 > Agent 可以写代码，但"什么是好设计"仍然需要人判断。
-> 
+>
 > 所以：
 > 1. 人必须定期 review
 > 2. 人必须有权拒绝"过度设计"

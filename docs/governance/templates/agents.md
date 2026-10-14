@@ -38,6 +38,32 @@
 # 填入项目实际的检查命令
 ```
 
+## 工具选择梯度
+
+<!-- 固定策略，适用于一切任务，不删改。核心：最轻够用的一级优先，跳级必须说明理由。
+     完整定义见 docs/governance/agent-governance.md 的"工具选择梯度"。 -->
+
+1. 结构化接口（服务 API / SDK / MCP）优先于命令行
+2. 命令行优先于脚本化驱动（playwright、AppleScript）
+3. computer use 只用于无 API 的表面（原生 App、模拟器、专有 GUI），不是更重的浏览器工具
+4. 宿主缺某一级：显式报告缺口，按需升级或停下，不静默跳级、不假装完成
+5. 断言"本机不具备某能力"前必须先实测
+
+<!-- 项目实际入口示例（修改后删除注释）：
+     - 静态抓取：curl / WebFetch
+     - 页面渲染与交互：`<playwright 所在的 python 完整路径>`
+     - 系统浏览器登录态：`chromium.launch(channel="chrome")`
+-->
+
+## 浏览器使用
+
+<!-- 保留 Web 密集项目使用；轻 Web 项目可并入上一节。 -->
+
+- 静态页面/检索：curl 或 WebFetch（无 JS 渲染时首选）
+- 需要渲染/交互：`<playwright 所在的 python 完整路径>`，如 `"~/Library/Application Support/pypoetry/venv/bin/python"`
+- 需要登录态：`chromium.launch(channel="chrome")`
+- 失败时：报告具体错误，不降级为截图硬替代
+
 ## 文档路由
 
 <!-- 按任务类型列出文件位置，让 Agent 知道去哪找什么。

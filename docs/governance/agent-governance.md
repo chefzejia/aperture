@@ -13,7 +13,7 @@
 
 **判断标准**：Agent 读完 `AGENTS.md` 和 `README.md`，能开始第一个任务。
 
-**开始任务**：先读项目 `HANDOFF.md` 确认当前状态（如果有）→ 用 `templates/task-contract.md` 写任务定义，人确认后执行。
+**开始任务**：先读项目 `HANDOFF.md` 确认当前状态（如果有）→ 写清楚任务定义（目标、范围、验收标准），人确认后执行。
 
 **遇到问题**：返回本文档的对应原则，不要打补丁。
 
@@ -26,6 +26,8 @@
 **共同可观测，不分裂成两套状态。** Agent 的代码、判断和整理结果必须对人直接可见。不接受 Agent 在不透明的索引、缓存或生成结果中维护一套人无法核对的状态。
 
 **先从目标出发，不打补丁。** 遇到问题先找根本原因，再决定如何修改。连续两次对同一问题打局部补丁，说明根因没找到，需要重新分析。
+
+**工具选择永远走最轻够用的一级。** 任何任务（不限于 Web）先在梯度上找到能到达目标的最精确工具；宿主缺某级时显式报告缺口，不静默跳级、不假装完成。详见下方"工具选择梯度"。
 
 ---
 
@@ -83,6 +85,12 @@
 - 内容：系统组成、职责边界、关键决策理由
 - 替代方案：docs/architecture/overview.md
 
+**DEPLOYMENT.md** - 部署流程（有部署动作的项目）
+- 何时需要：产物需要部署到别处才生效（构建后复制、打包上架、推送服务器），或部署由 Agent/脚本执行
+- 内容：部署目标、标准流程（构建→部署→启用）、验证清单、回滚、常见问题
+- 模板：`templates/deployment.md`
+- 判断：没有它，Agent 或人会部署错文件、部署后不验证、出问题不会回滚吗？是则加
+
 **docs/architecture/** - 架构详细（大型项目）
 - 何时需要：有多个架构决策需要分别记录
 - 内容：每个子系统一个文件、ADR 记录（见 `templates/adr.md`）
@@ -101,7 +109,7 @@
 | 规模 | 代码量 | 必需 | 推荐 | 可选 |
 |------|--------|------|------|------|
 | 小型 | < 5K 行 | AGENTS.md<br>README.md | HANDOFF.md* | - |
-| 中型 | 5K-50K | AGENTS.md<br>README.md | HANDOFF.md<br>LESSONS.md | DESIGN.md<br>或 architecture/ |
+| 中型 | 5K-50K | AGENTS.md<br>README.md | HANDOFF.md<br>LESSONS.md | DESIGN.md<br>或 architecture/<br>DEPLOYMENT.md |
 | 大型 | > 50K | AGENTS.md<br>README.md | HANDOFF.md<br>LESSONS.md<br>architecture/ | product/<br>research/ |
 
 *小型项目的 HANDOFF.md：如果是单人且持续工作，可以省略；如果有间隔或需要交接，建议加上。
@@ -115,6 +123,7 @@
    - `templates/handoff.md` → `docs/HANDOFF.md`
    - `templates/lessons.md` → `docs/LESSONS.md`
    - `templates/design.md` → `DESIGN.md`
+   - `templates/deployment.md` → `DEPLOYMENT.md`（有部署动作时）
    - `templates/adr.md` → `docs/architecture/ADR-001-xxx.md`
 4. **不建空目录**，有内容再建
 
@@ -135,6 +144,7 @@
 - 当前状态 → `docs/HANDOFF.md`
 - 失败记录 → `docs/LESSONS.md`
 - 架构概览 → `DESIGN.md` 或 `docs/architecture/overview.md`
+- 部署流程 → `DEPLOYMENT.md`
 - 架构决策 → `docs/architecture/ADR-NNN-xxx.md`
 - 产品判断 → `docs/product/`
 - 证据实验 → `docs/research/`
@@ -284,6 +294,27 @@ quality      结果完整性、事实、格式、实际可用性
 同一症状修复后再次出现，停止局部补丁，重新检查真相源、责任所有者和产品目标。
 
 ---
+
+## 工具选择梯度
+
+适用于一切任务，不限于 Web。优先用能到达目标的最精确工具，逐级加重；最重的一级是兜底，不是默认：
+
+```text
+L1 结构化接口：服务自身的 API / SDK / MCP server
+L2 命令行：git、curl、包管理器、构建工具、ffmpeg 等确定性 CLI
+L3 脚本化驱动：playwright（网页渲染与交互）、AppleScript / 应用 CLI（macOS 原生 App）
+L4 GUI 自治代理：computer use——像素 + 输入，覆盖无任何 API 的表面
+```
+
+同一级内也按轻→重排（如 Web 检索：curl 静态抓取 → playwright 脚本 → 浏览器 MCP 持续会话 → Chrome 集成登录态）。
+
+执行规则：
+
+1. **选择依据是精确性和成本**（token、时间、可重复性、可核对性），不是工具"功能强弱"
+2. **跳级必须有理由并说出来**：选择更重的一级时，说明轻的一级为什么不适用（如"目标页面需要 JS 渲染"）
+3. **computer use 的定位是覆盖无 API 的表面**（原生 App、模拟器、专有 GUI 工具），不是更高级的浏览器工具；有 API/CLI 的地方用像素操作是浪费。开发 App 后用它驱动 GUI 做端到端验证属于本职用法
+4. **梯度是选择策略，独立于宿主**：宿主缺某一级时显式报告缺口，按需用更重一级或停下等待人，不静默跳级、不假装完成
+5. **断言"本机不具备某能力"前必须先实测**（查配置、跑冒烟命令），区分"本会话没有该工具"和"宿主不存在"
 
 ## 架构选择
 

@@ -1,8 +1,8 @@
 # magpie 项目人机协同研究
 
-> 研究时间：2026-10-12  
-> 项目来源：https://github.com/yetone/magpie  
-> 本地路径：`thirdparty/magpie/`
+> 研究时间：2026-10-12；事实核查：2026-10-13（GitHub API 复核）
+> 项目来源：https://github.com/yetone/magpie
+> 本地路径：`thirdparty/magpie/`（2026-10-14 已恢复：经 codeload 下载主分支快照，目录已加入 .gitignore。历史注记：曾被误提交为 gitlink、后在 feb057c 删除，本地目录也随之丢失）
 
 ## 研究目的
 
@@ -121,9 +121,9 @@ concurrency:
 ### 7. 迭代反馈循环
 
 ```
-当天 commits → 当晚 review → 
-  提取重复失败 → 写入 LESSONS.md → 
-  被看到 3 次 → 晋升到 code-standards.md → 
+当天 commits → 当晚 review →
+  提取重复失败 → 写入 LESSONS.md →
+  被看到 3 次 → 晋升到 code-standards.md →
   PR reviewer 检查 code-standards
 ```
 
@@ -182,11 +182,11 @@ concurrency:
 ### 项目质量
 
 1. **subsystems 设计文档**：
-   - 14 个子系统文档（总计约 350KB）
+   - 12 个子系统文档（2026-10-13 实测，总计约 455KB；研究时为 14 个/350KB，仓库持续演化中）
    - agent-wiring、gateway-routing、provider-plugins 等
    - 修改子系统前必须读设计文档
 
-2. **reference.md**：139KB 的 API 参考文档
+2. **reference.md**：API 参考文档（研究中记录为 139KB，未在核查中确认当前大小）
 
 3. **contributors.md**：什么情况下关闭 PR、哪些作者的 PR 直接关闭
 
@@ -266,8 +266,8 @@ concurrency:
 ### 3. 规则的生命周期
 
 ```
-发现问题 → LESSONS.md（暂存） → 
-  被看到 3 次 → code-standards.md（固化） → 
+发现问题 → LESSONS.md（暂存） →
+  被看到 3 次 → code-standards.md（固化） →
   PR reviewer 检查 → Agent 遵守
 ```
 
