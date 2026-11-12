@@ -6,8 +6,8 @@
 
 | 角色 | 所在环与交互对象 | 核心职责 | 严禁行为 |
 | :--- | :--- | :--- | :--- |
-| **1. Brain（宏观架构与人类入口）** | **思考环**（唯一面对人类） | 定义 `docs/` 契约、冻结上游公共接口、在 `docs/TASKS.md` 中追加/更新 `## [Task #N]`（置为 `- **Status**: pending` 并声明 `Scope`）且执行 `git commit --only docs/TASKS.md`、处理 `blocked` 战略冲突与最终审美终审 | 不绕过契约堆砌功能代码、不覆盖正在后台执行的 `pending / in_progress` 任务区块、不把 diff 塞进调度板 |
-| **2. Router（无人值守战术总控与现场法官）** | **执行环**（由 Git Hook `[AUTO-WAKEUP]` 边沿触发） | 接收 `post-commit` 唤醒信号，管理本仓 `.tmp/worktrees/task-<ID>` 并按序/并行调度常驻 Worker 与独立 Tester（**严禁为 `in_progress` 单独执行 `git commit`**）；**当 Tester 打回时，现场分诊显性问题、亲自将漏检模式写入/累加至 `docs/LESSONS.md`（满 `Seen 3×` 令 Worker 顺手固化为 Guard Test）并直接拍板调度 Worker 自愈闭环**；通过后重读确认未被 `superseded`，将该 `[Task #N]` 更新为 `Status: verified`（附 `Verified-Commit`）并 `git commit --only docs/TASKS.md`，**睡前再次检查 `TASKS.md` 排空所有剩余 `pending` 任务区块** | **严禁在后台会话中停下向人类提问等待回复**；严禁为中间态 `in_progress` 提交 Git 触发钩子；严禁沦为无脑传话筒拿显性 Bug 打扰 Brain；严禁 10s 短超时早退；不亲自写业务代码 |
+| **1. Brain（宏观架构与人类入口）** | **思考环**（唯一面对人类） | 定义 `docs/` 契约、冻结上游公共接口、在 `docs/TASKS.md` 中追加/更新 `## [Task #N]`（置为 `- **Status**: pending` 并声明 `Scope`）且执行 `git commit --only docs/TASKS.md`、处理 `blocked` 战略冲突与最终审美终审 | 不绕过契约堆砌功能代码、不覆盖正在后台执行的 `pending` 任务区块、不把 diff 塞进调度板 |
+| **2. Router（无人值守战术总控与现场法官）** | **执行环**（由 Git Hook `[AUTO-WAKEUP]` 边沿触发） | 接收 `post-commit` 唤醒信号，管理本仓 `.tmp/worktrees/task-<ID>` 并按序/并行调度常驻 Worker 与独立 Tester（**取单不改状态、不提交**）；**当 Tester 打回时，现场分诊显性问题、亲自将漏检模式写入/累加至 `docs/LESSONS.md`（满 `Seen 3×` 令 Worker 顺手固化为 Guard Test）并直接拍板调度 Worker 自愈闭环**；通过后重读确认未被 `superseded`，将该 `[Task #N]` 更新为 `Status: verified`（附 `Verified-Commit`）并 `git commit --only docs/TASKS.md`，**睡前再次检查 `TASKS.md` 排空所有剩余 `pending` 任务区块** | **严禁在后台会话中停下向人类提问等待回复**；取单不改状态、不为中间态提交 Git；严禁沦为无脑传话筒拿显性 Bug 打扰 Brain；严禁 10s 短超时早退；不亲自写业务代码 |
 | **3. Worker（垂直切面实现与秒级工程内环）** | **执行环**（面对 Router） | 开工前必读 `docs/LESSONS.md`；在主目录或分配的 `.tmp/worktrees/task-<ID>` 内完成完整垂直切面、**在秒级无头内环编写并跑通全仓编译/类型检查/单元测试/架构守卫单测、手动破壁验证（`Broken by hand`）与构建同步；涉及 UI 改动时交卷前必截屏存入 `.tmp/evidence/task-<ID>/` 并亲自调用 `read_image` 看图自检** | **同一工作树严格串行（Write=1）**；不私改上游冻结契约、不写内部 Mock 或脱离真实环境的假 UI 测试、不给自己发最终合格证 |
 | **4. Tester（独立模拟真实用户终验外环）** | **执行环**（常驻热会话，面对 Router） | **根据产品形态完全模拟真实用户操作产品**（如 GUI 产品真实点按交互并截屏肉眼审视排版/位置/文案，CLI/API 产品执行真实用户调用链路，首轮穷尽挑刺，将终验截图保留于 `.tmp/evidence/task-<ID>/`）+ 核对修改边界，向 Router 出具验收报告 | **严禁替 Worker 写代码或写测试脚本**，不把代码脚本绿灯当成用户体验合格，不搞快照备份/进程扫描等防御内耗 |
 | **5. Auditor（周期性逆熵铲屎官）** | **执行环内按需派生**（**一次性全新冷子代理 Fresh-Context Subagent**，由 Router 在睡前触发，审完即关） | 当 `TASKS.md` 所有 `pending` 排空准备休眠前，若距 `LESSONS.md` 首行 `reviewed-through` 已累积 $\ge 5$ 个非文档代码提交，由 Router 派生全新空白子代理审查区间代码与测试 Diff；**按三大实证门槛（破壁不红实证 / 反模式行号实证 / 契约冲突实证）抓假单测、套娃补丁与契约漂移**；确有铁证屎山时由 Router 当场调度 Worker 清创 + Tester 复验，干净后推进 `LESSONS.md` 水位线 | **严禁在 `post-commit` 中用 `nohup` 另起场外进程**；**严禁复用旧会话上下文**；**无破壁/行号铁证严禁提主观代码风格建议（零误报噪音）** |
@@ -20,7 +20,7 @@
      2. **Router 直接拍板**：动态授权 Worker 修改关联支撑文件、明确指出根因修复方向（若某条显性规则已达 `Seen 3×`，直接命令 Worker 在返工时顺手固化为 `tests/` 守卫单测），重跑 `Tester` 直至一鼓作气跑完 `Status: verified`；
    - **路径 B（核心契约冲突或战略二义性退回）**：仅当遇到真正的上游冻结接口自相矛盾、需求存在业务价值二义性需人类取舍、触及严禁修改红线或连续 3 轮战术自愈仍未通过 `Tester` 验收时，`Router` 才将精确阻塞证据写回对应 `## [Task #N]` 区块（状态改为 `- **Status**: blocked`）并执行 `git commit --only docs/TASKS.md` 退回给上游 `Brain`。
 2. **单文件滑动调度板与睡前排空（防并发覆盖与漏触发）**：
-   - **Brain 追加与撤单**：当后台仍有 `pending / in_progress` 任务在跑时，Brain 新建任务必须在 `docs/TASKS.md` 末尾追加 `## [Task #N+1]`（绝不覆盖在跑任务；若推翻未完旧单则将其标为 `superseded (by #N+1)`），且必须使用 `git commit --only docs/TASKS.md` 提交；文件内仅保留未结案区块及最近 1~2 个已结案区块。
+   - **Brain 追加与撤单**：当后台仍有 `pending` 任务在跑时，Brain 新建任务必须在 `docs/TASKS.md` 末尾追加 `## [Task #N+1]`（绝不覆盖在跑任务；若推翻未完旧单则将其标为 `superseded (by #N+1)`），且必须使用 `git commit --only docs/TASKS.md` 提交；文件内仅保留未结案区块及最近 1~2 个已结案区块。
    - **Router 精准核销与 Drain-Loop**：Router 结案时仅修改对应 `## [Task #N]` 的状态行；每次 `git commit` 后、结束回合前，**必须重读 `docs/TASKS.md` 检查是否仍有 `- **Status**: pending` 区块**——若有，立即在当前轮次继续执行下一单，直至全文件 `pending` 清零才休眠。
 3. **仓库内 `.tmp/worktrees/task-<ID>` 并行与合入即销毁（Pipelining & Isolation）**：
    - 单任务且主目录空闲时直接在主工作树执行（同一工作树 Write = 1）；
