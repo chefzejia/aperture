@@ -25,14 +25,8 @@
      - **动态改写定时任务 Prompt 易腐败**：将已处理 Commit SHA 写进宿主私有的定时任务配置里，既脆弱又强绑定特定客户端。
    - **Git Hook 事件驱动原语**：利用 Git 原生 `.git/hooks/post-commit`，仅在检测到 `docs/TASKS.md` 包含 `Status: pending` 提交时，通过本地队列与静默唤醒深链（如 `codex queue` + `open -g "codex://threads/wake/<UUID>"` 或对应 CLI 命令）在 **2 秒内**直接拍醒后台常驻会话；平时无提交则 **0 唤醒、0 Token 消耗**。
 
-2. **为什么必须从“三角色”升级为“双环四重身份（Brain · Router · Worker · Tester）”？**
-   - 如果只定义 `Brain / Worker / Tester` 三角色，后台常驻总控会话在收到队列塞入的自然语言唤醒消息且遇到任务包白名单漏列同切面支撑文件时，会误以为对面坐着人类用户，直接在后台聊天框里停下来提问等待授权，导致无人值守闭环中断。
-   - **四重身份职责边界**：
-     - **Brain（思考环）**：唯一面对人类的沟通桥梁，负责定义契约并提交 `docs/TASKS.md (Status: pending)`；
-     - **Router（执行环战术总控与现场法官）**：由 Git Hook 发送 `[AUTO-WAKEUP]` 机器指令唤醒，明确宣告其无人值守身份（**严禁在后台会话向人类提问等待回复**）。显性缺陷与同切面支撑文件漏列由 Router 亲自记入 `docs/LESSONS.md` 并直接授权 Worker 补齐自愈；核心契约冲突则写入 `Status: blocked` 并 `git commit` 退回给 Brain；
-     - **Worker（隔离实现与秒级工程内环）**：同一工作树严格串行（`Write = 1`），多任务正交或流水线重叠时在 `.tmp/worktrees/task-<ID>` 隔离开发，负责在交卷前跑通秒级无头单测与构建门禁；
-     - **Tester（独立模拟真实用户终验外环）**：消除作者“自我确认”偏见，不替 Worker 写单测或拿脚本 `ok: true` 充数，而是**根据产品形态完全模拟真实人类用户操作产品**（如点按界面并截屏肉眼审视排版、位置与文案体验）。
+2. **实测数据**
+   - **常驻热节点复用**：下游 Router、Worker 与 Tester 作为常驻热会话（Warm Sessions）跨波次持续复用上下文前缀，实测常驻 Router 缓存命中率达 `98.62%`，常驻 Worker 缓存命中率达 `97.75%`。
+   - **订阅直通**：同一项目连续波次的后续任务直接发给已驻留的具名会话，记录中省下约 37% 的读缓存 Token。
 
-3. **状态去 Session 化 + 单文件滑动调度板（`TASKS.md` & Drain-Loop）+ 算力热驻留（实测 97.75% ~ 98.62% 缓存命中）**
-   - **单文件滑动调度板与睡前排空（防并发覆盖与运行中漏触发）**：`docs/TASKS.md` 采用独立编号区块 `## [Task #N]` 维护各自的 `- **Status**: pending | in_progress | verified | blocked | superseded` 与 `Scope`（仅保留未结案区块 + 最近 1~2 个已结案锚点）。当 Router 正在后台执行 `#N` 期间，Brain 可随时追加 `## [Task #N+1] (pending)`（或将 `#N` 标为 `superseded`）并通过 `git commit --only docs/TASKS.md` 隔离提交；Router 结案 `#N` 时仅精确修改 `#N` 的状态行，并在结束回合前强制重读 `docs/TASKS.md` 排空所有新增 `pending` 区块（Drain-Loop），彻底根除单槽位覆盖与运行期漏触发；
-   - **常驻热节点复用**：下游 Router、Worker 与 Tester 作为常驻热会话（Warm Sessions）跨波次持续复用上下文前缀（实测常驻 Router 缓存命中率达 `98.62%`，常驻 Worker 缓存命中率达 `97.75%`）。
+> 本文早期记录的四重身份分工、`in_progress` 状态与调度板细则已不再使用；角色职责、调度板规则与排空循环的现行版本见 [multi-agent-collab](../../skills/multi-agent-collab/SKILL.md)。
