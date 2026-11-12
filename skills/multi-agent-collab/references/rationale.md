@@ -58,7 +58,7 @@
 
 保持协调层轻量且无竞态的四条铁律：
 1. **看摘要，不看代码**：Brain 与 Router 只读取结构化汇报和 `git log --oneline`，把冗长的代码编辑与测试日志隔离在 Worker / Tester 子会话中（Inline & Spill）。
-2. **单文件滑动调度板（`docs/TASKS.md`）防 ABA 覆盖**：若调度文件只维护全局单一的 `Status: pending` 字段，当 Router 正在后台执行 `[Task #N]` 期间，人类与 Brain 讨论出 `[Task #N+1]` 并覆写文件，Router 在 `#N` 结束时大笔一挥改成 `Status: verified` 就会将 `#N+1` 静默覆盖吞掉。因此，`docs/TASKS.md` 内每个任务必须作为独立编号区块 `## [Task #N]` 维护各自的 `- **Status**: pending | in_progress | verified | blocked | superseded` 与 `- **Scope**: ...`：
+2. **单文件滑动调度板（`docs/TASKS.md`）防 ABA 覆盖**：若调度文件只维护全局单一的 `Status: pending` 字段，当 Router 正在后台执行 `[Task #N]` 期间，人类与 Brain 讨论出 `[Task #N+1]` 并覆写文件，Router 在 `#N` 结束时大笔一挥改成 `Status: verified` 就会将 `#N+1` 静默覆盖吞掉。因此，`docs/TASKS.md` 内每个任务必须作为独立编号区块 `## [Task #N]` 维护各自的 `- **Status**: pending | verified | blocked | superseded` 与 `- **Scope**: ...`：
    - **Brain 只追加/标废**：新任务追加在末尾；若推翻未完旧单，将其标为 `superseded (by #N+1)` 并追加新单；且提交时必须用 `git commit --only docs/TASKS.md` 防止把后台 Worker 的半成品代码误打包；
    - **滑动自净（Sliding Window GC）**：文件内仅保留未结案区块 + 最近 1~2 个已结案区块作为上下文锚点，更早的已结案区块在追加新单时顺手移出（完整历史留在 `git log` 中），确保单文件永远轻薄不膨胀。
 3. **Router 精准核销与睡前排空循环（Drain-Loop Before Sleep）**：
