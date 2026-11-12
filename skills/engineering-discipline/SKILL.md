@@ -1,6 +1,6 @@
 ---
 name: engineering-discipline
-version: 1.1.0
+version: 1.2.0
 description: >
   提供工具与宿主无关的软件工程执行纪律：工具选择梯度、变更与调试规范、分层验证和架构加减法准则。
   当 Agent 执行代码实现、Bug 调试、测试验证或架构重构时使用。
