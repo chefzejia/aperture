@@ -22,10 +22,10 @@ AI 时代的工程与知识工作也是如此。当硅基算力与编码智能�
    - [人机协同模型](docs/core/agentic-work-model.md) — 控制面白盒 vs 执行面黑盒、三层工作状态与人的四个支点（定界·造台·证伪·审美）
    - [AI-Native 第一性原理](docs/core/ai-native-first-principles.md) — 从代码抽象走向规则抽象、审视旧时代妥协层与跨领域反证门禁
    - [Skill 设计规范](docs/core/skill-design.md) — Skill 即代码的设计准则与演化漏斗
-3. **可执行技能包（`skills/`，`v1.0.0`）**
+3. **可执行技能包（`skills/`）**
    - [project-governance](skills/project-governance/SKILL.md) — 极简项目治理、核心与易腐边缘隔离及按需文档模板
    - [engineering-discipline](skills/engineering-discipline/SKILL.md) — 双速调试与实验台先行（Harness-First）、UI 自拍自检、反 Slop 单测与架构加减法
-   - [multi-agent-collab](skills/multi-agent-collab/SKILL.md) — 宿主无关的五重身份（Brain · Router · Worker · Tester + 周期性冷会话 Auditor）与多 Worktree 协作协议
+   - [multi-agent-collab](skills/multi-agent-collab/SKILL.md) — 宿主无关的双环协作协议（Brain · Router · Worker · Tester，按需派生冷会话 Auditor）与多 Worktree 并行
    - [knowledge-base](skills/knowledge-base/SKILL.md) — 人机共同知识对象的构建与维护
    - [web-research-with-assets](skills/web-research-with-assets/SKILL.md) — 网页/推文离线剪藏与关键配图本地化研究包
 4. **调研与实验室（`docs/research/`）**
