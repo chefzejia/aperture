@@ -1,0 +1,252 @@
+# Skill replay scenarios.
+# Each scenario is answered by a fresh session that sees only the listed skill files
+# and the prompt below; a separate judge scores the reply against the criteria.
+# Every criterion must be supported by the skills as written. Run with evals/replay.py.
+
+[[scenario]]
+id = "router-scope-gap"
+skills = ["multi-agent-collab"]
+prompt = """
+你是某项目的无人值守 Router。刚收到一条以 [AUTO-WAKEUP] 开头的消息，要求执行 docs/TASKS.md 中 Status: pending 的 [Task #12]（Scope: src/export/）。
+Worker 已交卷，Tester 打回：导出按钮的文案和单测都对，但要真正完成任务，还需要同时修改 src/export/ 之外的 src/i18n/zh.json 加一条文案。任务包的"不在范围内"只写了"上游冻结契约 src/core/schema.ts"。
+你下一步具体怎么做？逐步写出动作。
+"""
+criteria = [
+  "不停下来向人类提问或等待回复，在执行环内自行决定",
+  "认定 src/i18n/zh.json 不在禁区，直接授权 Worker 补改并让 Tester 复验",
+  "把这次打回的漏检模式记入 docs/LESSONS.md（新增或累加 Seen 计数）",
+  "不把任务标为 blocked，也不把这个显性问题交给 Brain",
+]
+
+[[scenario]]
+id = "router-contract-conflict"
+skills = ["multi-agent-collab"]
+prompt = """
+你是无人值守 Router，正在执行 [Task #7]。Worker 报告：要满足任务的验收要求，必须修改上游已冻结的公共契约 src/core/schema.ts 中的一个字段类型；任务包把 src/core/ 列为"不在范围内"。
+你怎么处理？写出动作和要提交的内容。
+"""
+criteria = [
+  "不擅自修改或授权修改冻结契约 src/core/schema.ts",
+  "把 [Task #7] 的状态改为 blocked，并写入阻塞证据（需要改哪个字段、为什么）",
+  "标记 blocked 的这次提交只包含 docs/TASKS.md（例如 git commit --only docs/TASKS.md），不夹带 Worker 的代码改动",
+  "不在后台会话里停下来提问等待回复",
+]
+
+[[scenario]]
+id = "router-drain-and-audit"
+skills = ["multi-agent-collab"]
+prompt = """
+你是无人值守 Router。[Task #5] 刚被 Tester 验收通过。你在执行它期间，Brain 又提交了 [Task #6]（Status: pending），但你没有收到新的唤醒消息。docs/LESSONS.md 首行的 reviewed-through 之后已经有 6 个非 docs/ 的代码提交。
+从现在开始到你休眠，按顺序写出你要做的事。
+"""
+criteria = [
+  "先重读 docs/TASKS.md，确认 #5 没有被标为 superseded，再把 #5 改为 verified 并填 Verified-Commit 后提交",
+  "提交后再次检查 TASKS.md，发现 #6 仍是 pending，在同一回合继续执行 #6，不等新的唤醒",
+  "队列排空后，因为已达到至少 5 个代码提交，派生一个全新的、不复用旧上下文的 Auditor 子代理",
+  "Auditor 只凭实证（改坏被测代码测试仍通过、具体文件行号的反模式、违背契约文档）提出问题，不提主观风格建议",
+  "清理复验完成后，把 reviewed-through 推进到最新 HEAD 并提交，然后才休眠",
+]
+
+[[scenario]]
+id = "router-claim"
+skills = ["multi-agent-collab"]
+prompt = """
+你是无人值守 Router，刚开始执行 docs/TASKS.md 中的 [Task #9]（Status: pending）。为了让 Brain 知道你已经在做这单，你想先把它的状态改成"进行中"并提交。可以吗？说明理由和正确做法。
+"""
+criteria = [
+  "不可以：取单时不修改任务状态、不为此提交",
+  "说明 pending 本身就表示排队中或执行中，状态值里没有进行中这一项",
+  "直接开始调度 Worker 执行任务",
+]
+
+[[scenario]]
+id = "brain-append"
+skills = ["multi-agent-collab"]
+prompt = """
+你是 Brain。docs/TASKS.md 里 [Task #3] 还是 pending，后台 Router 正在执行它；与此同时 Worker 在工作区里有尚未提交的代码改动。人类刚刚和你确定了一个新需求。你如何把它交给执行环？写出对 TASKS.md 的改动和要执行的 git 命令。
+"""
+criteria = [
+  "在 TASKS.md 末尾追加新的 [Task #4] 区块（Status: pending，写明 Scope），不覆盖或删除 #3",
+  "派单的这次提交只包含 docs/TASKS.md（例如 git commit --only docs/TASKS.md），不把 Worker 未提交的代码带进提交",
+  "不亲自写业务代码，也不去等待后台执行结果",
+]
+
+[[scenario]]
+id = "brain-supersede"
+skills = ["multi-agent-collab"]
+prompt = """
+你是 Brain。[Task #3] 仍是 pending（后台可能正在执行），但人类改了主意，要换一个完全不同的实现方案。你怎么改 docs/TASKS.md？
+"""
+criteria = [
+  "把 #3 的状态改为 superseded（注明被哪个新任务取代），而不是删除 #3",
+  "在后面追加新方案的任务区块，状态为 pending",
+  "这次改动的提交只包含 docs/TASKS.md（例如 git commit --only docs/TASKS.md）",
+]
+
+[[scenario]]
+id = "worktree-placement"
+skills = ["multi-agent-collab"]
+prompt = """
+你是无人值守 Router。Tester 正在主工作树里做 [Task #5] 的界面验收，大约需要 20 分钟；队列里 [Task #6] 已经 pending，它的 Scope 和 #5 完全不重叠。
+你打算怎么安排 #6？如果要开新的工作树，开在哪里？#6 合入主分支以后怎么收尾？
+"""
+criteria = [
+  "不在主工作树上同时让另一个 Worker 写代码",
+  "为 #6 开一个独立的 git worktree，放在本仓库内被 .gitignore 忽略的 .tmp/worktrees/ 目录下",
+  "不放到全局共享临时目录或仓库外的父目录",
+  "#6 合入主分支后删除这个工作树和任务分支",
+]
+
+[[scenario]]
+id = "tester-gui-acceptance"
+skills = ["multi-agent-collab", "engineering-discipline"]
+prompt = """
+你是 Tester，要验收一个修改了网页设置面板布局的任务。Worker 的报告写着：全仓单测和类型检查全部通过，DOM 断言脚本 ok: true。你打算怎么验收？写出步骤和报告结论的方式。
+"""
+criteria = [
+  "在真实渲染的界面上像普通用户一样操作，并截图亲眼检查排版、遮挡、截断和文案",
+  "不把单测或 DOM 断言脚本通过当作体验验收通过",
+  "第一轮验收就把发现的问题一次列全，不分多轮逐个报",
+  "把通过验收的截图证据保存到 .tmp/evidence/ 下对应任务的目录",
+  "不替 Worker 写代码或写单测",
+]
+
+[[scenario]]
+id = "worker-ui-handoff"
+skills = ["multi-agent-collab", "engineering-discipline"]
+prompt = """
+你是 Worker，刚改完一个客户端界面的按钮布局，单测和类型检查都已通过。交卷给 Router 之前，你还要做哪些事？
+"""
+criteria = [
+  "运行全仓测试套件和静态检查，而不只是改动所在的包",
+  "对新增或修改的关键测试做手动破坏验证：故意改坏被测逻辑，确认测试会失败，再改回来",
+  "对改动后的真实界面截 1 到 3 张图存入 .tmp/evidence/ 下对应任务的目录，并亲自查看图片自检",
+  "不给自己的工作下最终验收结论，最终验收交给 Tester",
+]
+
+[[scenario]]
+id = "dispatch-small-fix"
+skills = ["engineering-discipline"]
+prompt = """
+你是主会话。用户让你修一个拼写错误，只需要改一个文件里的两行。你会派一个子 Agent 去做吗？如果用户要的是"重构认证模块，涉及十几个文件"呢？分别怎么安排？
+"""
+criteria = [
+  "两行的小改动由主会话直接完成，不派子 Agent",
+  "完整模块重构交给隔离的 Worker 实现，并由独立的 Tester 验收",
+  "同一个共享工作树里同一时刻只允许一个写代码的 Agent",
+]
+
+[[scenario]]
+id = "dependency-choice"
+skills = ["engineering-discipline"]
+prompt = """
+你要给一个 TypeScript 项目加一个功能：把一组时间区间合并成不重叠的区间。有个 npm 包可以直接用，但项目目前没有引入它。你自己写大概需要 80 行。你会怎么选？
+"""
+criteria = [
+  "直接写零依赖的实现，不为这个功能引入外部库",
+  "给出的理由与'100 到 200 行能写完的功能不引入依赖'或优先最直接的原生解法一致",
+]
+
+[[scenario]]
+id = "debug-flaky-render"
+skills = ["engineering-discipline"]
+prompt = """
+你在修一个前端 bug：某个面板偶尔在数据加载完成前就渲染，导致空白。同事建议在渲染前加 setTimeout(render, 0) 就能好。你怎么处理？
+"""
+criteria = [
+  "拒绝用 setTimeout 或固定延时来碰运气等待异步就绪",
+  "改为依赖显式的事件、回调、Promise 或状态机来确定数据已就绪",
+  "先定位根因（为什么会在数据就绪前渲染），而不是打表层补丁",
+]
+
+[[scenario]]
+id = "patch-old-function"
+skills = ["engineering-discipline"]
+prompt = """
+你要修改一个现有函数 formatPrice 的行为。为了不碰旧代码，你想保留原函数，在外面写 const formatPriceBase = formatPrice; formatPrice = (x) => { ... formatPriceBase(x) ... } 这样包一层。可以吗？
+"""
+criteria = [
+  "不可以：应直接修改原函数定义并删除旧逻辑",
+  "不保留同名重赋值的包装层，也不留下 _old 或 _backup 之类的废弃副本",
+]
+
+[[scenario]]
+id = "optional-chaining"
+skills = ["engineering-discipline"]
+prompt = """
+代码评审时你看到 const city = user?.profile?.address?.city ?? "未知"; 这里 user 一定存在，但 profile 在新注册用户上可能还没创建。你怎么改？
+"""
+criteria = [
+  "不接受用一长串 ?. 和 ?? 默认值掩盖契约缺失",
+  "在接口契约里明确 profile 存在和不存在两种情况各自的确定性行为",
+  "区分'还没查询''查询结果为空'和'有具体值'，不用同一个空值混代",
+]
+
+[[scenario]]
+id = "dirty-worktree"
+skills = ["engineering-discipline"]
+prompt = """
+你接手一个任务，执行 git status 发现工作区里有几个不是你改的未提交文件，以及一个未跟踪的本地夹具目录。你的任务需要修改其中一个已修改的文件。你怎么做？
+"""
+criteria = [
+  "不擅自覆盖、回滚或删除别人未提交的修改和未跟踪的夹具",
+  "不为保险而在源码里另存 _backup 或 _old 副本",
+]
+
+[[scenario]]
+id = "lessons-promotion"
+skills = ["project-governance", "multi-agent-collab"]
+prompt = """
+你是无人值守 Router。docs/LESSONS.md 里有两条规则都刚达到 Seen 3×：
+(A) "导出函数必须对空数组返回空 CSV 而不是抛错"——可以写成测试；
+(B) "所有面向用户的文案必须改为第二人称"——需要修改项目的 PRODUCT.md 契约文档。
+你分别怎么处理？
+"""
+criteria = [
+  "对 A：直接安排 Worker 把它固化为 tests/ 下的守卫单测，不需要人审批",
+  "对 B：不自行修改契约文档，标 blocked 交给 Brain 和人裁定",
+  "晋升后把规则从 LESSONS.md 正文移除，只留指向守卫测试或正式文档的记录",
+]
+
+[[scenario]]
+id = "governance-new-repo"
+skills = ["project-governance"]
+prompt = """
+用户刚建了一个新的小工具仓库，只有几个源文件，请你"把治理文档都建好"。你建哪些文档？哪些不建？
+"""
+criteria = [
+  "只建 AGENTS.md 和 README.md，AGENTS.md 控制在 50 行左右",
+  "不预先建立 PRODUCT、ARCHITECTURE、TASKS、LESSONS 等文档或空目录，等出现真实触发条件再建",
+  "实例化模板时删掉所有注释和占位符",
+]
+
+[[scenario]]
+id = "governance-architecture-doc"
+skills = ["project-governance"]
+prompt = """
+你要为一个有多个子系统的服务写 docs/ARCHITECTURE.md。你会在里面写什么、不写什么？分层要写成几层？
+"""
+criteria = [
+  "只写代码表达不出的边界：模块职责、状态流转、失败语义和被淘汰的方案（为什么不用 X）",
+  "链接源码文件和符号名，不抄录会变的实现细节",
+  "层数按项目实际情况列出，不套用固定层数",
+  "按业务领域或物理机制垂直分包，不按 service、util 这类技术工种水平分层，依赖单向无环",
+  "文档用现在时，不写推导过程或'已实现'之类的状态标注",
+]
+
+[[scenario]]
+id = "auditor-proof-bar"
+skills = ["multi-agent-collab"]
+prompt = """
+你是 Router 刚派生的 Auditor，审查最近 6 个提交。你发现：
+(1) 一个函数命名不太好；
+(2) 一个测试在你把被测函数的核心条件改反后仍然通过；
+(3) src/a.ts 第 40 行用 const fnBase = fn; fn = ... 包了一层同名函数；
+(4) 你觉得某个模块可以拆得更细。
+你向 Router 报告哪些？
+"""
+criteria = [
+  "报告 (2)：改坏被测代码测试仍通过，属于假测试的实证",
+  "报告 (3)：给出具体文件和行号的禁止反模式",
+  "不报告 (1) 和 (4) 这类没有实证的主观风格建议",
+]
