@@ -19,6 +19,8 @@
   - [网页图文研究包](skills/web-research-with-assets/SKILL.md) — 网页/推文离线剪藏、关键配图本地化与证据包构建
 - **调研归档（Lab）**：
   - [研究文档](docs/research/README.md) — 特定工具（Orca、Herdr、Magpie 等）的实测与过程推演记录
+- **情景回放（Evals）**：
+  - [evals/scenarios.toml](evals/scenarios.toml) — 用全新会话检验 Skill 行为的情景与评分标准，由 [evals/replay.py](evals/replay.py) 执行
 
 ## 核心约束
 
@@ -30,4 +32,7 @@
 
 ```bash
 python3 scripts/verify.py
+python3 evals/replay.py check
 ```
+
+修改 Skill 正文时，先用 `evals/replay.py run` 对改动前的版本（`--ref <tag>`）和改动后的工作树各跑一次情景回放，再用 `evals/replay.py compare` 确认没有标准变差；需要 OpenAI 兼容的接口地址 `REPLAY_BASE_URL`。
