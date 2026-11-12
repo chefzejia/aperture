@@ -67,11 +67,11 @@ Mono-repo 的核心是**防止规则重复与跨模块越权**：
 真实失败事件
   ↓ 记录证据、根因与候选规则
 docs/LESSONS.md（待验证缓冲池）
-  ↓ 同一模式重复出现 3 次，或单次造成严重事故 → 触发人审议
+  ↓ 同一模式重复出现 3 次，或单次造成严重事故
 按所有者晋升并删除 LESSONS 正文（只留指向正式规则的链接）：
-  ├── 属于单模块接口/实现约束 → 晋升至模块契约或 Linter/测试守卫
-  ├── 属于本项目全局边界     → 晋升至根 AGENTS.md 或 ARCHITECTURE.md
-  └── 属于跨项目通用工作方法 → 晋升至对应 Skill（如 engineering-discipline）
+  ├── 可机械校验的实现约束   → Router 直接安排 Worker 固化为 Linter/测试守卫
+  ├── 属于本项目全局边界     → 标 blocked 交 Brain 与人审议后写入根 AGENTS.md 或 ARCHITECTURE.md
+  └── 属于跨项目通用工作方法 → 标 blocked 交 Brain 与人审议后晋升至对应 Skill（如 engineering-discipline）
 ```
 
 **最高级的规则晋升是变成自动化检查（Linter / Test / CI 门禁）**；能用确定性脚本拦住的错误，不靠文档叮嘱。

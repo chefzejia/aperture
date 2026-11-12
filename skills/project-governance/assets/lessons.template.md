@@ -4,9 +4,9 @@
 <!-- 顶部注释记录最近一次周期性逆熵审计（Auditor）扫描到的 Commit 水位线，避免重复扫描或漏检。
      双通道触发机制：
      1. 日常现场记账（Router）：当独立 Tester 打回交付（说明残次品逃过了 Worker 自检）时，由 Router 亲自比对 Worker 自检报告与 Tester 翻车现场，将漏检模式写入或累加至本文件（Seen N×）。
-     2. 周期性逆熵铲屎（Fresh-Context Auditor）：当 docs/TASKS.md 无 pending 任务（空闲）且距 reviewed-through 已累积 >= 5 个非 docs/ 代码提交时，.git/hooks/post-commit 自动在后台拉起一次性全新冷会话 Auditor，按三大实证门槛审查区间代码 Diff、将 reviewed-through 推进至 HEAD，并将确有铁证的清创任务追加进 docs/TASKS.md。
+     2. 周期性逆熵审计（Fresh-Context Auditor）：Router 排空全部 pending 任务、准备休眠前，若距 reviewed-through 已累积 >= 5 个非 docs/ 代码提交，派生一次性全新子代理 Auditor 审查区间代码，清创复验后将 reviewed-through 推进至 HEAD（细则见 multi-agent-collab Skill）。
      每条记录顺序固定为：一句话可执行规则（粗体）→ 为什么 → 真实翻车证据（Commit/Issue）→ Seen N× (<日期列表>)。
-     当同一规则累计 Seen 3×（或单次造成严重事故）时，Router 直接安排 Worker 将其固化为 tests/ 下的架构守卫单测（Guard Test）或移入正式规范，并从本文件正文移除（移入底部已晋升列表）。 -->
+     当同一规则累计 Seen 3×（或单次造成严重事故）时：能固化为 tests/ 下架构守卫单测（Guard Test）的，由 Router 直接安排 Worker 固化；需要修改项目契约文档或 Skill 的，由 Router 标记 blocked 交 Brain 与人裁定。晋升后从本文件正文移除（移入底部已晋升列表）。 -->
 
 ## Active Lessons
 
