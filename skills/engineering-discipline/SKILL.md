@@ -34,7 +34,7 @@ L4 用户感官表面：真实窗口点按交互 + 视觉截图肉眼审视（Hu
 
 ## 子 Agent 派发纪律（摘要）
 
-子 Agent 不是免费的多线程，每次派发都会产生冷启动重复阅读税与共享工作区踩踏风险。完整四重身份（Brain · Router · Worker · Tester）协议与并发配额以 `multi-agent-collab` Skill 为唯一权威事实源，日常执行谨记三条硬边界：
+子 Agent 不是免费的多线程，每次派发都会产生冷启动重复阅读税与共享工作区踩踏风险。完整的角色协议（Brain · Router · Worker · Tester）与并发配额以 `multi-agent-collab` Skill 为唯一权威事实源，日常执行谨记三条硬边界：
 
 1. **Fast Path（`0` 子 Agent）vs Slow Path（必派 Worker/Tester）**：$\le 5$ 步工具调用的局部微调或上游契约冻结由主会话直办；完整业务模块实现、跨多文件重构或独立验收必须下沉至隔离的 Worker 与 Tester。
 2. **写操作（Write / Edit）单工作区并发上限 = `1`**：同一共享工作树同一时刻最多只允许 `1` 个活跃写 Agent；仅当满足 **① 独立 Git Worktree**、**② 写文件集 100% 物理正交**、且 **③ 共享 Schema 已提前冻结**时，才允许按完整垂直模块并行写（上限 $\le 3$ 个）。

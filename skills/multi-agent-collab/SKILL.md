@@ -2,18 +2,18 @@
 name: multi-agent-collab
 version: 1.0.0
 description: >
-  提供工具与模型无关的多 Agent 双环四重身份（Brain · Router · Worker · Tester）协作协议、契约格式与升级闭环。
+  提供工具与模型无关的多 Agent 双环协作协议（Brain · Router · Worker · Tester）、契约格式与升级闭环。
   当项目需要启用多 Agent 角色隔离、制定任务包或执行独立验收时使用。
   不适用于单 Agent 即可完成的简单任务，也不硬编码任何特定编排软件的 CLI 或模型名称。
 ---
 
-# 多 Agent 双环四重身份协作 Skill
+# 多 Agent 双环协作 Skill
 
 ## 核心边界原则
 
 1. **角色拆分的唯一依据是“信息差异”与“交互对象差异”，而非“能力差异”**：
-   同一个强模型既能写代码也能审代码，但**作者的上下文里包含“我为什么这么写”，会导致验证退化为自我确认**（因此 `Worker ≠ Tester`）；而当采用跨宿主/后台自动执行时，**面对人类聊天的架构会话与面对自动化 Git 钩子的后台总控会话，其交互对象与阻塞语义完全不同**——如果后台总控不知道自己是“无人值守 Router”，收到队列消息时就会误以为对面坐着真人在聊天，遇到授权范围微调就停在后台窗口里向空气提问！因此完整架构包含 **双环四重身份（Brain · Router · Worker · Tester）**。
-2. **双环四重身份契约（宿主无关）与默认 Git 参考实现（`TASKS.md + post-commit`）**：
+   同一个强模型既能写代码也能审代码，但**作者的上下文里包含“我为什么这么写”，会导致验证退化为自我确认**（因此 `Worker ≠ Tester`）；而当采用跨宿主/后台自动执行时，**面对人类聊天的架构会话与面对自动化 Git 钩子的后台总控会话，其交互对象与阻塞语义完全不同**——如果后台总控不知道自己是“无人值守 Router”，收到队列消息时就会误以为对面坐着真人在聊天，遇到授权范围微调就停在后台窗口里向空气提问！因此完整架构采用双环，常驻角色为 **Brain · Router · Worker · Tester**，另有按需派生的 Auditor（见下方角色表）。
+2. **双环协作契约（宿主无关）与默认 Git 参考实现（`TASKS.md + post-commit`）**：
    - **第一环：宏观思考环（人 $\leftrightarrow$ Thinking Brain）**：人类唯一面对的沟通入口（选用旗舰模型），专注需求碰撞、产品审美与架构决策（当面对海量外部 Issues/PR 时，先经仓外 Triage 聚类去重，仅将近期确认立项的活跃任务放入调度板）；定稿后将任务契约以独立编号区块 `## [Task #N] <标题>`（标记 `Status: pending` 与写作用域 `Scope`）写入仓库 `docs/TASKS.md`，并执行隔离提交 `git commit --only docs/TASKS.md`（严禁把后台 Worker 正在修改的半成品代码误打包进提交）：
      - **追加排队（In-File Queue）**：若上一轮 `[Task #N-1]` 仍处于 `Status: pending`（后台正在执行），Brain **绝不覆盖或删除 `#N-1`**，直接在文件末尾追加 `## [Task #N]`（`Status: pending`）；
      - **推翻旧单（Supersede）**：若需推翻尚未跑完的 `#N-1`，Brain 将 `## [Task #N-1]` 的状态改为 `Status: superseded (by #N)`，并在下方追加新方案 `## [Task #N]`（`Status: pending`）；
@@ -25,7 +25,7 @@ description: >
        2. **执笔 `docs/LESSONS.md` 与 `Seen 3×` 守卫自进化**：只要发生 Tester 打回（说明残次品逃过了 Worker 的自检门禁），**由同时握有“Worker 自检报告”与“Tester 翻车现场”的 Router 亲自在 `docs/LESSONS.md` 中新增或累加该漏检模式（`Seen N×`）**；若某条显性工程规则累计达 `Seen 3×`（或属严重回归），Router 当场指令 Worker 在返工时顺手将其固化为 `tests/` 下的静态架构守卫单测（Guard Test），在执行环内直接完成免疫闭环；需要修改项目契约文档或 Skill 才能落实的，按第 3 条标 `blocked` 交 Brain 与人裁定；
        3. **战略阻塞升级（`Status: blocked`）**：仅当遇到上游冻结的公共契约/核心层自相矛盾、需求存在业务价值二义性需人类取舍、或连续 3 轮战术修复仍未通过时，Router 才将完整阻塞证据写回对应 `[Task #N]` 区块（更新为 `Status: blocked`）并 `git commit --only docs/TASKS.md` 退回给上游 Brain 裁决。
      - **零中间态提交、Verified-Commit 锚定与睡前排空循环（No Intermediate Claim Commits & Drain-Loop）**：Router 是唯一单消费者，**取单时不改状态、不提交（`pending` 即表示排队中或执行中）**！Router 直接按序串联跑完 `Worker（开工前必读 LESSONS.md，在秒级内环完成代码与破壁自检并在业务 Commit Body 记录意图/根因与验证证据） → Tester 针对该业务 Commit 模拟真实用户终验（若打回则由 Router 记入 LESSONS.md 并调度 Worker 闭环修复） → Router 重读 docs/TASKS.md 核对 [Task #N] 未被 Brain 改为 superseded → 仅用精确 edit 将该 [Task #N] 更新为 Status: verified（Verified-Commit 填通过验收的业务代码 SHA）并执行 git commit --only docs/TASKS.md`；**提交后结束回合前，Router 必须再次检查 `docs/TASKS.md` 是否仍存在 `Status: pending` 任务区块**——若有则直接在当前轮次继续执行下一单，直至全文件 `pending` 清零后再休眠。
-   - *注：在无需跨宿主的简单单软件项目里，Brain 与 Router 可由同一个主会话兼任（退化为三节点）；一旦拆分为跨窗口/跨宿主双环，必须显式立住 Router 身份。*
+   - *注：在无需跨宿主的简单单软件项目里，Brain 与 Router 可由同一个主会话兼任；一旦拆分为跨窗口/跨宿主双环，必须显式立住 Router 身份。*
 3. **验证维度正交切分与首轮穷尽（Worker = 工程自检 + 手动破壁 + UI 自拍看镜子 vs. Tester = 模拟真实用户终验 & First-Pass Exhaustive）**：
    - **代码单测、手动破壁、构建门禁与 UI 自拍看镜子归 Worker**：编译、类型检查、全仓单元测试、架构边界守卫（Guard Tests）、**手动破壁验证（`Broken by hand, each red`）**以及产物打包是 Worker 交卷前的**分内前置条件**；且凡涉及前端/客户端 UI 修改，Worker 交卷前必须**自己截 1~3 张改动后的真实界面图存入 `.tmp/evidence/task-<N>/` 并调用 `read_image / view_image` 亲眼检查一遍**（当场顺手修掉按钮重复、文字遮挡、位置错位等单测盲区，大幅降低打回率）。
    - **Tester 唯一定位是“模拟真实用户（Simulate the Real User）”且必须“首轮穷尽 + 归档视觉证据”**：具体怎么验证完全由**产品自身的交付形态**决定（CLI 工具就按用户手册敲真实命令看输出；API 服务就发真实请求验状态流转；GUI/网页/客户端应用就像不懂技术的真实人类用户一样在专用沙盒中点按交互、肉眼审视每一帧截图的排版、位置与文案）。Tester 必须在**第一轮验收时一次性穷尽该任务切面的全部交互体验、视觉排版与边界缺陷**（严禁“挤牙膏式”每轮只报 1 个毛病把 3 轮封顶额度耗光），并将最终通过验收的截图证据保留在 `.tmp/evidence/task-<N>/` 供人类一秒审美终审。
@@ -58,7 +58,7 @@ Worktree 由 **Router 独占管理**，具体 git 操作由 Router 自行处理�
 2. **开在哪**：统一建在当前项目仓库内的 `.tmp/worktrees/task-<ID>`（`.tmp/` 列入 `.gitignore`），不使用全局共享临时目录或仓库外层父目录。放在未被忽略的目录时，主工作树的一次 `git add -A` 会把它当作嵌套仓库暂存进提交。
 3. **用完清理**：任务合入 `main` 或被 Brain 标为 `superseded` 后，Router 删除对应 Worktree 与任务分支，`.tmp/worktrees/` 内只保留正在活跃编码的 0~3 个目录。
 
-## 标准双环四角色协作闭环
+## 标准双环协作闭环
 
 ```text
 👤 人（唯一交互入口：宏观目标与审美裁定）
@@ -141,7 +141,7 @@ fi
 
 ## 验收清单
 
-- [ ] 四重身份边界清晰：Brain 面向人类定契约，Router 担任执行环战术法官（管理 `.tmp/worktrees/` 并行轨道、现场分诊显性问题、执笔 `docs/LESSONS.md` 并调度执行环自愈闭环），Worker 串行或隔离 Worktree 实现并完成全仓代码/单测门禁与手动破壁验证，Tester 独立模拟真实用户验收
+- [ ] 角色边界清晰：Brain 面向人类定契约，Router 担任执行环战术法官（管理 `.tmp/worktrees/` 并行轨道、现场分诊显性问题、执笔 `docs/LESSONS.md` 并调度执行环自愈闭环），Worker 串行或隔离 Worktree 实现并完成全仓代码/单测门禁与手动破壁验证，Tester 独立模拟真实用户验收
 - [ ] `docs/TASKS.md` 采用 `## [Task #N]` 独立状态区块与 `Scope` 声明，Brain 使用 `git commit --only docs/TASKS.md` 隔离提交，Router 精准核销对应区块并在睡前重读排空全部 `pending` 任务（无覆盖、无漏触发、临时 Worktree 合入即销毁零残留）
 - [ ] Router 收到 `[AUTO-WAKEUP]` 后未在后台窗口停下向人类提问等待，也未发生 10s 短超时早退
 - [ ] 未发生同一共享工作树多子 Agent 并发写（同目录 Write=1；跨任务并行均通过本仓 `.tmp/worktrees/task-<ID>` 物理隔离）
@@ -151,5 +151,5 @@ fi
 ---
 
 深度参考：
-- [references/rationale.md](references/rationale.md) — 为什么从三角色演进为双环四重身份（Brain · Router · Worker · Tester）的推导与实证
+- [references/rationale.md](references/rationale.md) — 为什么在 Brain · Worker · Tester 之外加入 Router 与按需派生的 Auditor：推导与实证
 - [assets/roles.template.md](assets/roles.template.md) — 供目标项目按需实例化的极简 `docs/ROLES.md` 模板

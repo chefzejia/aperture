@@ -1,4 +1,4 @@
-# 双环四角色协作契约（Brain · Router · Worker · Tester）
+# 双环协作角色契约
 
 <!-- 仅当项目启用多 Agent 角色隔离协作时实例化为 docs/ROLES.md。删除注释与占位符后使用。 -->
 
