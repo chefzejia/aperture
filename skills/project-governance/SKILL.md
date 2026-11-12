@@ -1,6 +1,6 @@
 ---
 name: project-governance
-version: 1.0.0
+version: 1.1.0
 description: >
   为新项目或现有仓库建立极简、防腐败、按需生长的 Agent 治理文档与目录架构。
   当用户要求初始化项目文档、改造 AGENTS.md、梳理仓库治理规范或清理冗余文档时使用。
