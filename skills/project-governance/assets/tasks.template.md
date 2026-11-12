@@ -8,7 +8,7 @@
      5. 仓库 .git/hooks/post-commit 采用 Diff 边沿触发（`git diff-tree -p HEAD -- docs/TASKS.md | grep "^\+.*Status.*: pending"`）：仅当本次 commit 【新增】了 `Status: pending` 行时才唤醒下游 Router；Router 取单时不改状态、不提交，结案提交 `verified / blocked` 时因未新增 `pending` 行，不会发生自激递归。
      6. 下游 Router 按 Scope 正交性与当前主目录空闲状态调度执行：
         - 单任务且主目录空闲：直接在主工作树执行；
-        - 当 Tester 正在主目录耗时验收 `#<N-1>`，或存在 2~3 个 Scope 100% 物理正交的 `pending` 任务时：Router 在本仓库 `.tmp/worktrees/task-<N>/` 下创建隔离 Git Worktree（`git worktree add -B task/<N> .tmp/worktrees/task-<N> HEAD`，软链复用 `node_modules/.venv`）并行派发 Worker 开发，Worker 跑通秒级内环单测后由 Router 变基快进合回主分支（`git rebase main && git merge --ff-only`）并立即销毁该 Worktree（`git worktree remove --force`）。
+        - 当 Tester 正在主目录耗时验收 `#<N-1>`，或存在 2~3 个 Scope 100% 物理正交的 `pending` 任务时：Router 在本仓库 `.tmp/worktrees/task-<N>/` 下创建隔离 Git Worktree 并行派发 Worker 开发，Worker 跑通秒级内环单测后由 Router 合回主分支，合入后删除该 Worktree 与任务分支（具体 git 操作由 Router 自行处理）。
      7. 每单经独立 Tester 模拟真实用户终验通过后，Router 重读确认未被标为 `superseded`，仅将该 `[Task #<N>]` 区块更新为 `Status: verified`（附 `Verified-Commit`）并执行 `git commit --only docs/TASKS.md`；提交后结束回合前必须再次检查本文件是否仍有新增的 `Status: pending` 区块（Drain-Loop），直至全部排空后再休眠。 -->
 
 ## [Task #<N>] <任务名称>
