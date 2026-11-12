@@ -52,17 +52,11 @@ Brain / Router 调度 Worker 与 Tester 时，按**读写性质与 `Scope` 耦�
 | **流水线重叠或正交多轨道写（Worktree Workers）** | **`2 ~ 3`（封顶）** | 当 **① Tester 正在主工作树耗时验收上一单（Pipelining 流水线重叠）**，或 **② 队列中存在 2~3 项 `Scope`（写文件集）100% 物理正交且上游共享 Schema 已提前冻结的任务**时，Router 在本仓 `.tmp/worktrees/task-<ID>` 下开启隔离工作树并行派发 Worker。 |
 | **只读探索 / 分诊聚类（Explore / Triage / Tester）** | **`2 ~ 4`（封顶）** | 海量外部 Issues/PR 分诊聚类、无写入冲突的跨子系统调研或多维度审查可并行扇出。 |
 
-### 仓库内局部 Worktree（`<repo>/.tmp/worktrees/task-<ID>`）四步生命周期
-为彻底隔离多项目（绝不使用全局共享临时目录，亦不污染仓库外层父目录），所有并发工作树统一建在**当前项目仓库内部的 `.tmp/worktrees/` 下**（`.tmp/` 列入 `.gitignore`），并由 **Router 独占管理开启与销毁**：
-1. **按需开启（Spawn & Zero-Install Symlink）**：
-   - Router 启动时先执行 `git worktree prune` 并清理已完成任务的残留目录；
-   - 当触发流水线重叠或正交多任务并行时，Router 执行 `git worktree add -B task/<ID> .tmp/worktrees/task-<ID> HEAD`（若项目含 `node_modules` 或 `.venv`，直接软链复用主工作树依赖如 `ln -s ../../../node_modules .tmp/worktrees/task-<ID>/node_modules`，实现 1 秒零安装就绪）。
-2. **隔离秒级内环开发（Isolated Build & Test）**：
-   - Worker 进入 `.tmp/worktrees/task-<ID>` 编写代码、跑通秒级无头单测与守卫检查，并在该分支提交业务 Commit。
-3. **变基快进合入主干（Rebase & Fast-Forward Merge）**：
-   - Worker 交卷后，Router 在该 Worktree 内执行 `git rebase main`（若遇同目标冲突则令 Worker 在 Worktree 内解冲突并重跑单测），随后在主工作树执行 `git merge --ff-only task/<ID>` 将代码合入 `main`。
-4. **即刻销毁零残留（Immediate Teardown）**：
-   - 一旦合入 `main`（或该任务被 Brain 标为 `superseded` 作废），Router 立即执行 `git worktree remove --force .tmp/worktrees/task-<ID> && git branch -D task/<ID>`，确保 `.tmp/worktrees/` 内永远只存在当前正在活跃编码的 0~3 个目录。
+### 仓库内局部 Worktree（`<repo>/.tmp/worktrees/task-<ID>`）的开启与销毁
+Worktree 由 **Router 独占管理**，具体 git 操作由 Router 自行处理，协议只约束三点：
+1. **何时开**：只在上表的流水线重叠或正交多轨道写场景开启；单任务且主工作树空闲时直接在主工作树执行。
+2. **开在哪**：统一建在当前项目仓库内的 `.tmp/worktrees/task-<ID>`（`.tmp/` 列入 `.gitignore`），不使用全局共享临时目录或仓库外层父目录。放在未被忽略的目录时，主工作树的一次 `git add -A` 会把它当作嵌套仓库暂存进提交。
+3. **用完清理**：任务合入 `main` 或被 Brain 标为 `superseded` 后，Router 删除对应 Worktree 与任务分支，`.tmp/worktrees/` 内只保留正在活跃编码的 0~3 个目录。
 
 ## 标准双环四角色协作闭环
 

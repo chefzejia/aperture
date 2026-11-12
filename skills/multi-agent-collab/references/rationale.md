@@ -75,8 +75,8 @@
 
 **真正的提速之道是「仓库内局部 Worktree（`<repo>/.tmp/worktrees/task-<ID>`）+ 流水线重叠（Pipelining）」**：
 - **单任务零开销**：队列只有 1 个任务且主目录空闲时，直接在主工作树执行（Write = `1`）；
-- **流水线重叠（验 `#N` 与写 `#N+1` 同时进行）**：当 Tester 正在主工作树耗时做真实界面视觉验收 `Task #N` 时，若队列里已有 `Task #N+1`，Router 立即在本仓库 `.tmp/worktrees/task-<N+1>` 下创建隔离工作树（软链复用 `node_modules/.venv`），让 Worker 同时开工写 `#N+1`，彻底消灭等待 Tester 的空窗期；
-- **正交切面多路并行（2~3 路封顶）**：当 `docs/TASKS.md` 中存在多个 `Scope`（写文件集）100% 物理正交且上游共享契约已冻结的完整垂直任务时，Router 为每单分配独立的 `.tmp/worktrees/task-<ID>` 并行开发，待 Worker 各自跑通秒级内环单测后由 Router 变基快进合回 `main`（`git rebase main && git merge --ff-only`）并立即 `git worktree remove --force` 销毁临时目录，做到多项目互不串台、用完零残留。
+- **流水线重叠（验 `#N` 与写 `#N+1` 同时进行）**：当 Tester 正在主工作树耗时做真实界面视觉验收 `Task #N` 时，若队列里已有 `Task #N+1`，Router 立即在本仓库 `.tmp/worktrees/task-<N+1>` 下创建隔离工作树，让 Worker 同时开工写 `#N+1`，彻底消灭等待 Tester 的空窗期；
+- **正交切面多路并行（2~3 路封顶）**：当 `docs/TASKS.md` 中存在多个 `Scope`（写文件集）100% 物理正交且上游共享契约已冻结的完整垂直任务时，Router 为每单分配独立的 `.tmp/worktrees/task-<ID>` 并行开发，待 Worker 各自跑通秒级内环单测后由 Router 合回 `main` 并删除临时工作树与分支，做到多项目互不串台、用完零残留。
 
 ## 理论溯源：DeepSeek《Super-agent 设计探索》的消融实验印证
 
