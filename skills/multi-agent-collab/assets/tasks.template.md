@@ -1,11 +1,12 @@
 # Tasks Queue
 
-<!-- 实例化为 docs/TASKS.md：双环协作的调度板，状态值、提交方式与滑动窗口规则见 multi-agent-collab Skill。默认的工程门禁与验收方式写在 docs/ROLES.md，里程碑里只写偏离默认的项。实例化时删除本注释与占位符。 -->
+<!-- 实例化为 docs/TASKS.md：双环协作的调度板，状态值、提交方式与滑动窗口规则见 multi-agent-collab Skill。默认的工程门禁与验收方式写在 docs/ROLES.md，里程碑里只写偏离默认的项。只有一个切片时，在区块里直接写 `- **Scope**: <路径前缀>` 并删掉「切片」小节。实例化时删除本注释与占位符。 -->
 
 ## [Milestone #<N>] <用户能做到什么>
 
 - **Status**: <pending | verified | blocked | superseded>
 - **Verified-Commit**: <sha-or-none>
+- **Depends-On**: <前置里程碑编号，如 #12, #13；没有写“—”>
 - **用户可观测目标**：<这个里程碑完成后，用户能端到端做到什么>
 - **Tester 验收**：<一条真实用户路径与检查点，一轮跑完；没有外部可观测变化时写“无”>
 - **不在范围内**：<冻结的核心契约、用户真实数据目录、本轮不做的功能>

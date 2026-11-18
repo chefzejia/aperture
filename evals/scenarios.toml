@@ -302,7 +302,7 @@ prompt = """
 criteria = [
   "不派 Tester，因为这个里程碑不改变外部可观测表面",
   "确认各切片提交的 commit body 里有意图和验证证据，再重读 docs/TASKS.md，只提交 docs/TASKS.md 把 #10 改为 verified",
-  "队列排空后仍派生一个全新的、不复用旧上下文的 Auditor：虽然还没到 2~3 个里程碑，但其间有里程碑跳过了 Tester",
+  "队列排空后仍派生一个全新的、不复用旧上下文的 Auditor：虽然还没到 2 个里程碑，但其间有里程碑跳过了 Tester",
 ]
 
 [[scenario]]
@@ -315,4 +315,17 @@ prompt = """
 criteria = [
   "为 #11 派一个全新的 Tester，不复用 #10 的 Tester 会话，并关闭仍开着的旧会话",
   "#11 返工后的复验沿用同一个 #11 的 Tester，因为它知道自己列过哪些问题",
+]
+
+[[scenario]]
+id = "router-depends-on"
+skills = ["multi-agent-collab"]
+prompt = """
+你是无人值守 Router，被唤醒后读到 docs/TASKS.md 里有三个 pending 里程碑，按文件顺序是：[Milestone #7] 没有前置；[Milestone #8] 的 Depends-On 是 #6，而 #6 已被标为 blocked；[Milestone #9] 的 Depends-On 是 #7。
+你按什么顺序处理？#7 结案后怎么办？什么时候可以休眠？
+"""
+criteria = [
+  "先执行 #7；#8 的前置 #6 是 blocked，不派发 #8，也不去改 #6 或 #8 的状态",
+  "#7 结案后在同一回合重读 TASKS.md，发现 #9 的前置已满足，继续执行 #9，不等新的唤醒",
+  "只剩前置未满足的 #8 时即可休眠，不为它停下来提问",
 ]
