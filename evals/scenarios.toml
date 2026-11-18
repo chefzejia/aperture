@@ -329,3 +329,30 @@ criteria = [
   "#7 结案后在同一回合重读 TASKS.md，发现 #9 的前置已满足，继续执行 #9，不等新的唤醒",
   "只剩前置未满足的 #8 时即可休眠，不为它停下来提问",
 ]
+
+[[scenario]]
+id = "router-ledger-skip-tester"
+skills = ["multi-agent-collab"]
+prompt = """
+你是无人值守 Router。项目有功能台账 docs/FEATURES.md。[Milestone #14] 是纯内部重构，验收栏写的是「无」，Features 字段列了 F-EXPORT 和 F-IMPORT，这两条在台账里都是「已验收」。所有切片都已提交，门禁证据齐备。
+你怎么结案？台账怎么改？这次提交包含哪些文件？
+"""
+criteria = [
+  "不派 Tester，因为这个里程碑不改变外部可观测表面",
+  "把 F-EXPORT 和 F-IMPORT 降为「待复验」，因为动到了但这次没有独立验收；不把它们写成新的已验收",
+  "把 #14 改为 verified 并填 Verified-Commit，台账与调度板在同一次提交里（例如 git commit --only docs/TASKS.md docs/FEATURES.md），不夹带业务代码",
+  "只改 Features 所列的行，不增删台账条目",
+]
+
+[[scenario]]
+id = "router-release-clears-debt"
+skills = ["multi-agent-collab"]
+prompt = """
+你是无人值守 Router，正在执行写明了发布版本 v0.3.0 的 [Milestone #20]。功能台账里，这个版本范围内的 F-SYNC 和 F-SEARCH 是「待复验」，其余条目是「已验收」。Worker 已把版本号改好并通过门禁，自动化测试全绿。
+发布前你要做什么？
+"""
+criteria = [
+  "派一个全新的 Tester，按真实用户路径对 F-SYNC 和 F-SEARCH 重新独立验收，清掉范围内的待复验后才发布",
+  "Tester 逐行给出结论；通过的行改为已验收并写 #20 与 Verified-Commit，没通过的作为显性问题退回 Worker 返工",
+  "不因为自动化测试是绿的就把待复验直接改成已验收",
+]

@@ -34,6 +34,17 @@
 2. **验收**：所有切片提交且门禁证据齐备后，里程碑改变了外部可观测表面就派全新 Tester 一轮验收；验收栏写“无”的跳过 Tester，靠 commit body 门禁证据与 Auditor 兜底。
 3. **显性问题不出执行环**：实现漏项、交互或排版瑕疵、测试逃逸，以及完成目标所需、切片漏列但不在“不在范围内”或禁区里的同切面支撑文件，由 Router 当场授权补改、指明根因方向；按报告里的文件位置归因到切片，对应 Worker 返工、同一 Tester 复验。每次打回都对比 Worker 自检与 Tester 发现，把漏检模式记入 `docs/LESSONS.md`，`Seen N×` 按缺陷模式计，不按打回次数计；累计 `Seen 3×` 时，能写成测试的令 Worker 固化为 `tests/` 守卫测试，需要改契约文档或 Skill 的标 `blocked`。
 4. **升级到 Brain**：需要改动上游冻结契约或契约自相矛盾、需要触碰“不在范围内”或禁区里的文件、需求有业务价值二义性、涉及破坏性操作、同一里程碑连续 3 轮返工未通过时，把证据写回该里程碑区块、状态改为 `blocked`，只提交 `docs/TASKS.md`。
-5. **结案与排空**：结案前重读 `docs/TASKS.md` 确认未被标为 `superseded`，只改该区块状态为 `verified` 并填 `Verified-Commit`，只提交 `docs/TASKS.md`，然后关闭该里程碑的 Worker 与 Tester、删除 Worktree；每次提交后重读，仍有前置已满足的 `pending` 就在当前回合继续，只剩前置未满足的 `pending` 时即可休眠。
+5. **结案与排空**：结案前重读 `docs/TASKS.md` 确认未被标为 `superseded`，只改该区块状态为 `verified` 并填 `Verified-Commit`，只提交 `docs/TASKS.md`（有功能台账时按「功能台账同步」一并提交 `docs/FEATURES.md`），然后关闭该里程碑的 Worker 与 Tester、删除 Worktree；每次提交后重读，仍有前置已满足的 `pending` 就在当前回合继续，只剩前置未满足的 `pending` 时即可休眠。
 6. **Worktree**：同一里程碑内 Scope 正交的切片，或下一个里程碑与当前 Scope 完全正交且上游契约已冻结时，才在本仓库 `.tmp/worktrees/m<N>-s<K>` 开独立 Worktree 并行（同时不超过 2~3 个）；合入 `main` 或被标为 `superseded` 后删除该 Worktree 与分支。
 7. **睡前审计**：队列排空后，自上次审计起已结案不少于 2 个里程碑，或其间有里程碑跳过了 Tester，就派生全新的 Auditor 审查 `docs/LESSONS.md` 首行 `reviewed-through` 之后的区间；有实证则当场派生新的 Worker 清理，并按第 2 条规则决定是否派 Tester 复验，最后把 `reviewed-through` 更新为最新 `HEAD` 并提交（只含 `docs/LESSONS.md`），再休眠。
+
+<!-- 项目建了 docs/FEATURES.md 时保留下面一节，否则删除。 -->
+
+## 功能台账同步
+
+里程碑区块的 `Features` 字段列出它推进或动到的 `docs/FEATURES.md` 条目（没有写“—”）。
+
+1. Tester 报告按这些条目逐行写结论与未覆盖的部分。
+2. Router 结案时在同一次提交里同步这些行：独立验收通过的改为 `已验收`，写 `#<里程碑> @<Verified-Commit>（日期）`；动到但没有独立验收的降为 `待复验`，验收栏写“无”的里程碑也照此处理。提交前跑 `<台账守卫测试命令>`，用 `git commit --only docs/TASKS.md docs/FEATURES.md` 提交。
+3. 写明发布版本的里程碑，发布前把范围内的 `待复验` 条目重新独立验收。
+4. Router 只改所列的行，不增删条目，那归 Brain。
