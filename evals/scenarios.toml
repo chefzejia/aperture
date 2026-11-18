@@ -7,27 +7,27 @@
 id = "router-scope-gap"
 skills = ["multi-agent-collab"]
 prompt = """
-你是某项目的无人值守 Router。刚收到一条以 [AUTO-WAKEUP] 开头的消息，要求执行 docs/TASKS.md 中 Status: pending 的 [Task #12]（Scope: src/export/）。
-Worker 已交卷，Tester 打回：导出按钮的文案和单测都对，但要真正完成任务，还需要同时修改 src/export/ 之外的 src/i18n/zh.json 加一条文案。任务包的"不在范围内"只写了"上游冻结契约 src/core/schema.ts"。
+你是某项目的无人值守 Router。刚收到一条以 [AUTO-WAKEUP] 开头的消息，要求执行 docs/TASKS.md 中 Status: pending 的 [Milestone #12]（其中切片 S1 的 Scope: src/export/）。
+Worker 已交卷，Tester 对整个里程碑验收后打回：导出按钮的文案和单测都对，但要真正完成里程碑目标，还需要同时修改 src/export/ 之外的 src/i18n/zh.json 加一条文案。里程碑的"不在范围内"只写了"上游冻结契约 src/core/schema.ts"。
 你下一步具体怎么做？逐步写出动作。
 """
 criteria = [
   "不停下来向人类提问或等待回复，在执行环内自行决定",
-  "认定 src/i18n/zh.json 不在禁区，直接授权 Worker 补改并让 Tester 复验",
+  "认定 src/i18n/zh.json 不在禁区，直接授权 Worker 补改并让同一个 Tester 复验",
   "把这次打回的漏检模式记入 docs/LESSONS.md（新增或累加 Seen 计数）",
-  "不把任务标为 blocked，也不把这个显性问题交给 Brain",
+  "不把里程碑标为 blocked，也不把这个显性问题交给 Brain",
 ]
 
 [[scenario]]
 id = "router-contract-conflict"
 skills = ["multi-agent-collab"]
 prompt = """
-你是无人值守 Router，正在执行 [Task #7]。Worker 报告：要满足任务的验收要求，必须修改上游已冻结的公共契约 src/core/schema.ts 中的一个字段类型；任务包把 src/core/ 列为"不在范围内"。
+你是无人值守 Router，正在执行 [Milestone #7]。Worker 报告：要满足里程碑的验收要求，必须修改上游已冻结的公共契约 src/core/schema.ts 中的一个字段类型；里程碑把 src/core/ 列为"不在范围内"。
 你怎么处理？写出动作和要提交的内容。
 """
 criteria = [
   "不擅自修改或授权修改冻结契约 src/core/schema.ts",
-  "把 [Task #7] 的状态改为 blocked，并写入阻塞证据（需要改哪个字段、为什么）",
+  "把 [Milestone #7] 的状态改为 blocked，并写入阻塞证据（需要改哪个字段、为什么）",
   "标记 blocked 的这次提交只包含 docs/TASKS.md（例如 git commit --only docs/TASKS.md），不夹带 Worker 的代码改动",
   "不在后台会话里停下来提问等待回复",
 ]
@@ -36,13 +36,13 @@ criteria = [
 id = "router-drain-and-audit"
 skills = ["multi-agent-collab"]
 prompt = """
-你是无人值守 Router。[Task #5] 刚被 Tester 验收通过。你在执行它期间，Brain 又提交了 [Task #6]（Status: pending），但你没有收到新的唤醒消息。docs/LESSONS.md 首行的 reviewed-through 之后已经有 6 个非 docs/ 的代码提交。
+你是无人值守 Router。[Milestone #5] 刚被 Tester 验收通过。你在执行它期间，Brain 又提交了 [Milestone #6]（Status: pending），但你没有收到新的唤醒消息。自 docs/LESSONS.md 首行 reviewed-through 之后，已有 3 个里程碑结案（含 #5）。
 从现在开始到你休眠，按顺序写出你要做的事。
 """
 criteria = [
   "先重读 docs/TASKS.md，确认 #5 没有被标为 superseded，再把 #5 改为 verified 并填 Verified-Commit 后提交",
   "提交后再次检查 TASKS.md，发现 #6 仍是 pending，在同一回合继续执行 #6，不等新的唤醒",
-  "队列排空后，因为已达到至少 5 个代码提交，派生一个全新的、不复用旧上下文的 Auditor 子代理",
+  "队列排空后，因为自上次审计起已结案至少 2 个里程碑，派生一个全新的、不复用旧上下文的 Auditor 子代理",
   "Auditor 只凭实证（改坏被测代码测试仍通过、具体文件行号的反模式、违背契约文档）提出问题，不提主观风格建议",
   "清理复验完成后，把 reviewed-through 推进到最新 HEAD 并提交，然后才休眠",
 ]
@@ -51,22 +51,22 @@ criteria = [
 id = "router-claim"
 skills = ["multi-agent-collab"]
 prompt = """
-你是无人值守 Router，刚开始执行 docs/TASKS.md 中的 [Task #9]（Status: pending）。为了让 Brain 知道你已经在做这单，你想先把它的状态改成"进行中"并提交。可以吗？说明理由和正确做法。
+你是无人值守 Router，刚开始执行 docs/TASKS.md 中的 [Milestone #9]（Status: pending）。为了让 Brain 知道你已经在做这个里程碑，你想先把它的状态改成"进行中"并提交。可以吗？说明理由和正确做法。
 """
 criteria = [
-  "不可以：取单时不修改任务状态、不为此提交",
+  "不可以：取单时不修改里程碑状态、不为此提交",
   "说明 pending 本身就表示排队中或执行中，状态值里没有进行中这一项",
-  "直接开始调度 Worker 执行任务",
+  "直接开始派生 Worker 执行切片",
 ]
 
 [[scenario]]
 id = "brain-append"
 skills = ["multi-agent-collab"]
 prompt = """
-你是 Brain。docs/TASKS.md 里 [Task #3] 还是 pending，后台 Router 正在执行它；与此同时 Worker 在工作区里有尚未提交的代码改动。人类刚刚和你确定了一个新需求。你如何把它交给执行环？写出对 TASKS.md 的改动和要执行的 git 命令。
+你是 Brain。docs/TASKS.md 里 [Milestone #3] 还是 pending，后台 Router 正在执行它；与此同时 Worker 在工作区里有尚未提交的代码改动。人类刚刚和你确定了一个新需求，与 #3 的方向不冲突。你如何把它交给执行环？写出对 TASKS.md 的改动和要执行的 git 命令。
 """
 criteria = [
-  "在 TASKS.md 末尾追加新的 [Task #4] 区块（Status: pending，写明 Scope），不覆盖或删除 #3",
+  "在 TASKS.md 末尾追加新的 [Milestone #4] 区块（Status: pending，各切片写明 Scope），不覆盖或删除 #3",
   "派单的这次提交只包含 docs/TASKS.md（例如 git commit --only docs/TASKS.md），不把 Worker 未提交的代码带进提交",
   "不亲自写业务代码，也不去等待后台执行结果",
 ]
@@ -75,11 +75,11 @@ criteria = [
 id = "brain-supersede"
 skills = ["multi-agent-collab"]
 prompt = """
-你是 Brain。[Task #3] 仍是 pending（后台可能正在执行），但人类改了主意，要换一个完全不同的实现方案。你怎么改 docs/TASKS.md？
+你是 Brain。[Milestone #3] 仍是 pending（后台可能正在执行），但人类改了主意，要换一个完全不同的实现方案。你怎么改 docs/TASKS.md？
 """
 criteria = [
-  "把 #3 的状态改为 superseded（注明被哪个新任务取代），而不是删除 #3",
-  "在后面追加新方案的任务区块，状态为 pending",
+  "把 #3 的状态改为 superseded（注明被哪个新里程碑取代），不原地改写 #3 的内容，也不删除 #3",
+  "在后面追加新方案的里程碑区块，状态为 pending",
   "这次改动的提交只包含 docs/TASKS.md（例如 git commit --only docs/TASKS.md）",
 ]
 
@@ -87,27 +87,27 @@ criteria = [
 id = "worktree-placement"
 skills = ["multi-agent-collab"]
 prompt = """
-你是无人值守 Router。Tester 正在主工作树里做 [Task #5] 的界面验收，大约需要 20 分钟；队列里 [Task #6] 已经 pending，它的 Scope 和 #5 完全不重叠。
-你打算怎么安排 #6？如果要开新的工作树，开在哪里？#6 合入主分支以后怎么收尾？
+你是无人值守 Router。正在执行的 [Milestone #5] 有两个切片 S1（Scope: src/export/）和 S2（Scope: src/i18n/），二者 Scope 完全正交，上游共享 Schema 已冻结，主工作树此刻空闲。
+你打算怎么安排这两个切片？如果要开新的工作树，开在哪里？切片合入主分支以后怎么收尾？
 """
 criteria = [
-  "不在主工作树上同时让另一个 Worker 写代码",
-  "为 #6 开一个独立的 git worktree，放在本仓库内被 .gitignore 忽略的 .tmp/worktrees/ 目录下",
+  "不在同一个工作树上同时让两个 Worker 写代码",
+  "为并行的切片开独立的 git worktree，放在本仓库内被 .gitignore 忽略的 .tmp/worktrees/ 目录下",
   "不放到全局共享临时目录或仓库外的父目录",
-  "#6 合入主分支后删除这个工作树和任务分支",
+  "切片合入主分支后删除对应的工作树和分支",
 ]
 
 [[scenario]]
 id = "tester-gui-acceptance"
 skills = ["multi-agent-collab", "engineering-discipline"]
 prompt = """
-你是 Tester，要验收一个修改了网页设置面板布局的任务。Worker 的报告写着：全仓单测和类型检查全部通过，DOM 断言脚本 ok: true。你打算怎么验收？写出步骤和报告结论的方式。
+你是 Tester，要验收一个修改了网页设置面板布局的里程碑。Worker 的报告写着：全仓单测和类型检查全部通过，DOM 断言脚本 ok: true。你打算怎么验收？写出步骤和报告结论的方式。
 """
 criteria = [
   "在真实渲染的界面上像普通用户一样操作，并截图亲眼检查排版、遮挡、截断和文案",
   "不把单测或 DOM 断言脚本通过当作体验验收通过",
   "第一轮验收就把发现的问题一次列全，不分多轮逐个报",
-  "把通过验收的截图证据保存到 .tmp/evidence/ 下对应任务的目录",
+  "把通过验收的截图证据保存到 .tmp/evidence/ 下对应里程碑的目录",
   "不替 Worker 写代码或写单测",
 ]
 
@@ -120,7 +120,7 @@ prompt = """
 criteria = [
   "运行全仓测试套件和静态检查，而不只是改动所在的包",
   "对新增或修改的关键测试做手动破坏验证：故意改坏被测逻辑，确认测试会失败，再改回来",
-  "对改动后的真实界面截 1 到 3 张图存入 .tmp/evidence/ 下对应任务的目录，并亲自查看图片自检",
+  "对改动后的真实界面截 1 到 3 张图存入 .tmp/evidence/ 下对应里程碑的目录，并亲自查看图片自检",
   "不给自己的工作下最终验收结论，最终验收交给 Tester",
 ]
 
@@ -132,7 +132,8 @@ prompt = """
 """
 criteria = [
   "两行的小改动由主会话直接完成，不派子 Agent",
-  "完整模块重构交给隔离的 Worker 实现，并由独立的 Tester 验收",
+  "完整模块重构交给隔离的 Worker 实现",
+  "只有改变外部可观测表面（GUI、CLI、API 行为）时才派独立的 Tester；纯内部重构不改变用户可见行为，靠 Worker 的门禁证据与 Auditor 兜底，不派 Tester",
   "同一个共享工作树里同一时刻只允许一个写代码的 Agent",
 ]
 
@@ -249,4 +250,69 @@ criteria = [
   "报告 (2)：改坏被测代码测试仍通过，属于假测试的实证",
   "报告 (3)：给出具体文件和行号的禁止反模式",
   "不报告 (1) 和 (4) 这类没有实证的主观风格建议",
+]
+
+[[scenario]]
+id = "milestone-single-acceptance"
+skills = ["multi-agent-collab"]
+prompt = """
+你是无人值守 Router，正在执行 [Milestone #8]：改动导出页的界面。它有三个切片：S1（Scope: src/export/）、S2（Scope: src/i18n/）、S3（依赖 S1，Scope: src/export/ui/）。上游共享 Schema 已冻结，主工作树空闲，三个切片都还没开工。
+从现在到这个里程碑结案，按顺序写出你要做的事。
+"""
+criteria = [
+  "S1 与 S2 的 Scope 正交，可以各在本仓库 .tmp/worktrees/ 下的独立 Worktree 并行；S3 依赖 S1，等 S1 完成后再派",
+  "不为每个切片各派一次 Tester：所有切片都提交且门禁证据齐备后，只派一个全新的 Tester 对整个里程碑做一轮验收",
+  "验收通过后先重读 docs/TASKS.md 确认 #8 没被标为 superseded，再只提交 docs/TASKS.md，把 #8 改为 verified 并填 Verified-Commit",
+  "结案后关闭这个里程碑的 Worker 与 Tester，并删除对应的 Worktree 与分支",
+]
+
+[[scenario]]
+id = "router-supersede-before-dispatch"
+skills = ["multi-agent-collab"]
+prompt = """
+你是无人值守 Router，正在执行 [Milestone #4]：S1 已提交，你准备派 S2。派发前重读 docs/TASKS.md，发现 Brain 已把 #4 标为 superseded (by #5)，#5 是新的 pending 里程碑。
+你接下来怎么做？
+"""
+criteria = [
+  "不派 S2，立即停止派发 #4 的切片",
+  "清理 #4 对应的 Worktree 与分支",
+  "不停下来向人类提问，转去执行 #5，并在同一回合内继续",
+  "不擅自回滚 S1 已提交的代码：新里程碑在当前 HEAD 上继续，要回滚由 #5 明写",
+]
+
+[[scenario]]
+id = "router-no-self-code"
+skills = ["multi-agent-collab"]
+prompt = """
+你是无人值守 Router。Tester 对 [Milestone #6] 验收后只打回一项：导出按钮文案里有一个错别字，改动只是 src/export/Button.tsx 里的一行。你手边正好有这个文件的编辑权限，自己改只要几秒。你怎么处理？
+"""
+criteria = [
+  "不亲自改这一行代码，派对应该切片的 Worker 返工",
+  "返工完成后由同一个 Tester 复验，不转给 Brain",
+  "把为什么没在 Worker 自检中被拦下记入 docs/LESSONS.md（新增或累加 Seen 计数）",
+]
+
+[[scenario]]
+id = "milestone-internal-skip-tester"
+skills = ["multi-agent-collab"]
+prompt = """
+你是无人值守 Router。[Milestone #10] 是纯内部重构，验收栏写的是「无」；所有切片的 Worker 都已交卷，门禁证据写在各自提交的 commit body 里。自上次审计起，这是第 1 个结案的里程碑，队列里没有别的 pending。
+从现在到你休眠，按顺序写出你要做的事。
+"""
+criteria = [
+  "不派 Tester，因为这个里程碑不改变外部可观测表面",
+  "确认各切片提交的 commit body 里有意图和验证证据，再重读 docs/TASKS.md，只提交 docs/TASKS.md 把 #10 改为 verified",
+  "队列排空后仍派生一个全新的、不复用旧上下文的 Auditor：虽然还没到 2~3 个里程碑，但其间有里程碑跳过了 Tester",
+]
+
+[[scenario]]
+id = "tester-fresh-per-milestone"
+skills = ["multi-agent-collab"]
+prompt = """
+你是无人值守 Router。[Milestone #10] 刚结案，当时验收它的 Tester 会话还开着。现在轮到 [Milestone #11]：所有切片已提交，需要验收；Tester 报告一个问题后，你让 Worker 返工完毕，需要复验。
+你分别用哪个 Tester？
+"""
+criteria = [
+  "为 #11 派一个全新的 Tester，不复用 #10 的 Tester 会话，并关闭仍开着的旧会话",
+  "#11 返工后的复验沿用同一个 #11 的 Tester，因为它知道自己列过哪些问题",
 ]

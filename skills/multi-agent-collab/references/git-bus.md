@@ -13,9 +13,9 @@
 
 Router 排空全部 `pending` 任务、准备休眠前：
 
-1. 用 `git rev-list --count <reviewed-through>..HEAD -- . ":!docs/"` 计算 `docs/LESSONS.md` 首行 `reviewed-through` 之后的非文档代码提交数；
-2. 若不少于 5 个，用宿主的子代理能力派生一个全新的、不复用 Worker 与 Tester 上下文的 Auditor，按 SKILL.md 的三类实证审查该区间；
-3. 有实证问题时，在当前回合调度 Worker 清理、Tester 复验；最后把 `reviewed-through` 更新为最新 `HEAD` 并提交，再休眠。
+1. 用 `git log --oneline <reviewed-through>..HEAD -- docs/TASKS.md` 查看 `docs/LESSONS.md` 首行 `reviewed-through` 之后的调度提交，数出已结案（`verified`）的里程碑数，并确认其间是否有验收栏写“无”、跳过了 Tester 的里程碑；
+2. 若已结案不少于 2~3 个里程碑，或有里程碑跳过了 Tester，用宿主的子代理能力派生一个全新的、不复用 Worker 与 Tester 上下文的 Auditor，按 SKILL.md 的三类实证审查该区间；
+3. 有实证问题时，在当前回合派生新的 Worker 清理，并按 SKILL.md 的验收规则决定是否派 Tester 复验；最后把 `reviewed-through` 更新为最新 `HEAD` 并提交，再休眠。
 
 ## 钩子模板
 

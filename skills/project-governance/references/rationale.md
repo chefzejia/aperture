@@ -32,7 +32,7 @@
 | 类型 | 包含文档 | 更新频率与方式 |
 | --- | --- | --- |
 | 稳定契约 | `README.md`, `AGENTS.md`, `PRODUCT.md`, `ARCHITECTURE.md`, `DEPLOYMENT.md` | 仅当对外承诺、模块边界、公共接口或部署流程改变时，随代码在同一个 Commit 中更新。 |
-| 动态状态 | `LESSONS.md`, `TASKS.md`（单 Agent 按需临时建 / 双环协作作常驻轻量滑动调度板） | 海量外部 Issues/PR 先在仓外（GitHub Issues 或 `.tmp/triage/`）完成去重聚类，仅近期立项执行的活跃任务进入 `docs/TASKS.md`（始终只留未结案区块 + 最近 1~2 个已结案锚点）。不要在 `TASKS.md` 中堆砌历史验收大表，单次修改的根因与验证证据按需写入 Git Commit Body。 |
+| 动态状态 | `LESSONS.md`, `TASKS.md`（单 Agent 按需临时建 / 双环协作作常驻轻量滑动调度板） | 海量外部 Issues/PR 先在仓外（GitHub Issues 或 `.tmp/triage/`）完成去重聚类，仅近期立项执行的活跃里程碑进入 `docs/TASKS.md`（始终只留未结案区块 + 最近 1~2 个已结案锚点）。不要在 `TASKS.md` 中堆砌历史验收大表，单次修改的根因与验证证据按需写入 Git Commit Body。 |
 
 ## 为什么砍掉中间态（RFC / 多份领域碎文档 / 文字版 DESIGN.md）
 
