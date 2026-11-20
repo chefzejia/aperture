@@ -1,6 +1,6 @@
 ---
 name: multi-agent-collab
-version: 1.4.0
+version: 1.5.0
 description: >
   提供工具与模型无关的多 Agent 双环协作协议（Brain · Router · Worker · Tester）、契约格式与升级闭环。
   当项目需要启用多 Agent 角色隔离、制定里程碑或执行独立验收时使用。
