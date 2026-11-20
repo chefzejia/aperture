@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+  <defs>
+    <linearGradient id="iris-bright" x1="16" y1="16" x2="112" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="55%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="iris-deep" x1="16" y1="16" x2="112" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0EA5E9"/>
+      <stop offset="55%" stop-color="#1D4ED8"/>
+      <stop offset="100%" stop-color="#1E3A8A"/>
+    </linearGradient>
+    <linearGradient id="focal-core" x1="56" y1="56" x2="72" y2="72" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FCD34D"/>
+      <stop offset="55%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 6 precision interlocking optical iris blades -->
+  <g>
+    <path d="M 69.54 46.40 L 17.73 46.40 A 49.50 49.50 0 0 1 51.98 15.98 Z" fill="url(#iris-bright)"/>
+    <path d="M 82.01 60.00 L 56.11 15.13 A 49.50 49.50 0 0 1 99.58 29.58 Z" fill="url(#iris-deep)"/>
+    <path d="M 76.47 77.60 L 102.37 32.73 A 49.50 49.50 0 0 1 111.60 77.60 Z" fill="url(#iris-bright)"/>
+    <path d="M 58.46 81.60 L 110.27 81.60 A 49.50 49.50 0 0 1 76.02 112.02 Z" fill="url(#iris-deep)"/>
+    <path d="M 45.99 68.00 L 71.89 112.87 A 49.50 49.50 0 0 1 28.42 98.42 Z" fill="url(#iris-bright)"/>
+    <path d="M 51.53 50.40 L 25.63 95.27 A 49.50 49.50 0 0 1 16.40 50.40 Z" fill="url(#iris-deep)"/>
+  </g>
+
+  <!-- Focused optical core: infinite intelligence converged into finite purpose -->
+  <circle cx="64" cy="64" r="7.6" fill="url(#focal-core)"/>
+</svg>

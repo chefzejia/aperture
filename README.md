@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.svg" alt="Aperture" width="96" height="96" />
+</p>
+
 # Aperture
 
 > **Focus infinite intelligence into finite purpose.**
