@@ -24,7 +24,7 @@ description: >
    - **核心稳定态与长尾易腐态物理隔离（Core vs. Volatile Edge & Retire Stack）**：高确定性内核与高频突变的外部适配层分包或经插件宿主隔离，并用守卫单测锁死单向引用（细则见 `engineering-discipline`）；对维护成本高或合规风险大的长尾内置模块，定期剥离至外部插件并从主仓彻底移除（Retire Stack）。
    - **唯一视觉真源（Single Visual Truth）**：建仓初期高保真原型一旦转入生产组件，即以生产代码与样式系统（Production-as-Truth）为唯一演进真源，及时退役早期静态草稿且不再额外维护重复的文字版 `DESIGN.md`（防止 Agent 被过时的早期原型误导）。
 5. **错误复利漏斗（`LESSONS.md` → 守卫单测或正式契约）、周期性逆熵审计（`Auditor`）与 Commit Body 审计账本**：
-   - **日常现场记账（Router）**：平时一次通过的里程碑零额外开销；一旦独立 Tester 在验收中打回（说明残次品逃过了 Worker 的自检门禁），由同时掌握“Worker 自检报告”与“Tester 翻车现场”的 Router 亲自将该漏检模式记入 `docs/LESSONS.md`（带翻车 Commit 证据与 `Seen N×` 计数）；一旦累计 `Seen 3×` 或属严重事故，能固化为 `tests/` 下静态守卫单测（Guard Test）的，由 Router 直接安排 Worker 在返工时顺手固化；需要修改项目契约文档或 Skill 的，由 Router 标记 `blocked` 交 Brain 与人裁定。
+   - **日常按机制记账与晋升（`docs/LESSONS.md`）**：平时一次通过的里程碑零额外开销；独立验收打回时按背后失效的**机制**（而非表面症状）记入 `docs/LESSONS.md` 并累加 `Seen N×`。累计 `Seen 3×` 或属严重回归时，能机械校验的固化为覆盖输入维度的 `tests/` 守卫测试，需修改契约文档或 Skill 的交 Brain 与人裁定；晋升后从正文移入文末已晋升列表，保留机制名与目标链接（具体分诊与执行循环以 `multi-agent-collab` Skill 为准）。
    - **周期性逆熵审计（Fresh-Context Auditor）**：`docs/LESSONS.md` 首行 `<!-- reviewed-through: <sha> -->` 记录最近一次审计的水位线；触发条件、派生方式与实证门槛以 `multi-agent-collab` Skill 为准。
    - **纯净现在时文档 + Commit Body 留痕**：文档与注释永远保持现在时态的纯净契约，而每次修改的意图/根因、破壁验证证据与未覆盖边界按需写入 Git Commit Body，供 `git log / git blame` 永久审计。
 6. **两级任务漏斗（海量外部 Triage vs. 仓内活跃调度板 `docs/TASKS.md`）**：
@@ -40,7 +40,7 @@ description: >
 | --- | --- | --- | --- |
 | L0 必选 | `AGENTS.md` | Agent 的边界、验证命令与读取路由 | 任何需要 Agent 协作的仓库起步时 |
 | L0 必选 | `README.md` | 项目是什么、如何安装与运行 | 任何独立项目起步时 |
-| L1 演化 | `docs/LESSONS.md` | 踩过什么反直觉的坑、哪条规则待晋升（含 `Seen N×` 计数） | 同一类错误重复发生，需要留存失败证据并在满 3 次时晋升为单测门禁 |
+| L1 演化 | `docs/LESSONS.md` | 踩过什么反直觉的坑、哪条机制待晋升（含 `Seen N×` 计数与 Auditor 水位线） | 同一类错误重复发生，需要留存失败证据并在满 3 次时晋升为单测门禁；或启用双环多 Agent 协作时用于承接 `reviewed-through` 水位线（初始化或首次审计建立） |
 | L1 调度板 | `docs/TASKS.md` | 当前活跃队列有哪些待办里程碑、各切片的写作用域（`Scope`）与状态是什么 | 单 Agent 简单项目仅在跨会话长任务时按需临时建立（收官即删）；启用双环多 Agent 协作时作为常驻轻量滑动调度板，格式、模板与提交规则见 `multi-agent-collab` Skill（仅保留未结案区块 + 最近 1~2 个已结案锚点，不堆砌历史验收大表，详细验证证据写入 Git Commit Body） |
 | L2 产品 | `docs/PRODUCT.md` | 服务谁、核心模块与交互铁律、明确不做什么 | 面向用户的业务产品（纯底层库/Infra 无需建立） |
 | L2 台账 | `docs/FEATURES.md` | 现在什么能用、凭什么、还缺什么：每条用户能力的验收状态、最近一次独立验收、已知缺口与回归测试 | 面向用户的产品出现任一情况：能力多到无法凭 `TASKS.md` 与 `git log` 在 1 分钟内说清现状；有多个宿主、平台或用户身份要分别验收；要按版本发布；出现过“以为做完了其实没验”，或重构后旧验收悄悄失效。格式见 [assets/features.template.md](assets/features.template.md)，与里程碑的联动见 `multi-agent-collab` Skill |
