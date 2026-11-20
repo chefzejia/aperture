@@ -33,6 +33,7 @@
 ```bash
 python3 scripts/verify.py
 python3 evals/replay.py check
+python3 -m unittest discover -s tests
 ```
 
 修改 Skill 正文时，先用 `evals/replay.py run` 对改动前的版本（`--ref <tag>`）和改动后的工作树各跑一次情景回放，再用 `evals/replay.py compare` 确认没有标准变差；需要 OpenAI 兼容的接口地址 `REPLAY_BASE_URL`。

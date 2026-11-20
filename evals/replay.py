@@ -35,7 +35,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 SCENARIOS = HERE / "scenarios.toml"
-MIN_REPLY_CHARS = 150
+MIN_REPLY_CHARS = 40
 
 ANSWER_SYSTEM = "你在一个全新的会话里工作。宿主已为本会话加载下列文件全文，请按其中的规则处理用户的请求。\n\n{files}"
 
@@ -92,15 +92,14 @@ def sha(text: str) -> str:
 
 
 def slug(model: str) -> str:
-    return re.sub(r"[^A-Za-z0-9._-]+", "_", model.split("/")[-1])
+    return re.sub(r"[^A-Za-z0-9._-]+", "_", model.replace("/", "__"))
 
 
-def chat(model_spec: str, system: str, user: str) -> tuple[str, dict]:
+def chat(model_spec: str, system: str, user: str, *, min_chars: int = 1) -> tuple[str, dict]:
     base = os.environ.get("REPLAY_BASE_URL")
     if not base:
         raise SystemExit("REPLAY_BASE_URL is not set")
     name, _, effort = model_spec.partition("@")
-    min_chars = MIN_REPLY_CHARS if system.startswith(ANSWER_SYSTEM[:10]) else 1
     body: dict = {"model": name, "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
     if effort:
         body["reasoning_effort"] = effort
@@ -134,15 +133,30 @@ def chat(model_spec: str, system: str, user: str) -> tuple[str, dict]:
 
 
 def parse_judgement(text: str, n: int) -> list[dict]:
-    match = re.search(r"\{.*\}", text, re.S)
-    if not match:
-        raise ValueError("no JSON object in judge output")
-    results = json.loads(match.group(0)).get("results")
+    decoder = json.JSONDecoder()
+    results = None
+    idx = 0
+    while True:
+        pos = text.find("{", idx)
+        if pos == -1:
+            break
+        try:
+            obj, _ = decoder.raw_decode(text, pos)
+        except json.JSONDecodeError:
+            idx = pos + 1
+            continue
+        if isinstance(obj, dict) and isinstance(obj.get("results"), list):
+            results = obj["results"]
+            break
+        idx = pos + 1
     if not isinstance(results, list) or len(results) != n:
-        raise ValueError(f"expected {n} results")
+        raise ValueError(f"expected {n} results in judge output")
+    for r in results:
+        if not isinstance(r, dict) or not isinstance(r.get("id"), int) or isinstance(r.get("id"), bool):
+            raise ValueError(f"bad result entry {r!r}")
     out = []
-    for i, r in enumerate(sorted(results, key=lambda r: r.get("id", 0)), 1):
-        if r.get("id") != i or not isinstance(r.get("pass"), bool):
+    for i, r in enumerate(sorted(results, key=lambda r: r["id"]), 1):
+        if r["id"] != i or not isinstance(r.get("pass"), bool):
             raise ValueError(f"bad result entry {r!r}")
         out.append({"pass": r["pass"], "reason": str(r.get("reason", ""))})
     return out
@@ -153,7 +167,7 @@ def judge(judge_spec: str, s: dict, reply: str) -> tuple[list[dict], str]:
     user = f"## 场景\n{s['prompt'].strip()}\n\n## 回答\n{reply}\n\n## 评分标准\n{criteria}"
     problem = ""
     for _ in range(2):
-        text, _ = chat(judge_spec, JUDGE_SYSTEM, user)
+        text, _ = chat(judge_spec, JUDGE_SYSTEM, user, min_chars=1)
         try:
             return parse_judgement(text, len(s["criteria"])), text
         except (ValueError, json.JSONDecodeError) as e:
@@ -168,7 +182,7 @@ def run_one(s: dict, model: str, k: int, args: argparse.Namespace, out: Path) ->
     path = out / s["id"] / f"{slug(model)}.{k}.json"
     record = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
     if record.get("input_sha") != input_sha:
-        reply, usage = chat(model, system, s["prompt"].strip())
+        reply, usage = chat(model, system, s["prompt"].strip(), min_chars=MIN_REPLY_CHARS)
         record = {"scenario": s["id"], "model": model, "repeat": k, "input_sha": input_sha, "files": [p for p, _ in files], "reply": reply, "usage": usage}
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -181,45 +195,79 @@ def run_one(s: dict, model: str, k: int, args: argparse.Namespace, out: Path) ->
     return f"done    {s['id']} {slug(model)}#{k}: {passed}/{len(record['results'])}"
 
 
-def load_records(run_dir: Path, scenarios: list[dict]) -> dict[tuple[str, str], list[dict]]:
+def load_records(run_dir: Path, scenarios: list[dict]) -> tuple[dict[tuple[str, str], list[dict]], list[str], set[str]]:
     current = {s["id"]: sha(json.dumps(s["criteria"], ensure_ascii=False)) for s in scenarios}
     records: dict[tuple[str, str], list[dict]] = {}
+    stale: list[str] = []
+    judges: set[str] = set()
     for f in sorted(run_dir.glob("*/*.json")):
         r = json.loads(f.read_text(encoding="utf-8"))
-        if current.get(r.get("scenario")) == r.get("criteria_sha") and r.get("results"):
-            records.setdefault((r["scenario"], r["model"]), []).append(r)
-    return records
+        sid = r.get("scenario")
+        if sid not in current:
+            continue
+        if current[sid] != r.get("criteria_sha") or not r.get("results"):
+            stale.append(f"{sid} ({f.name})")
+            continue
+        records.setdefault((sid, r["model"]), []).append(r)
+        if r.get("judge"):
+            judges.add(r["judge"])
+    return records, stale, judges
 
 
 def summarize(run_dir: Path, scenarios: list[dict]) -> None:
-    records = load_records(run_dir, scenarios)
+    records, stale, _ = load_records(run_dir, scenarios)
     models = sorted({m for _, m in records})
+    col_w = max([22] + [len(slug(m)) + 2 for m in models])
     print(f"\n{run_dir.name}: criteria passed per scenario (summed over repeats)")
-    print(f"{'scenario':28}" + "".join(f"{slug(m):>22}" for m in models))
+    print(f"{'scenario':32}" + "".join(f"{slug(m):>{col_w}}" for m in models))
     totals = {m: [0, 0] for m in models}
     for s in scenarios:
-        row = f"{s['id']:28}"
+        row = f"{s['id']:32}"
         for m in models:
             recs = records.get((s["id"], m), [])
             ok = sum(r["pass"] for rec in recs for r in rec["results"])
             n = sum(len(rec["results"]) for rec in recs)
             totals[m][0] += ok
             totals[m][1] += n
-            row += f"{(f'{ok}/{n}' if n else '-'):>22}"
+            row += f"{(f'{ok}/{n}' if n else '-'):>{col_w}}"
         print(row)
-    print(f"{'total':28}" + "".join(f"{f'{a}/{b}':>22}" for a, b in totals.values()))
+    print(f"{'total':32}" + "".join(f"{f'{a}/{b}':>{col_w}}" for a, b in totals.values()))
+    if stale:
+        print(f"WARNING: ignored {len(stale)} stale record(s) in {run_dir.name}: {', '.join(stale)}", file=sys.stderr)
 
 
 def compare(dir_a: Path, dir_b: Path, scenarios: list[dict]) -> int:
-    ra, rb = load_records(dir_a, scenarios), load_records(dir_b, scenarios)
+    for d in (dir_a, dir_b):
+        if not d.is_dir():
+            print(f"ERROR: run directory does not exist: {d}", file=sys.stderr)
+            return 2
+    ra, stale_a, judges_a = load_records(dir_a, scenarios)
+    rb, stale_b, judges_b = load_records(dir_b, scenarios)
+    if stale_a or stale_b:
+        if stale_a:
+            print(f"ERROR: {dir_a.name} has stale criteria records (re-judge before comparing): {', '.join(stale_a)}", file=sys.stderr)
+        if stale_b:
+            print(f"ERROR: {dir_b.name} has stale criteria records (re-judge before comparing): {', '.join(stale_b)}", file=sys.stderr)
+        return 2
+    if judges_a and judges_b and judges_a != judges_b:
+        print(f"ERROR: judge mismatch between {dir_a.name} ({sorted(judges_a)}) and {dir_b.name} ({sorted(judges_b)})", file=sys.stderr)
+        return 2
     models = sorted({m for _, m in ra} & {m for _, m in rb})
-    worse = better = 0
+    if not models:
+        print(f"ERROR: no overlapping models between {dir_a.name} and {dir_b.name}", file=sys.stderr)
+        return 2
+    worse = better = compared = 0
+    one_sided: list[str] = []
     for s in scenarios:
         for m in models:
             a, b = ra.get((s["id"], m), []), rb.get((s["id"], m), [])
+            if not a and not b:
+                continue
             if not a or not b:
+                one_sided.append(f"{s['id']} ({slug(m)})")
                 continue
             for i, c in enumerate(s["criteria"]):
+                compared += 1
                 pa = sum(rec["results"][i]["pass"] for rec in a) / len(a)
                 pb = sum(rec["results"][i]["pass"] for rec in b) / len(b)
                 if pb == pa:
@@ -229,7 +277,12 @@ def compare(dir_a: Path, dir_b: Path, scenarios: list[dict]) -> int:
                 better += pb > pa
                 why = "; ".join(rec["results"][i]["reason"] for rec in (b if pb < pa else a) if not rec["results"][i]["pass"])
                 print(f"{mark} {s['id']} {slug(m)} #{i + 1} {pa:.0%} -> {pb:.0%}  {c}\n       judge on the failing side: {why}")
-    print(f"\n{dir_a.name} -> {dir_b.name}: {worse} criteria worse, {better} better, models compared: {', '.join(slug(m) for m in models)}")
+    if one_sided:
+        print(f"NOTE: skipped {len(one_sided)} scenario/model pair(s) present in only one run: {', '.join(one_sided)}", file=sys.stderr)
+    if compared == 0:
+        print(f"ERROR: 0 overlapping criteria compared between {dir_a.name} and {dir_b.name}", file=sys.stderr)
+        return 2
+    print(f"\n{dir_a.name} -> {dir_b.name}: {compared} criteria compared, {worse} worse, {better} better, models compared: {', '.join(slug(m) for m in models)}")
     return 1 if worse else 0
 
 
@@ -275,7 +328,10 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=True)
     head = args.ref or "working tree"
     commit = subprocess.run(["git", "-C", str(args.root), "rev-parse", "--short", args.ref or "HEAD"], capture_output=True, text=True).stdout.strip()
-    (out / "meta.json").write_text(json.dumps({"root": str(args.root.resolve()), "source": head, "commit": commit, "judge": args.judge}, indent=2), encoding="utf-8")
+    meta: dict = {"root": str(args.root.resolve()), "source": head, "commit": commit, "judge": args.judge}
+    if not args.ref:
+        meta["dirty"] = bool(subprocess.run(["git", "-C", str(args.root), "status", "--porcelain"], capture_output=True, text=True).stdout.strip())
+    (out / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
     models = [m.strip() for m in args.models.split(",") if m.strip()]
     jobs = [(s, m, k) for s in scenarios for m in models for k in range(args.repeat)]
     failed = 0
