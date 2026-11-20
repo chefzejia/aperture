@@ -52,29 +52,34 @@ EOF
 
 ## 三、第 2 步：配置全局动态模型路由（不写死版本号）
 
-AGY 的两条原生多 Agent 通道模型机制不同，需要分别理解：
-- **`invoke_subagent`**（单子代理）：`Model` 参数只接受抽象档位（`inherit`、`flash`、`flash_lite`、`pro`），由 AGY 平台自动映射到当下最新版本，无需维护具体版本号；
-- **`swarm`**（`/teamwork` 多 Worker 协同）：支持先调用 `swarm(action="models")` 读取当前账号实时可用模型与配额，再为每个 Worker 动态指定模型。
+AGY 的两条原生多 Agent 通道模型机制不同，且存在一个容易踩中的实测坑：
+- **`invoke_subagent`**（轻量子代理）：`Model` 参数只接受抽象档位（`inherit`、`flash`、`flash_lite`、`pro`）。**注意**：在 AGY 双模型编排（Orchestrator）模式下，`Model: "inherit"` 会继承执行层的轻量 Flash Worker，而非旗舰或编码次旗舰；
+- **`swarm`**（原生编排器，**普通会话即可直接调用，不必每次敲 `/teamwork`**）：支持先调用 `swarm(action="models")` 读取当前账号实时可用模型与配额，再为每个 Worker / Tester 显式传入具体模型名。
 
-在插件内新建 **`~/.gemini/config/plugins/aperture/rules/AGENTS.md`**（纯 Markdown，**不加 YAML frontmatter**；只要 `aperture` 插件开启，该规则对本机所有 AGY 会话与项目默认生效，且不污染任何业务仓库）：
+因此全局规则必须**明确派发器优先级**（编码 Worker 与独立终端 Tester 优先走 `swarm`；`invoke_subagent` 收窄给 `research`/`browser` 与显式 `Model: "pro"` 兜底），并显式覆写内置 `swarm` Skill 在轻型里程碑里强制拉起 `monitor`/`narrator` 的条款，同时写死 `swarm` 成员**全局唯一命名**（`kill` 后名字不可复用）与**先合入再 `kill`** 两条红线。
+
+在插件内新建 **`~/.gemini/config/plugins/aperture/rules/AGENTS.md`**（纯 Markdown，**不加 YAML frontmatter**；只要 `aperture` 插件开启，该规则会注入 `<user_rules>` 对本机所有 AGY 会话与项目默认生效，且不污染任何业务仓库）：
 
 ```markdown
 # Aperture 本机多 Agent 模型路由偏好（Antigravity 全局）
 
-以下为本机在 Antigravity 中协作时的默认模型分层策略；若用户在当前对话中显式指定其他模型，以用户指定为准。
+以下为本机在 Antigravity 中协作时的默认模型分层与派发策略；若用户在当前对话中显式指定其他模型或编排方式，以用户指定为准。
 
-1. **主会话（Brain）**：使用用户在 AGY 界面当前选中的旗舰模型，负责架构定界、任务切分与最终把关。
-2. **`swarm`（`/teamwork`）编码 Worker 动态选型（不写死版本号）**：
-   - 派生编码 Worker 前，先调用 `swarm(action="models")` 读取当前账号实时可用模型与配额；
-   - 默认优先动态匹配最新一代 `<你偏好的次旗舰编码系列>` 的 `high` 档作为编码 Worker；若未来模型更名换代或配额耗尽，按实时列表选用同梯队次旗舰或回退为继承主会话模型。
-3. **`invoke_subagent` 档位分工**：
-   - 编码实现、重构与需要完整推理的任务保持默认 `Model: "inherit"`；
-   - 纯只读代码库探索（`research`）或大范围信息检索优先使用 `Model: "flash"` 以提速并节省旗舰配额。
+1. **主会话（Brain）与 Fast Path**：
+   - 使用用户在 AGY 界面当前选中的旗舰模型，负责架构定界、任务切分、契约冻结与最终把关。
+   - ≤5 步或局部单点小改动直接由主会话完成，不启动多 Agent 编排。
+2. **编码 Worker 与独立终端 Tester：默认优先走 `swarm`（普通会话直接调用，不限于 `/teamwork`）**：
+   - **动态选型（不写死版本号）**：派生前先调用 `swarm(action="models")` 读取当前账号实时可用模型与配额，优先显式传入最新一代 `<你偏好的次旗舰编码系列>` 的 `high` 档；若换代或配额耗尽，顺延实时列表中同梯队具体模型名，**禁止省略 `model` 参数**（防止隐式落入双模型执行层）。
+   - **精简编排（显式覆写内置 `swarm` Skill）**：1–2 个常规成员的串行或轻型里程碑，**不额外拉起 `monitor` 与 `narrator`**；仅在 ≥3 个长时并行 Worker 或用户显式启用 `/teamwork` 时才按需启用。
+   - **生命周期铁律**：成员名必须带里程碑/切片前缀且全局唯一（如 `m72-s1`、`m72-tester`，因 `kill` 后名字永久不可复用）；串行单切片用 `workspace: "inherit"`，物理正交并行用 `workspace: "share"`；**`share`/`branch` 成员必须先确认提交已合入主工作树，再 `swarm(action="kill")` 回收**，里程碑结案即清理。
+3. **`invoke_subagent` 收窄适用范围与兜底红线**：
+   - 仅用于三类场景：`research` 只读代码库探索/大范围检索（`Model: "flash"`）、`browser` 纯网页 UI 交互验收（`Model: "flash"`），以及 `swarm` 不可用时的兜底。
+   - 若被迫回退到 `invoke_subagent` 执行编码或重推理任务，**禁止传 `Model: "inherit"`**（双模型 Orchestrator 编排下会降级至 Flash 执行层），必须显式传 `Model: "pro"`。
 4. **异源交叉审计（`Auditor`）**：
-   - 在重大架构定稿前与合并/发版前，优先调用与主力异源的旗舰只读模型做实证审计（外部只读 CLI 或 `swarm` 内指定异源旗舰均可）；具体模型由主控按任务决定，不硬编码型号，默认高推理深度（`high`）。
+   - 在重大架构定稿前与合并/发版前，优先调用与主力异源的旗舰只读模型做实证审计（外部只读 CLI 或 `swarm` 内为只读 `auditor` 显式指定异源旗舰均可）；具体模型由主控按任务决定，不硬编码型号，默认高推理深度（`high`）。
 ```
 
-当未来模型快速迭代或更名换代时，只需改这一处文件的第 2 条关键词即可全机生效，零仓库维护成本。
+**同时确保各业务仓库自身不与全局规则打架**：不要在项目仓的 `AGENTS.md` 或 `docs/ROLES.md` 中写死 `invoke_subagent`、`inherit`、固定子代理名或特定宿主派发器；业务仓只需声明“按宿主全局模型路由规则派生独立 Worker 与全新 Tester”，换代或换宿主时只改上面这一处全局文件即可全机生效。
 
 ---
 
