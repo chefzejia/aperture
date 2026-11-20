@@ -97,11 +97,20 @@ def strip_inline_code(line: str) -> str:
             else:
                 k += 1
         if closed != -1:
+            out.append("\n" * line[i:closed].count("\n"))
             i = closed
         else:
             out.append(line[i:j])
             i = j
     return "".join(out)
+
+
+def strip_inline_code_paragraphs(body: str) -> str:
+    parts = re.split(r"(\r?\n[ \t]*\r?\n)", body)
+    return "".join(
+        part if idx % 2 == 1 else strip_inline_code(part)
+        for idx, part in enumerate(parts)
+    )
 
 
 def github_slug(heading: str) -> str:
@@ -332,7 +341,7 @@ def check_markdown_and_templates(candidates: list[Path], errors: list[str], root
             errors.append(f"{rel}: forbidden filename {md_file.name} inside skill assets (use *.template.md)")
         checked += 1
         body = strip_fenced_blocks(md_file.read_text(encoding="utf-8"))
-        body_no_code = "\n".join(strip_inline_code(line) for line in body.splitlines())
+        body_no_code = strip_inline_code_paragraphs(body)
         for m in INLINE_LINK_RE.finditer(body_no_code):
             validate_target(md_file, rel, m.group(1), heading_cache, errors, root=root)
         for line in body_no_code.splitlines():

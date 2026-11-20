@@ -90,11 +90,25 @@ class VerifyGuardTests(unittest.TestCase):
             encoded_anchor = quote("第一节-概述")
             (repo / "README.md").write_text(
                 f"[ok]({encoded_path}#{encoded_anchor})\n\n"
-                "Inline double backticks: ``[not a link](missing.md)`` and `[also ignored](nope.md)`.\n",
+                "Inline double backticks: ``[not a link](missing.md)`` and `[also ignored](nope.md)`.\n\n"
+                "Multiline single span: `line1\n[multiline-ignored](missing1.md)\nline3`.\n\n"
+                "Multiline double span: ``line1\n`[multiline-ignored-2](missing2.md)`\nline3``.\n",
                 encoding="utf-8",
             )
             _, _, _, errors = verify.verify_repo(repo)
             self.assertEqual(errors, [])
+
+    def test_unclosed_backtick_does_not_swallow_next_paragraph(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            _init_min_aperture_repo(repo)
+            (repo / "README.md").write_text(
+                "Paragraph with unclosed `backtick.\n\n"
+                "Second paragraph has a real [broken](still-missing.md) link.\n",
+                encoding="utf-8",
+            )
+            _, _, _, errors = verify.verify_repo(repo)
+            self.assertTrue(any("still-missing.md" in e for e in errors), errors)
 
     def test_forbidden_asset_filenames_caught(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -150,7 +164,7 @@ class ReplayTests(unittest.TestCase):
         criteria: list[str],
         passes: list[bool],
         *,
-        judge: str = "judge-a",
+        judge: str | None = "judge-a",
         criteria_override: list[str] | None = None,
     ) -> None:
         c_sha = replay.sha(json.dumps(criteria_override or criteria, ensure_ascii=False))
@@ -159,9 +173,10 @@ class ReplayTests(unittest.TestCase):
             "model": model,
             "repeat": 0,
             "criteria_sha": c_sha,
-            "judge": judge,
             "results": [{"pass": p, "reason": "ok" if p else "fail"} for p in passes],
         }
+        if judge is not None:
+            rec["judge"] = judge
         p = run_dir / sid / f"{replay.slug(model)}.0.json"
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(json.dumps(rec), encoding="utf-8")
@@ -217,6 +232,46 @@ class ReplayTests(unittest.TestCase):
             self._write_record(b, "s1", "m1", scenarios[0]["criteria"], [True, False], judge="judge-a")
             with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
                 self.assertEqual(replay.compare(a, b, scenarios), 1)
+
+    def test_compare_rejects_missing_baseline_swapped_judges_and_missing_judge(self) -> None:
+        scenarios = [
+            {"id": "s1", "criteria": ["c1"]},
+            {"id": "s2", "criteria": ["c2"]},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            a, b = root / "a", root / "b"
+            a.mkdir()
+            b.mkdir()
+
+            # Baseline has s1 & s2, candidate b lost s2 -> MUST fail closed (2)
+            self._write_record(a, "s1", "m1", scenarios[0]["criteria"], [True], judge="j1")
+            self._write_record(a, "s2", "m1", scenarios[1]["criteria"], [True], judge="j1")
+            self._write_record(b, "s1", "m1", scenarios[0]["criteria"], [True], judge="j1")
+            err = io.StringIO()
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
+                self.assertEqual(replay.compare(a, b, scenarios), 2)
+            self.assertIn("missing baseline", err.getvalue())
+
+            # Swapped per-scenario judges (global set is {j1, j2} on both sides) -> MUST fail closed (2)
+            self._write_record(a, "s1", "m1", scenarios[0]["criteria"], [True], judge="j1")
+            self._write_record(a, "s2", "m1", scenarios[1]["criteria"], [True], judge="j2")
+            self._write_record(b, "s1", "m1", scenarios[0]["criteria"], [True], judge="j2")
+            self._write_record(b, "s2", "m1", scenarios[1]["criteria"], [True], judge="j1")
+            err = io.StringIO()
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
+                self.assertEqual(replay.compare(a, b, scenarios), 2)
+            self.assertIn("judge mismatch", err.getvalue())
+
+            # Missing judge field on a record -> MUST fail closed (2)
+            self._write_record(a, "s1", "m1", scenarios[0]["criteria"], [True], judge=None)
+            self._write_record(a, "s2", "m1", scenarios[1]["criteria"], [True], judge="j1")
+            self._write_record(b, "s1", "m1", scenarios[0]["criteria"], [True], judge="j1")
+            self._write_record(b, "s2", "m1", scenarios[1]["criteria"], [True], judge="j1")
+            err = io.StringIO()
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
+                self.assertEqual(replay.compare(a, b, scenarios), 2)
+            self.assertIn("missing judge", err.getvalue())
 
 
 class GitBusHookTests(unittest.TestCase):

@@ -195,11 +195,10 @@ def run_one(s: dict, model: str, k: int, args: argparse.Namespace, out: Path) ->
     return f"done    {s['id']} {slug(model)}#{k}: {passed}/{len(record['results'])}"
 
 
-def load_records(run_dir: Path, scenarios: list[dict]) -> tuple[dict[tuple[str, str], list[dict]], list[str], set[str]]:
+def load_records(run_dir: Path, scenarios: list[dict]) -> tuple[dict[tuple[str, str], list[dict]], list[str]]:
     current = {s["id"]: sha(json.dumps(s["criteria"], ensure_ascii=False)) for s in scenarios}
     records: dict[tuple[str, str], list[dict]] = {}
     stale: list[str] = []
-    judges: set[str] = set()
     for f in sorted(run_dir.glob("*/*.json")):
         r = json.loads(f.read_text(encoding="utf-8"))
         sid = r.get("scenario")
@@ -209,13 +208,11 @@ def load_records(run_dir: Path, scenarios: list[dict]) -> tuple[dict[tuple[str, 
             stale.append(f"{sid} ({f.name})")
             continue
         records.setdefault((sid, r["model"]), []).append(r)
-        if r.get("judge"):
-            judges.add(r["judge"])
-    return records, stale, judges
+    return records, stale
 
 
 def summarize(run_dir: Path, scenarios: list[dict]) -> None:
-    records, stale, _ = load_records(run_dir, scenarios)
+    records, stale = load_records(run_dir, scenarios)
     models = sorted({m for _, m in records})
     col_w = max([22] + [len(slug(m)) + 2 for m in models])
     print(f"\n{run_dir.name}: criteria passed per scenario (summed over repeats)")
@@ -241,30 +238,52 @@ def compare(dir_a: Path, dir_b: Path, scenarios: list[dict]) -> int:
         if not d.is_dir():
             print(f"ERROR: run directory does not exist: {d}", file=sys.stderr)
             return 2
-    ra, stale_a, judges_a = load_records(dir_a, scenarios)
-    rb, stale_b, judges_b = load_records(dir_b, scenarios)
+    ra, stale_a = load_records(dir_a, scenarios)
+    rb, stale_b = load_records(dir_b, scenarios)
     if stale_a or stale_b:
         if stale_a:
             print(f"ERROR: {dir_a.name} has stale criteria records (re-judge before comparing): {', '.join(stale_a)}", file=sys.stderr)
         if stale_b:
             print(f"ERROR: {dir_b.name} has stale criteria records (re-judge before comparing): {', '.join(stale_b)}", file=sys.stderr)
         return 2
-    if judges_a and judges_b and judges_a != judges_b:
-        print(f"ERROR: judge mismatch between {dir_a.name} ({sorted(judges_a)}) and {dir_b.name} ({sorted(judges_b)})", file=sys.stderr)
-        return 2
     models = sorted({m for _, m in ra} & {m for _, m in rb})
     if not models:
         print(f"ERROR: no overlapping models between {dir_a.name} and {dir_b.name}", file=sys.stderr)
         return 2
-    worse = better = compared = 0
-    one_sided: list[str] = []
+    missing_in_b: list[str] = []
+    new_in_b: list[str] = []
+    judge_errors: list[str] = []
     for s in scenarios:
         for m in models:
             a, b = ra.get((s["id"], m), []), rb.get((s["id"], m), [])
             if not a and not b:
                 continue
+            if a and not b:
+                missing_in_b.append(f"{s['id']} ({slug(m)})")
+                continue
+            if not a and b:
+                new_in_b.append(f"{s['id']} ({slug(m)})")
+                continue
+            ja = {rec.get("judge") for rec in a}
+            jb = {rec.get("judge") for rec in b}
+            if any(not isinstance(j, str) or not j.strip() for j in ja | jb):
+                judge_errors.append(f"{s['id']} ({slug(m)}): missing judge")
+            elif len(ja) != 1 or len(jb) != 1 or ja != jb:
+                judge_errors.append(f"{s['id']} ({slug(m)}): {sorted(ja)} vs {sorted(jb)}")
+    if missing_in_b:
+        print(
+            f"ERROR: {dir_b.name} is missing baseline scenario/model pair(s) from {dir_a.name}: {', '.join(missing_in_b)}",
+            file=sys.stderr,
+        )
+        return 2
+    if judge_errors:
+        print(f"ERROR: judge mismatch or missing judge: {', '.join(judge_errors)}", file=sys.stderr)
+        return 2
+    worse = better = compared = 0
+    for s in scenarios:
+        for m in models:
+            a, b = ra.get((s["id"], m), []), rb.get((s["id"], m), [])
             if not a or not b:
-                one_sided.append(f"{s['id']} ({slug(m)})")
                 continue
             for i, c in enumerate(s["criteria"]):
                 compared += 1
@@ -277,8 +296,8 @@ def compare(dir_a: Path, dir_b: Path, scenarios: list[dict]) -> int:
                 better += pb > pa
                 why = "; ".join(rec["results"][i]["reason"] for rec in (b if pb < pa else a) if not rec["results"][i]["pass"])
                 print(f"{mark} {s['id']} {slug(m)} #{i + 1} {pa:.0%} -> {pb:.0%}  {c}\n       judge on the failing side: {why}")
-    if one_sided:
-        print(f"NOTE: skipped {len(one_sided)} scenario/model pair(s) present in only one run: {', '.join(one_sided)}", file=sys.stderr)
+    if new_in_b:
+        print(f"NOTE: skipped {len(new_in_b)} newly added scenario/model pair(s) only in {dir_b.name}: {', '.join(new_in_b)}", file=sys.stderr)
     if compared == 0:
         print(f"ERROR: 0 overlapping criteria compared between {dir_a.name} and {dir_b.name}", file=sys.stderr)
         return 2
