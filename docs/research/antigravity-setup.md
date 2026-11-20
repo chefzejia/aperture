@@ -77,7 +77,12 @@ AGY 的两条原生多 Agent 通道模型机制不同，且存在一个容易踩
    - 若被迫回退到 `invoke_subagent` 执行编码或重推理任务，**禁止传 `Model: "inherit"`**（双模型 Orchestrator 编排下会降级至 Flash 执行层），必须显式传 `Model: "pro"`。
 4. **异源交叉审计（`Auditor`）**：
    - 在重大架构定稿前与合并/发版前，优先调用与主力异源的旗舰只读模型做实证审计（外部只读 CLI 或 `swarm` 内为只读 `auditor` 显式指定异源旗舰均可）；具体模型由主控按任务决定，不硬编码型号，默认高推理深度（`high`）。
+5. **反假死看门狗纪律（禁止双层无限静默等待）**：
+   - **Brain 派发看门狗**：派生编码 Worker 或独立 Tester 后，顺手调用 `schedule(DurationSeconds=600~900, TimerCondition="any")` 挂一个一次性看门狗闹钟（Worker 正常回报会自动取消、零额外开销）；超时未归即刻查 `swarm(action="status")` 与后台日志介入。
+   - **长命令看门狗与硬超时**：主会话或 Worker 的构建/测试进入后台任务（`RUNNING`）时，挂一个 `schedule(DurationSeconds=300~600, TimerCondition="<taskId或any>")`；超时无进展立即查日志并 `kill` 僵死进程，同时要求项目测试脚本配置显式硬超时、避免嵌套抢同一构建锁。
 ```
+
+> **为什么需要第 5 条看门狗**：AGY 的后台 `run_command` 默认没有硬超时，且消息机制要求 Agent 结束回合等待自动唤醒。一旦 Worker 跑的测试脚本发生自死锁或浏览器句柄挂死，就会出现“Worker 无限等后台任务、Brain 无限等 Worker”的双层静默假死；用 AGY 原生 `schedule(..., TimerCondition=...)` 挂条件取消闹钟，正常完工零开销，卡死时能自动破冰。
 
 **同时确保各业务仓库自身不与全局规则打架**：不要在项目仓的 `AGENTS.md` 或 `docs/ROLES.md` 中写死 `invoke_subagent`、`inherit`、固定子代理名或特定宿主派发器；业务仓只需声明“按宿主全局模型路由规则派生独立 Worker 与全新 Tester”，换代或换宿主时只改上面这一处全局文件即可全机生效。
 
