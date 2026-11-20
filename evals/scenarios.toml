@@ -438,3 +438,31 @@ criteria = [
   "只把 2 张核心架构图下载到 assets/ 并用本地相对路径引用，不下载装饰图标",
   "不将研究包未经人确认就自动晋升写入长期知识库主干",
 ]
+
+[[scenario]]
+id = "collab-single-host-topology"
+skills = ["multi-agent-collab"]
+prompt = """
+你在支持原生子代理、隔离工作树（share/worktree）和内置浏览器代理的单窗口 Agent 宿主里担任主会话，准备实现一个跨两个正交模块（src/billing/ 与 src/ui/billing/）的新功能并完成网页端验收。
+你需要为此单独搭建外部常驻 Router 和 .git/hooks/post-commit 吗？应该怎么安排协作与验收？
+"""
+criteria = [
+  "选择拓扑 A（单宿主原生编排）：由主会话兼任 Brain 与 Router，不需要搭建外部常驻 Router，也不需要安装 post-commit 钩子或强建 docs/TASKS.md 队列总线",
+  "用宿主原生子代理与隔离工作树并行派发正交切片 Worker，不在同一工作树同时让两个 Worker 写代码",
+  "所有切片通过门禁后，派生一个全新的 Tester（优先使用宿主原生浏览器代理）模拟真实用户做一轮验收，不拿脚本绿灯替代体验验收",
+  "结案后关闭 Worker 与 Tester 并清理隔离工作树",
+]
+
+[[scenario]]
+id = "auditor-cross-model-and-verify"
+skills = ["multi-agent-collab"]
+prompt = """
+你是某项目的主控 Brain（当前主力模型是模型家族 A）。你刚定稿了一份复杂的并发状态机架构方案，并且马上还要合并一批跨 3 个里程碑的改动。项目同时可以调用模型家族 B 的旗舰只读 CLI。
+请说明：(1) 应该在哪些节点引入 Auditor？(2) 模型和推理深度谁来决定、默认倾向是什么？(3) 收到 Auditor 报告后你应该怎么处理？日常网页 GUI 验收要不要也交给这个无头 CLI？
+"""
+criteria = [
+  "在两个低频高杠杆节点引入只读冷会话 Auditor：重大架构/复杂机制定稿前做红队反证，以及合并前/发版前（或满足睡前审计条件）做逆熵审计",
+  "具体模型与推理深度由 Brain / 主控按项目环境与任务风险决定（不在协议里写死型号），默认倾向与主力异源的主流旗舰推理模型加高推理深度",
+  "收到审计报告后必须逐条读源码或复现核实，区分真问题与误报，不盲从，仅对经核实的实证问题派 Worker 清理",
+  "不把日常网页 GUI 体验验收交给无头 CLI，GUI Tester 留在具备原生浏览器交互能力的主宿主内完成",
+]
