@@ -1,6 +1,6 @@
 ---
 name: multi-agent-collab
-version: 1.6.1
+version: 1.6.2
 description: >
   提供工具与模型无关的多 Agent 协作统一标准：角色隔离内核（Brain · Router · Worker · Tester · 异源 Auditor）、单宿主原生编排与跨窗口 Git 总线双拓扑、按机制归类缺陷与升级闭环。
   当项目需要启用多 Agent 角色隔离、制定里程碑、执行独立验收或进行跨模型异源交叉审计时使用。
