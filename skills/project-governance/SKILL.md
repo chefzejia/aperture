@@ -27,9 +27,10 @@ description: >
    - **日常按机制记账与晋升（`docs/LESSONS.md`）**：平时一次通过的里程碑零额外开销；独立验收打回时按背后失效的**机制**（而非表面症状）记入 `docs/LESSONS.md` 并累加 `Seen N×`。累计 `Seen 3×` 或属严重回归时，能机械校验的固化为覆盖输入维度的 `tests/` 守卫测试，需修改契约文档或 Skill 的交 Brain 与人裁定；晋升后从正文移入文末已晋升列表，保留机制名与目标链接（具体分诊与执行循环以 `multi-agent-collab` Skill 为准）。
    - **周期性逆熵审计（Fresh-Context Auditor）**：`docs/LESSONS.md` 首行 `<!-- reviewed-through: <sha> -->` 记录最近一次审计的水位线；触发条件、派生方式与实证门槛以 `multi-agent-collab` Skill 为准。
    - **纯净现在时文档 + Commit Body 留痕**：文档与注释永远保持现在时态的纯净契约，而每次修改的意图/根因、破壁验证证据与未覆盖边界按需写入 Git Commit Body，供 `git log / git blame` 永久审计。
-6. **两级任务漏斗（海量外部 Triage vs. 仓内活跃调度板 `docs/TASKS.md`）**：
+6. **两级任务漏斗（海量外部 Triage vs. 仓内活跃调度板 `docs/TASKS.md`）与人机极简 Issue 协议**：
    - **第一级（仓外/边缘分诊漏斗 Triage）**：当面对数百上千个外部 Issues、PR 或零散反馈时，不直接灌入仓库 Markdown 制造噪音；原始反馈留在外部平台或 `.tmp/triage/` 中，由只读分诊（Triage）批量去重、聚类归并、筛除缺复现步骤或触碰安全红线的噪音；
-   - **第二级（仓内活跃里程碑调度板 `docs/TASKS.md`）**：只有经 Brain 确认近期真正立项执行的活跃里程碑（含各切片的写作用域 `Scope` 与验收契约），才进入仓库的 `docs/TASKS.md` 进行单文件滑动队列与多 Worktree 并行调度。
+   - **第二级（仓内活跃里程碑调度板 `docs/TASKS.md`）**：只有经 Brain 确认近期真正立项执行的活跃里程碑（含各切片的写作用域 `Scope` 与验收契约），才进入仓库的 `docs/TASKS.md` 进行单文件滑动队列与多 Worktree 并行调度；
+   - **人机极简 Issue 响应协议**：面向人类产品负责人通过 GitHub Issue 提体验反馈/想法时，优先用 `.github/ISSUE_TEMPLATE/`（母版见 [assets/issue-templates/](assets/issue-templates/)）在界面端提醒人只填「坐标 + 现状/期望 + `- [ ]` 清单」，并按标题/标签决策开关分流——`[直接修]`（事实明确无分歧，直接修完验证交付）、`[先讨论]`（有设计/架构权衡，**严禁先写代码**，先读代码给 2–3 个带取舍方案对齐再动工）、`[先记着]`（记入待办池不打断主线）；遇到未走模板的口语化 Issue，Agent 先用 3 行帮人规整要点与开关，绝不要求人填官僚表单。
 7. **单一事实来源**：每类事实只有一个维护位置，其他文档通过链接路由。目标契约、在途工作与验收现状分属契约文档、`docs/TASKS.md` 与按需建立的 `docs/FEATURES.md`；索引只负责指路，不维护第二份阶段摘要。
 
 ## 文档演进梯度（按真实痛点触发）
@@ -42,6 +43,7 @@ description: >
 | L0 必选 | `README.md` | 项目是什么、如何安装与运行 | 任何独立项目起步时 |
 | L1 演化 | `docs/LESSONS.md` | 踩过什么反直觉的坑、哪条机制待晋升（含 `Seen N×` 计数与 Auditor 水位线） | 同一类错误重复发生，需要留存失败证据并在满 3 次时晋升为单测门禁；或启用双环多 Agent 协作时用于承接 `reviewed-through` 水位线（初始化或首次审计建立） |
 | L1 调度板 | `docs/TASKS.md` | 当前活跃队列有哪些待办里程碑、各切片的写作用域（`Scope`）与状态是什么 | 单 Agent 简单项目仅在跨会话长任务时按需临时建立（收官即删）；启用双环多 Agent 协作时作为常驻轻量滑动调度板，格式、模板与提交规则见 `multi-agent-collab` Skill（仅保留未结案区块 + 最近 1~2 个已结案锚点，不堆砌历史验收大表，详细验证证据写入 Git Commit Body） |
+| L1 协同 | `.github/ISSUE_TEMPLATE/` | 人类向 Agent 提体验问题/新想法的 20 秒极简表单与 `[直接修] / [先讨论]` 开关 | 人机并行体验与开发、频繁通过 GitHub Issue 提单时，从 [assets/issue-templates/](assets/issue-templates/) 按项目平台定制实例化（`01-fix.yml` + `02-discuss.yml` + `config.yml`） |
 | L2 产品 | `docs/PRODUCT.md` | 服务谁、核心模块与交互铁律、明确不做什么 | 面向用户的业务产品（纯底层库/Infra 无需建立） |
 | L2 台账 | `docs/FEATURES.md` | 现在什么能用、凭什么、还缺什么：每条用户能力的验收状态、最近一次独立验收、已知缺口与回归测试 | 面向用户的产品出现任一情况：能力多到无法凭 `TASKS.md` 与 `git log` 在 1 分钟内说清现状；有多个宿主、平台或用户身份要分别验收；要按版本发布；出现过“以为做完了其实没验”，或重构后旧验收悄悄失效。格式见 [assets/features.template.md](assets/features.template.md)，与里程碑的联动见 `multi-agent-collab` Skill |
 | L2 契约 | `docs/ARCHITECTURE.md` | 子系统职责、单向 DAG 边界、状态所有权与淘汰方案 | 存在多子系统，或代码签名看不出跨模块契约（超大型仓库可按子系统拆为 `docs/subsystems/*.md`） |

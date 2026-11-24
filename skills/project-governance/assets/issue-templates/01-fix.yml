@@ -1,0 +1,28 @@
+name: "[直接修] 明确问题 / Bug"
+description: 事实明确、无设计分歧的问题（Agent 直接修复、验证并交付）
+title: "[直接修] "
+labels: ["fix"]
+body:
+  - type: input
+    id: scope
+    attributes:
+      label: 场景 / 位置
+      placeholder: "例如：桌面端设置页 / iOS 列表页 / CLI 导出命令"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: 现状（发生了什么，贴图优先）
+      placeholder: "简述看到的现象或直接拖入截图"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望（可选，明显 Bug 可留空）
+      placeholder: "应该怎样表现"
+    validations:
+      required: false

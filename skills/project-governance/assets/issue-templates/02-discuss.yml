@@ -1,0 +1,30 @@
+name: "[先讨论] 体验重构 / 新想法"
+description: 有产品或架构权衡的需求（Agent 先查代码出方案对齐，禁止直接动工）
+title: "[先讨论] "
+labels: ["discuss"]
+body:
+  - type: input
+    id: scope
+    attributes:
+      label: 涉及范围
+      placeholder: "例如：全端阅读体验 / 数据导入链路 / 核心架构"
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: 痛点 / 直觉（不需写死实现，多条用 - [ ] 清单）
+      placeholder: |
+        - [ ] 现在哪里别扭 → 想达到什么体感
+        - [ ] 另一条相关诉求
+    validations:
+      required: true
+
+  - type: textarea
+    id: questions
+    attributes:
+      label: 不确定或想一起权衡的点（可选）
+      placeholder: "留白给 Agent 提建议与取舍"
+    validations:
+      required: false
