@@ -493,3 +493,33 @@ criteria = [
   "禁止在测试进程内嵌套调用会争夺同一构建/包管理目录锁的子命令（如构建锁自死锁），应使用隔离目录或避免抢锁",
   "调度层不接受双层无限静默干等：主控派发 Worker/Tester 与执行长后台命令时加挂带自动取消条件的一次性看门狗定时器，正常回报自动取消，超时未归立即唤醒检查状态/日志并终止僵死进程",
 ]
+
+[[scenario]]
+id = "git-linear-trunk-squash"
+skills = ["multi-agent-collab", "engineering-discipline"]
+prompt = """
+你在单宿主多 Agent 编排里担任主控，刚完成一个含两个正交切片（S1 `src/auth/`、S2 `src/billing/`）的里程碑。两个切片在各自的隔离工作树与本地分支里历经两轮返工（包含若干 `wip:` 与修补提交），现已通过独立 Tester 验收与审计。
+请说明：(1) 应该怎么把这两个切片合入 `main`（单切片里程碑和多正交切片分别落几条提交）？本地分支、工作树以及远端该如何处理？(2) 如果接下来只是修一个 2 行拼写错误或冻结上游契约呢？(3) 如果发现前天已合入 `main` 的某条提交需要撤回，可以 `git reset --hard` 加强推 `main` 吗？
+"""
+criteria = [
+  "完整里程碑的开发与返工隔离在本地短命分支或隔离工作树中，验收通过后按最小可独立回滚语义单元（单切片里程碑 1 条、多正交切片每切片 1 条）Squash 线性合入 main，严禁 wip: 半成品和菱形 merge commit 落入 main，并把完整验证证据写入 Commit Body",
+  "本地探索与切片分支不推送远端；确认合入 main 后立即删除对应的本地分支与工作树",
+  "不超过 5 步的 Fast Path 局部微调或上游契约冻结可直接单次干净提交到 main",
+  "绝不对已落入 main 的历史做改写或强推，需要撤回已合入变更时显式新增 revert 提交",
+]
+
+[[scenario]]
+id = "git-pr-rebase-and-replay"
+skills = ["engineering-discipline"]
+prompt = """
+你在一个跨人协作的开源 GitHub 仓库工作，同时遇到三件事：
+(A) 你的 PR 短命分支落后 `origin/main` 3 个提交，没有实质冲突；
+(B) 另一个旧草稿分支已落后 `origin/main` 30 多个提交，且与刚冻结的新核心契约发生大面积硬冲突；
+(C) 准备推送前检查 `git config user.email`，发现当前生效的是个人真实邮箱。
+分别应该怎么处理 A、B、C？
+"""
+criteria = [
+  "对 A：通过 git fetch && git rebase origin/main 同步后用 git push --force-with-lease 更新（禁止裸 --force），合入采用 Squash & Merge（高并发仓库优先 Merge Queue）并自动删除远端分支",
+  "对 B：分支落后过久或与新冻结契约发生大面积硬冲突时，放弃旧分支，基于最新 main 按契约重放意图与守卫测试，不硬解腐烂的文本冲突",
+  "对 C：公开仓库提交身份应改用 GitHub noreply 隐私邮箱；若已有公开历史包含个人邮箱，未经确认不擅自改写已推送的历史",
+]

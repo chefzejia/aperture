@@ -1,6 +1,6 @@
 # Antigravity（AGY）落地复刻指南
 
-**事实核查时间**：2026-11-20（对应 Antigravity Customization System：全局配置根 `~/.gemini/config/`、工作区级 `.agents/`、原生 `invoke_subagent` / `swarm` / `browser` subagent）
+**事实核查时间**：2026-11-26（对应 Antigravity Customization System：全局配置根 `~/.gemini/config/`、工作区级 `.agents/`、原生 `invoke_subagent` / `swarm` / `browser` subagent）
 
 本指南面向以 **Antigravity（AGY）** 为主力宿主的开发者，说明如何将本仓的 5 个通用 Skill、动态模型路由偏好与只读异源审计器无痛接入 AGY，同时保持业务仓库和公开 Skill 100% 宿主与模型无关。
 
@@ -71,7 +71,7 @@ AGY 的两条原生多 Agent 通道模型机制不同，且存在一个容易踩
 2. **编码 Worker 与独立终端 Tester：默认优先走 `swarm`（普通会话直接调用，不限于 `/teamwork`）**：
    - **动态选型（不写死版本号）**：派生前先调用 `swarm(action="models")` 读取当前账号实时可用模型与配额，优先显式传入最新一代 `<你偏好的次旗舰编码系列>` 的 `high` 档；若换代或配额耗尽，顺延实时列表中同梯队具体模型名，**禁止省略 `model` 参数**（防止隐式落入双模型执行层）。
    - **精简编排（显式覆写内置 `swarm` Skill）**：1–2 个常规成员的串行或轻型里程碑，**不额外拉起 `monitor` 与 `narrator`**；仅在 ≥3 个长时并行 Worker 或用户显式启用 `/teamwork` 时才按需启用。
-   - **生命周期铁律**：成员名必须带里程碑/切片前缀且全局唯一（如 `m72-s1`、`m72-tester`，因 `kill` 后名字永久不可复用）；串行单切片用 `workspace: "inherit"`，物理正交并行用 `workspace: "share"`；**`share`/`branch` 成员必须先确认提交已合入主工作树，再 `swarm(action="kill")` 回收**，里程碑结案即清理。
+   - **生命周期铁律**：成员名必须带里程碑/切片前缀且全局唯一（如 `m72-s1`、`m72-tester`，因 `kill` 后名字永久不可复用）；完整里程碑/切片在本地短命分支或 `workspace: "share"` 隔离工作树中开发与返工（物理正交并行必用 `workspace: "share"`），**验收通过后按最小语义单元 Squash 线性合入 `main` 并确认落盘，再 `swarm(action="kill")` 回收并立即删除本地短命分支**，里程碑结案即清理。
 3. **`invoke_subagent` 收窄适用范围与兜底红线**：
    - 仅用于三类场景：`research` 只读代码库探索/大范围检索（`Model: "flash"`）、`browser` 纯网页 UI 交互验收（`Model: "flash"`），以及 `swarm` 不可用时的兜底。
    - 若被迫回退到 `invoke_subagent` 执行编码或重推理任务，**禁止传 `Model: "inherit"`**（双模型 Orchestrator 编排下会降级至 Flash 执行层），必须显式传 `Model: "pro"`。
@@ -80,6 +80,12 @@ AGY 的两条原生多 Agent 通道模型机制不同，且存在一个容易踩
 5. **反假死看门狗纪律（禁止双层无限静默等待）**：
    - **Brain 派发看门狗**：派生编码 Worker 或独立 Tester 后，顺手调用 `schedule(DurationSeconds=600~900, TimerCondition="any")` 挂一个一次性看门狗闹钟（Worker 正常回报会自动取消、零额外开销）；超时未归即刻查 `swarm(action="status")` 与后台日志介入。
    - **长命令看门狗与硬超时**：主会话或 Worker 的构建/测试进入后台任务（`RUNNING`）时，挂一个 `schedule(DurationSeconds=300~600, TimerCondition="<taskId或any>")`；超时无进展立即查日志并 `kill` 僵死进程，同时要求项目测试脚本配置显式硬超时、避免嵌套抢同一构建锁。
+6. **人机极简 Issue 协作响应协议（跨仓库全局默认）**：
+   - 人类通过 GitHub Issue 提单时，按标题前缀或标签开关直接分流：`[直接修]` / `fix` 直接定位修复验证并交付；`[先讨论]` / `discuss` 严禁直接写代码，先读代码给 2–3 个带取舍选项对齐后再动工；`[先记着]` 记入待办池不打断主线；未走模板的口语化 Issue 先用 3 行规整要点与开关。
+7. **Git 主干线性收口、分支清理与公开仓卫生（跨仓库全局默认）**：
+   - **草稿态与主干账本分离**：`main` 只收经过验收的线性原子提交，严禁 `wip:` 半成品与菱形 `merge commit` 落入 `main`；完整里程碑/切片在本地短命分支或隔离 Worktree（`.tmp/worktrees/` 或 `swarm` 原生 `share`）中开发与返工，验收（及按需审计）通过后按最小可独立回滚语义单元（单切片 = 1 条；多正交切片 = 每切片 1 条）**Squash 线性合入 `main`**，在 Commit Body 写明验证证据并立即删除本地分支与工作树；≤5 步 Fast Path 微调与上游契约冻结仍可直接单次干净提交到 `main`；绝不改写或强推已落入 `main` 的历史。
+   - **远端零僵尸分支与跨人 PR**：本地探索与切片分支不推远端；跨人/开源 PR 采用短命分支 + 落后时 `git fetch && git rebase origin/main` + `git push --force-with-lease`（高并发仓库优先 Merge Queue）+ `Squash & Merge` + 自动删除远端分支；分支落后过久或与新冻结契约硬冲突时弃旧分支基于最新 `main` 重放意图与守卫测试，不硬解腐烂冲突。
+   - **公开仓库隐私卫生**：向公开仓库提交前检查 `user.email`，优先使用 GitHub noreply 隐私邮箱；发现历史已含个人邮箱时未经用户确认不擅自改写已有主干历史。
 ```
 
 > **为什么需要第 5 条看门狗**：AGY 的后台 `run_command` 默认没有硬超时，且消息机制要求 Agent 结束回合等待自动唤醒。一旦 Worker 跑的测试脚本发生自死锁或浏览器句柄挂死，就会出现“Worker 无限等后台任务、Brain 无限等 Worker”的双层静默假死；用 AGY 原生 `schedule(..., TimerCondition=...)` 挂条件取消闹钟，正常完工零开销，卡死时能自动破冰。
