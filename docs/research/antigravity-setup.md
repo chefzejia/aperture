@@ -77,9 +77,9 @@ AGY 的两条原生多 Agent 通道模型机制不同，且存在一个容易踩
    - 若被迫回退到 `invoke_subagent` 执行编码或重推理任务，**禁止传 `Model: "inherit"`**（双模型 Orchestrator 编排下会降级至 Flash 执行层），必须显式传 `Model: "pro"`。
 4. **异源交叉审计（`Auditor`）**：
    - 在重大架构定稿前与合并/发版前，优先调用与主力异源的旗舰只读模型做实证审计（外部只读 CLI 或 `swarm` 内为只读 `auditor` 显式指定异源旗舰均可）；具体模型由主控按任务决定，不硬编码型号，默认高推理深度（`high`）。
-5. **反假死看门狗纪律（禁止双层无限静默等待）**：
+5. **反假死看门狗纪律（活性驱动，禁止双层静默等待与盲杀）**：
    - **Brain 派发看门狗**：派生编码 Worker 或独立 Tester 后，顺手调用 `schedule(DurationSeconds=600~900, TimerCondition="any")` 挂一个一次性看门狗闹钟（Worker 正常回报会自动取消、零额外开销）；超时未归即刻查 `swarm(action="status")` 与后台日志介入。
-   - **长命令看门狗与硬超时**：主会话或 Worker 的构建/测试进入后台任务（`RUNNING`）时，挂一个 `schedule(DurationSeconds=300~600, TimerCondition="<taskId或any>")`；超时无进展立即查日志并 `kill` 僵死进程，同时要求项目测试脚本配置显式硬超时、避免嵌套抢同一构建锁。
+   - **长命令看门狗、活性续期与硬超时**：主会话或 Worker 的构建/测试/外部审计进入后台任务（`RUNNING`）时，挂一个 `schedule(DurationSeconds=300~600, TimerCondition="<taskId或any>")`；超时唤醒后检查 `manage_task(Action="status")` 与日志末尾实时心跳——**若确认仍在持续推进（如外部审计心跳显示工具调用递增、思考未超空闲阈值），续挂一个看门狗周期而不盲杀**；仅在长时间静默超阈值、进程僵死或活锁时 `kill` 并排查根因。本地测试脚本仍配显式硬超时且避免嵌套抢同一构建锁。
 6. **人机极简 Issue 协作响应协议（跨仓库全局默认）**：
    - 人类通过 GitHub Issue 提单时，按标题前缀或标签开关直接分流：`[直接修]` / `fix` 直接定位修复验证并交付；`[先讨论]` / `discuss` 严禁直接写代码，先读代码给 2–3 个带取舍选项对齐后再动工；`[先记着]` 记入待办池不打断主线；未走模板的口语化 Issue 先用 3 行规整要点与开关。
 7. **Git 主干线性收口、分支清理与公开仓卫生（跨仓库全局默认）**：
@@ -98,7 +98,8 @@ AGY 的两条原生多 Agent 通道模型机制不同，且存在一个容易踩
 
 - **纯 AGY 内部方案**：使用 `swarm` 时，将只读 `auditor` / `verifier` 成员指定为账号下与主会话异源的旗舰模型即可；
 - **接入外部只读 CLI（如本机 Codex CLI / Claude Code）**：在 `~/.gemini/config/plugins/aperture/skills/` 下新增一个本机私有 Skill，按 [异源交叉审计参考实现](../../skills/multi-agent-collab/references/cross-model-audit.md) 封装：
-  - 强制只读沙盒 + 一次性无痕会话 + 非交互模式 + 内联 `<= 80KB` unified diff 降轮数；
+  - 强制只读沙盒 + 一次性无痕会话 + 非交互模式 + 内联 `<= 80KB` unified diff（超大改动按正交模块分片并行审）；
+  - 启用 JSONL 事件流实时心跳 + **分态空闲超时**（思考态按 `--effort` 自适应、本地只读命令紧收 `120s`）+ **活锁熔断与 Fail-Fast** + 进程组清理，替代单一机械 10 分钟总超时；
   - 模型解析严格遵循 `Brain 显式参数 > 环境变量 > 外部 CLI 本机默认配置`，不在脚本里写死型号；
   - 日常 GUI / Web 体验验收留在 AGY 原生 `browser` subagent，不下放给无头 CLI。
 
