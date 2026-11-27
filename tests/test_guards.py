@@ -130,6 +130,18 @@ class VerifyGuardTests(unittest.TestCase):
             _, _, _, errors = verify.verify_repo(repo)
             self.assertTrue(any("does not match root VERSION '2.0.0'" in e for e in errors), errors)
 
+    def test_malformed_or_flow_collection_frontmatter_rejected(self) -> None:
+        for bad_desc in ("{unterminated", "{a: 1}", "[a, b]", '"unterminated'):
+            with tempfile.TemporaryDirectory() as tmp:
+                repo = Path(tmp)
+                _init_min_aperture_repo(repo)
+                (repo / "skills" / "demo" / "SKILL.md").write_text(
+                    f"---\nname: demo\nversion: 1.0.0\ndescription: {bad_desc}\n---\n\n# Demo\n",
+                    encoding="utf-8",
+                )
+                _, _, _, errors = verify.verify_repo(repo)
+                self.assertTrue(errors, f"expected verify_repo to reject description: {bad_desc}")
+
 
 class ReplayTests(unittest.TestCase):
     def test_slug_preserves_provider_prefix(self) -> None:
@@ -164,20 +176,24 @@ class ReplayTests(unittest.TestCase):
         criteria: list[str],
         passes: list[bool],
         *,
+        repeat: int = 0,
         judge: str | None = "judge-a",
         criteria_override: list[str] | None = None,
+        prompt: str | None = None,
     ) -> None:
         c_sha = replay.sha(json.dumps(criteria_override or criteria, ensure_ascii=False))
-        rec = {
+        rec: dict = {
             "scenario": sid,
             "model": model,
-            "repeat": 0,
+            "repeat": repeat,
             "criteria_sha": c_sha,
             "results": [{"pass": p, "reason": "ok" if p else "fail"} for p in passes],
         }
+        if prompt is not None:
+            rec["prompt_sha"] = replay.sha(prompt.strip())
         if judge is not None:
             rec["judge"] = judge
-        p = run_dir / sid / f"{replay.slug(model)}.0.json"
+        p = run_dir / sid / f"{replay.slug(model)}.{repeat}.json"
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(json.dumps(rec), encoding="utf-8")
 
@@ -272,6 +288,48 @@ class ReplayTests(unittest.TestCase):
             with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
                 self.assertEqual(replay.compare(a, b, scenarios), 2)
             self.assertIn("missing judge", err.getvalue())
+
+    def test_compare_rejects_missing_baseline_model_repeat_mismatch_and_prompt_drift(self) -> None:
+        scenarios = [
+            {"id": "s1", "prompt": "Prompt v2", "criteria": ["c1"]},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+
+            # 1. Baseline has m1 & m2, candidate lost entire model m2 -> MUST fail closed (2)
+            a1, b1 = root / "a1", root / "b1"
+            a1.mkdir()
+            b1.mkdir()
+            self._write_record(a1, "s1", "m1", ["c1"], [True], prompt="Prompt v2")
+            self._write_record(a1, "s1", "m2", ["c1"], [True], prompt="Prompt v2")
+            self._write_record(b1, "s1", "m1", ["c1"], [True], prompt="Prompt v2")
+            err = io.StringIO()
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
+                self.assertEqual(replay.compare(a1, b1, scenarios), 2)
+            self.assertIn("missing baseline model", err.getvalue())
+
+            # 2. Repeat count shrinks (2 repeats -> 1 repeat) -> MUST fail closed (2)
+            a2, b2 = root / "a2", root / "b2"
+            a2.mkdir()
+            b2.mkdir()
+            self._write_record(a2, "s1", "m1", ["c1"], [True], repeat=0, prompt="Prompt v2")
+            self._write_record(a2, "s1", "m1", ["c1"], [True], repeat=1, prompt="Prompt v2")
+            self._write_record(b2, "s1", "m1", ["c1"], [True], repeat=0, prompt="Prompt v2")
+            err = io.StringIO()
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
+                self.assertEqual(replay.compare(a2, b2, scenarios), 2)
+            self.assertIn("repeat count mismatch", err.getvalue())
+
+            # 3. Prompt changed while criteria unchanged -> stale prompt_sha MUST fail closed (2)
+            a3, b3 = root / "a3", root / "b3"
+            a3.mkdir()
+            b3.mkdir()
+            self._write_record(a3, "s1", "m1", ["c1"], [True], prompt="Prompt v1 OLD")
+            self._write_record(b3, "s1", "m1", ["c1"], [True], prompt="Prompt v2")
+            err = io.StringIO()
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
+                self.assertEqual(replay.compare(a3, b3, scenarios), 2)
+            self.assertIn("stale", err.getvalue())
 
 
 class GitBusHookTests(unittest.TestCase):

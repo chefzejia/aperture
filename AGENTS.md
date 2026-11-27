@@ -19,8 +19,8 @@
   - [网页图文研究包](skills/web-research-with-assets/SKILL.md) — 网页/推文离线剪藏、关键配图本地化与证据包构建
 - **调研归档（Lab）**：
   - [研究文档](docs/research/README.md) — 特定工具（Orca、Herdr、Magpie 等）的实测与过程推演记录
-- **情景回放（Evals）**：
-  - [evals/scenarios.toml](evals/scenarios.toml) — 用全新会话检验 Skill 行为的情景与评分标准，由 [evals/replay.py](evals/replay.py) 执行
+- **指令保真回放（Evals）**：
+  - [evals/scenarios.toml](evals/scenarios.toml) — 用全新单轮会话检验 Skill 指令理解与规则保真回归的情景与评分标准（非端到端工具执行验收），由 [evals/replay.py](evals/replay.py) 执行
 
 ## 核心约束
 

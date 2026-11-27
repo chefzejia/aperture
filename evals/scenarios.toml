@@ -141,11 +141,11 @@ criteria = [
 id = "dependency-choice"
 skills = ["engineering-discipline"]
 prompt = """
-你要给一个 TypeScript 项目加一个功能：把一组时间区间合并成不重叠的区间。有个 npm 包可以直接用，但项目目前没有引入它。你自己写大概需要 80 行。你会怎么选？
+你在 TypeScript 项目里同时面临两个需求：(1) 把一组时间区间合并成不重叠的区间，自己写纯算法大概 80 行；(2) 解析任意符合完整 YAML 1.2 规范的外部用户配置文件。分别该自写零依赖代码还是引入外部解析库？说明判断依据。
 """
 criteria = [
-  "直接写零依赖的实现，不为这个功能引入外部库",
-  "给出的理由与'100 到 200 行能写完的功能不引入依赖'或优先最直接的原生解法一致",
+  "对 (1) 简单自封闭算法直接写零依赖实现，不引入外部依赖",
+  "对 (2) 外部标准语法解析不按行数硬凑近似手写解析器，优先使用成熟标准解析器（或显式收窄公开语法子集并严格 Fail-Closed 校验）",
 ]
 
 [[scenario]]
@@ -218,7 +218,7 @@ prompt = """
 criteria = [
   "只建 AGENTS.md 和 README.md，AGENTS.md 控制在 50 行左右",
   "不预先建立 PRODUCT、ARCHITECTURE、TASKS、LESSONS 等文档或空目录，等出现真实触发条件再建",
-  "实例化模板时删掉所有注释和占位符",
+  "实例化模板时删掉模板说明注释和占位符（同时保留模板声明的功能性元数据标记如 reviewed-through）",
 ]
 
 [[scenario]]
@@ -551,4 +551,17 @@ criteria = [
   "对 (3) 让异源模型仅基于契约与接口签名独立设计边界、并发与故障注入对抗测试矩阵，打断实现与测试的同源盲区",
   "对 (4) 异源默认只读，仅在显式授权的独立隔离 Worktree 中允许其实现与自测，完成后由主控（主力模型）反向逐行审查、复跑全仓门禁并 Squash 线性合入 main（双向互审）",
   "不把日常网页 GUI 验收交给无头 CLI，因为那是物理工具边界而非角色偏见，GUI 验收留在具备原生浏览器交互能力的主宿主内",
+]
+
+[[scenario]]
+id = "milestone-integrated-tree-and-crash-recovery"
+skills = ["multi-agent-collab"]
+prompt = """
+你是拓扑 B 的无人值守 Router，遇到两个场景：
+(A) [Milestone #16] 有两个写文件正交的切片 S1（Scope: src/store/）和 S2（Scope: src/ui/），二者已在各自独立 Worktree 跑绿交卷。能否直接跳过整合分别验收，或直接逐片 Squash 到 main？
+(B) 重启后你重读 docs/TASKS.md，发现 [Milestone #15] 仍为 Status: pending，但检查 main 历史发现已有带 `Milestone: #15` 验证账本的 Squash 提交。你应该重跑整个 #15 吗？
+"""
+criteria = [
+  "对 A：写文件正交不等于组合正确，必须先在临时集成候选分支合出包含全部切片的唯一整合树（A∪B），在该整合树上跑通一次全仓门禁并由全新 Tester 完成一轮验收，再按最小可独立回滚语义单元 Squash 线性落盘 main 并核对树内容一致（不可独立回滚的合成 1 条）",
+  "对 B：不重跑已合入的 #15；通过 main 历史中的 Milestone: #15 幂等标记识别出业务代码已在崩溃前落地，直接核销 docs/TASKS.md 为 verified（及同步台账）",
 ]

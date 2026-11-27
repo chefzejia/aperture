@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Replay skill scenarios in fresh sessions and score the replies.
+"""Replay skill instruction-fidelity scenarios in fresh sessions and score the replies.
 
-Each scenario in evals/scenarios.toml is answered by a session whose only
-instructions are the listed files (a skill name expands to its SKILL.md). A judge
-model then scores the reply against the scenario's criteria. Comparing two runs
-shows which criteria flipped, so an edit to a skill can be checked for lost rules.
+Scope: measures rule comprehension and adherence in single-turn fresh sessions (not
+end-to-end tool execution). Each scenario in evals/scenarios.toml is answered by a
+session whose only instructions are the listed files (a skill name expands to its
+SKILL.md). A judge model then scores the reply against the scenario's criteria.
+Comparing two runs fails closed if baseline models, scenarios, repeats, prompts, or
+judges drift, so missing coverage can never masquerade as "no regression".
 
   python3 evals/replay.py check [--ref REF]
   python3 evals/replay.py run --label NAME --models M1,M2@effort --judge M3 [--ref REF]
@@ -178,33 +180,51 @@ def judge(judge_spec: str, s: dict, reply: str) -> tuple[list[dict], str]:
 def run_one(s: dict, model: str, k: int, args: argparse.Namespace, out: Path) -> str:
     files = [(p, read_file(args.root, args.ref, p)) for p in scenario_files(s)]
     system = ANSWER_SYSTEM.format(files="\n\n".join(f'<file path="{p}">\n{t}\n</file>' for p, t in files))
-    input_sha, criteria_sha = sha(system + "\n\n" + s["prompt"]), sha(json.dumps(s["criteria"], ensure_ascii=False))
+    prompt_text = s["prompt"].strip()
+    prompt_sha = sha(prompt_text)
+    input_sha = sha(system + "\n\n" + prompt_text)
+    criteria_sha = sha(json.dumps(s["criteria"], ensure_ascii=False))
     path = out / s["id"] / f"{slug(model)}.{k}.json"
     record = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
     if record.get("input_sha") != input_sha:
-        reply, usage = chat(model, system, s["prompt"].strip(), min_chars=MIN_REPLY_CHARS)
-        record = {"scenario": s["id"], "model": model, "repeat": k, "input_sha": input_sha, "files": [p for p, _ in files], "reply": reply, "usage": usage}
+        reply, usage = chat(model, system, prompt_text, min_chars=MIN_REPLY_CHARS)
+        record = {
+            "scenario": s["id"],
+            "model": model,
+            "repeat": k,
+            "prompt_sha": prompt_sha,
+            "input_sha": input_sha,
+            "files": [p for p, _ in files],
+            "reply": reply,
+            "usage": usage,
+        }
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
-    elif record.get("criteria_sha") == criteria_sha and record.get("judge") == args.judge:
+    elif record.get("criteria_sha") == criteria_sha and record.get("prompt_sha") == prompt_sha and record.get("judge") == args.judge:
         return f"cached  {s['id']} {slug(model)}#{k}"
     record["results"], record["judge_raw"] = judge(args.judge, s, record["reply"])
-    record.update(criteria_sha=criteria_sha, judge=args.judge)
+    record.update(criteria_sha=criteria_sha, prompt_sha=prompt_sha, judge=args.judge)
     path.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
     passed = sum(r["pass"] for r in record["results"])
     return f"done    {s['id']} {slug(model)}#{k}: {passed}/{len(record['results'])}"
 
 
 def load_records(run_dir: Path, scenarios: list[dict]) -> tuple[dict[tuple[str, str], list[dict]], list[str]]:
-    current = {s["id"]: sha(json.dumps(s["criteria"], ensure_ascii=False)) for s in scenarios}
+    current_criteria = {s["id"]: sha(json.dumps(s["criteria"], ensure_ascii=False)) for s in scenarios}
+    current_prompt = {
+        s["id"]: sha(str(s["prompt"]).strip())
+        for s in scenarios
+        if str(s.get("prompt", "")).strip()
+    }
     records: dict[tuple[str, str], list[dict]] = {}
     stale: list[str] = []
     for f in sorted(run_dir.glob("*/*.json")):
         r = json.loads(f.read_text(encoding="utf-8"))
         sid = r.get("scenario")
-        if sid not in current:
+        if sid not in current_criteria:
             continue
-        if current[sid] != r.get("criteria_sha") or not r.get("results"):
+        prompt_mismatch = sid in current_prompt and r.get("prompt_sha") != current_prompt[sid]
+        if current_criteria[sid] != r.get("criteria_sha") or prompt_mismatch or not r.get("results"):
             stale.append(f"{sid} ({f.name})")
             continue
         records.setdefault((sid, r["model"]), []).append(r)
@@ -246,12 +266,23 @@ def compare(dir_a: Path, dir_b: Path, scenarios: list[dict]) -> int:
         if stale_b:
             print(f"ERROR: {dir_b.name} has stale criteria records (re-judge before comparing): {', '.join(stale_b)}", file=sys.stderr)
         return 2
-    models = sorted({m for _, m in ra} & {m for _, m in rb})
+    models_a = {m for _, m in ra}
+    models_b = {m for _, m in rb}
+    missing_models = sorted(models_a - models_b)
+    if missing_models:
+        print(
+            f"ERROR: {dir_b.name} is missing baseline model(s) from {dir_a.name}: {', '.join(slug(m) for m in missing_models)}",
+            file=sys.stderr,
+        )
+        return 2
+    models = sorted(models_a)
     if not models:
         print(f"ERROR: no overlapping models between {dir_a.name} and {dir_b.name}", file=sys.stderr)
         return 2
+    extra_models = sorted(models_b - models_a)
     missing_in_b: list[str] = []
     new_in_b: list[str] = []
+    repeat_errors: list[str] = []
     judge_errors: list[str] = []
     for s in scenarios:
         for m in models:
@@ -264,6 +295,8 @@ def compare(dir_a: Path, dir_b: Path, scenarios: list[dict]) -> int:
             if not a and b:
                 new_in_b.append(f"{s['id']} ({slug(m)})")
                 continue
+            if len(a) != len(b):
+                repeat_errors.append(f"{s['id']} ({slug(m)}): {len(a)} vs {len(b)}")
             ja = {rec.get("judge") for rec in a}
             jb = {rec.get("judge") for rec in b}
             if any(not isinstance(j, str) or not j.strip() for j in ja | jb):
@@ -276,9 +309,20 @@ def compare(dir_a: Path, dir_b: Path, scenarios: list[dict]) -> int:
             file=sys.stderr,
         )
         return 2
+    if repeat_errors:
+        print(
+            f"ERROR: repeat count mismatch between {dir_a.name} and {dir_b.name}: {', '.join(repeat_errors)}",
+            file=sys.stderr,
+        )
+        return 2
     if judge_errors:
         print(f"ERROR: judge mismatch or missing judge: {', '.join(judge_errors)}", file=sys.stderr)
         return 2
+    if extra_models:
+        print(
+            f"NOTE: skipped {len(extra_models)} newly added model(s) only in {dir_b.name}: {', '.join(slug(m) for m in extra_models)}",
+            file=sys.stderr,
+        )
     worse = better = compared = 0
     for s in scenarios:
         for m in models:

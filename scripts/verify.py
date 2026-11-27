@@ -3,10 +3,12 @@
 
 Checks:
 1. Root `VERSION` exists and follows strict SemVer (`X.Y.Z`).
-2. Every directory under `skills/` has a `SKILL.md` with valid YAML frontmatter,
-   non-empty `name` matching the directory name, `version` matching root `VERSION`,
-   non-empty `description` (supporting folded `>` / literal `|` scalars), and no
-   duplicate keys.
+2. Every directory under `skills/` has a `SKILL.md` with a strict flat-scalar
+   YAML frontmatter subset (plain scalars, quoted strings, folded `>` / literal
+   `|` blocks; rejects flow collections `{...}`/`[...]`, unterminated quotes or
+   brackets, duplicate keys, and malformed lines), with non-empty `name` matching
+   the directory name, `version` matching root `VERSION`, and non-empty
+   `description`.
 3. Every tracked or untracked-unignored non-template `.md` file has valid inline
    and reference-style relative Markdown links (handling backtick/tilde fences,
    multi-backtick inline code spans, percent-encoded paths/anchors, link titles,
@@ -187,9 +189,16 @@ def parse_simple_frontmatter(fm_text: str, rel: Path, errors: list[str]) -> dict
                     break
             data[key] = " ".join(x for x in block_lines if x).strip()
             continue
+        if rest.startswith(("{", "[")):
+            errors.append(
+                f"{rel}: unsupported or unterminated YAML flow collection for '{key}' (flat scalar required)"
+            )
+            data[key] = ""
+            i += 1
+            continue
         if (rest.startswith('"') and not rest.endswith('"')) or (
             rest.startswith("'") and not rest.endswith("'")
-        ) or (rest.startswith("[") and not rest.endswith("]")):
+        ):
             errors.append(f"{rel}: unterminated YAML value for '{key}'")
             data[key] = ""
             i += 1
