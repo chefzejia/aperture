@@ -35,7 +35,7 @@ cat > "$PLUGIN_DIR/plugin.json" <<'EOF'
 {
   "name": "aperture",
   "displayName": "Aperture",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "logo": "assets/logo.svg",
   "description": "AI-Native engineering discipline, minimal anti-rot project governance, unified multi-agent collaboration, shared knowledge-base management, and offline web research packages.",
   "repository": "https://github.com/chefzejia/aperture",
