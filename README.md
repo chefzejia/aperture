@@ -32,6 +32,6 @@ AI 时代的工程与知识工作也是如此。当硅基算力与编码智能�
 
 1. **挂载 Skills**：将 `skills/` 下各独立自封闭目录直接链接或注册到你使用的 Agent 宿主（支持 Skill / Plugin 的单窗口编排宿主或 CLI 均可；Antigravity 用户可直接参考 [Antigravity 落地指南](docs/research/antigravity-setup.md) 配置全局插件与动态模型路由）。
 2. **极简项目治理**：按 [project-governance](skills/project-governance/SKILL.md) 起步，新仓库只建根 `AGENTS.md` 与 `README.md`，出现真实痛点再按梯度引入 `LESSONS.md`、`TASKS.md`、`FEATURES.md` 与薄架构契约。
-3. **选择协作拓扑与异源审计**：按 [multi-agent-collab](skills/multi-agent-collab/SKILL.md) 共用同一套角色隔离与实证内核——单宿主原生编排直接由主会话兼任 Brain + Router 派发隔离 Worker / 全新 Tester，跨窗口无人值守场景启用 [Git 总线](skills/multi-agent-collab/references/git-bus.md)；在架构定稿前与合并/发版前，按 [异源交叉审计参考实现](skills/multi-agent-collab/references/cross-model-audit.md) 调用与主力异源的旗舰只读模型做实证复核。
+3. **选择协作拓扑与跨模型异源协同**：按 [multi-agent-collab](skills/multi-agent-collab/SKILL.md) 共用同一套角色隔离与实证内核——单宿主原生编排直接由主会话兼任 Brain + Router（算力分层交给宿主原生双模型，需要隔离或并行再派子代理），跨窗口无人值守场景启用 [Git 总线](skills/multi-agent-collab/references/git-bus.md)；在 0→1 方案互搏、疑难排错破盲、对抗测试设计、第一性全局体检、合并/发版前审计及显式隔离 Worktree 攻坚时，按 [跨模型异源协作与交叉审计参考实现](skills/multi-agent-collab/references/cross-model-audit.md) 接入与主力异源的旗舰模型做双向互证。
 
 [Apache License 2.0](LICENSE)

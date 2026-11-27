@@ -74,8 +74,8 @@ AGY 的 **Settings → Models & Usage → Orchestrator Settings** 现已支持�
    - **独立终端 `Tester` 或 1–2 个正交并行切片**：使用 `invoke_subagent`（物理正交并行写必传 `Workspace: "share"`），需重推理时显式指定 `Model: "pro"`；验收通过后按最小语义单元 Squash 线性合入 `main` 并清理工作树。
 3. **重型多 Agent 团队（仅在用户显式触发 `/swarm` 或 `/teamwork` 时启用）**：
    - 遵守宿主约束，普通对话不私自调用 `swarm`；进入显式团队模式后（如 ≥3 个正交长任务），成员名带里程碑/切片前缀且全局唯一，物理正交并行用 `workspace: "share"`，**先确认按最小语义单元 Squash 线性合入 `main`，再 `swarm(action="kill")` 回收**。
-4. **异源交叉审计（`Auditor`）**：
-   - 在重大架构定稿前与合并/发版前，优先调用与主力异源的旗舰只读模型做实证审计（推荐外部只读 CLI，独立配额不受宿主内第三方模型额度限制；具体模型由主控按任务决定，不硬编码型号，默认高推理深度 `high`）。
+4. **异源第二大脑与双向互审（Cross-Model Peer）**：
+   - 不把异源旗舰模型局限为“事后只读审计员”；在五个全周期高杠杆节点按需调用外部异源 CLI（独立额度不受宿主内第三方模型配额限制，模型沿用外部 CLI 本机配置不硬编码，默认高/极高推理深度）：① 0→1 方案构思与互搏（`debate`）、② 连续两次修复失败时的疑难排错破盲（`debug`）、③ 独立对抗边界测试矩阵设计（`adversarial-tests`）、④ 低频第一性全局架构体检（`first-principles`）与合并/发版前实证审计（`diff`/`plan`）、⑤ 显式隔离 Worktree 专项攻坚（`implement --worktree-write`，完成后由主控反向审查并线性合入 `main`）。日常 GUI/Web 验收留在 AGY 原生 `browser` subagent。
 5. **反假死看门狗纪律（活性驱动，禁止双层静默等待与盲杀）**：
    - **派发看门狗**：派生编码/验收子代理后，顺手调用 `schedule(DurationSeconds=600~900, TimerCondition="any")` 挂一次性看门狗闹钟（正常回报自动取消、零额外开销）；超时未归即刻检查子代理/团队状态与后台日志介入。
    - **长命令看门狗、活性续期与硬超时**：构建/测试/外部审计进入后台任务（`RUNNING`）时，挂 `schedule(DurationSeconds=300~600, TimerCondition="<taskId或any>")`；超时唤醒后检查 `manage_task(Action="status")` 与日志末尾实时心跳——**若确认仍在持续推进（如外部审计心跳显示工具调用递增、思考未超空闲阈值），续挂一个看门狗周期而不盲杀**；仅在长时间静默超阈值、进程僵死或活锁时 `kill` 并排查根因。本地测试脚本仍配显式硬超时且避免嵌套抢同一构建锁。
@@ -93,12 +93,13 @@ AGY 的 **Settings → Models & Usage → Orchestrator Settings** 现已支持�
 
 ---
 
-## 四、第 3 步：对接只读异源审计（可选）
+## 四、第 3 步：对接异源第二大脑与双向互审（可选）
 
-- **纯 AGY 内部方案**：使用 `swarm` 时，将只读 `auditor` / `verifier` 成员指定为账号下与主会话异源的旗舰模型即可；
-- **接入外部只读 CLI（如本机 Codex CLI / Claude Code）**：在 `~/.gemini/config/plugins/aperture/skills/` 下新增一个本机私有 Skill，按 [异源交叉审计参考实现](../../skills/multi-agent-collab/references/cross-model-audit.md) 封装：
-  - 强制只读沙盒 + 一次性无痕会话 + 非交互模式 + 内联 `<= 80KB` unified diff（超大改动按正交模块分片并行审）；
-  - 启用 JSONL 事件流实时心跳 + **分态空闲超时**（思考态按 `--effort` 自适应、本地只读命令紧收 `120s`）+ **活锁熔断与 Fail-Fast** + 进程组清理，替代单一机械 10 分钟总超时；
+- **纯 AGY 内部方案**：使用显式 `/swarm` 且账号内异源模型配额充裕时，可为只读顾问/审计成员指定异源旗舰模型；
+- **接入外部异源 CLI（如本机 Codex CLI / Claude Code，推荐——走独立额度）**：在 `~/.gemini/config/plugins/aperture/skills/` 下新增本机私有 Skill（如 `gpt-peer`），按 [跨模型异源协作与交叉审计参考实现](../../skills/multi-agent-collab/references/cross-model-audit.md) 封装：
+  - 支持全周期多模式：`debate`（0→1 方案互搏）、`debug`（疑难排错破盲）、`adversarial-tests`（对抗边界测试矩阵）、`first-principles`（第一性全局架构体检）、`plan`（方案红队）、`diff`（合并前 0 噪音实证审计），以及显式 `--worktree-write` 才开启的 `implement`（隔离 Git Worktree 专项攻坚 + 主控双向反审）；
+  - 默认强制只读沙盒 + 一次性无痕会话 + 非交互模式 + 隔离临时输出文件（要求完整 `turn.completed` 才发布，杜绝复用旧报告）；
+  - 启用 JSONL 事件流实时心跳 + **分态空闲超时**（思考态按 `--effort` 自适应、本地命令 `120s`、收尾态 `30s`）+ **活锁熔断与 Fail-Fast** + 捕获 `SIGTERM` 的整组 `SIGTERM → SIGKILL` 清理，替代单一机械总超时；
   - 模型解析严格遵循 `Brain 显式参数 > 环境变量 > 外部 CLI 本机默认配置`，不在脚本里写死型号；
   - 日常 GUI / Web 体验验收留在 AGY 原生 `browser` subagent，不下放给无头 CLI。
 
