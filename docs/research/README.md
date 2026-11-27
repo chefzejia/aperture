@@ -4,7 +4,7 @@
 
 | 文档 | 事实核查 | 内容 | 状态 |
 | --- | --- | --- | --- |
-| [antigravity-setup.md](antigravity-setup.md) | 2026-11-26 | Antigravity（AGY）全局 Plugin 软链挂载、`invoke_subagent` / `swarm` 动态模型路由规则、Git 线性收口与异源只读审计落地指南 | 现行宿主落地指南 |
+| [antigravity-setup.md](antigravity-setup.md) | 2026-11-27 | Antigravity（AGY）全局 Plugin 软链挂载、原生 Orchestrator 双模型配置、`invoke_subagent` / `/swarm` 边界、Git 线性收口与异源只读审计落地指南 | 现行宿主落地指南 |
 | [dsh-native-agent-team-workflow.md](dsh-native-agent-team-workflow.md) | 2026-11-06 | 双环协作 + Git 钩子唤醒方案与 dsh-superagent-prototype、magpie 三 loop 的对比；常驻会话提示缓存命中率 97.75%~98.62% 的实测 | 协议已并入 multi-agent-collab Skill，本文保留对比与实测数据 |
 | [worker-benchmark-2026-10-28.md](worker-benchmark-2026-10-28.md) | 2026-10-28~29 | 本机候选 Worker 宿主与模型的实测：耗时、轮数、成本、范围纪律，以及 RTK、Magpie 插件等混杂变量 | 仅适用于当时本机的模型与宿主 |
 | [三角色协作设计.md](三角色协作设计.md) | 2026-10-15 | Brain / Worker / Tester 三角色设计与基于 Orca CLI 的协调脚本 | 已被 multi-agent-collab Skill 的双环协作取代 |
